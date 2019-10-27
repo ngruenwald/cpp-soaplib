@@ -1,0 +1,753 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions name="AuthenticationService" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://tempuri.org/" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing">
+  <wsp:Policy wsu:Id="WSHttpBinding_IAuthenticationService_policy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <wsaw:UsingAddressing/>
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsdl:types>
+    <xs:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:import namespace="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Authentication.DC"/>
+      <xs:import namespace="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Common.DataContract"/>
+      <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/>
+      <xs:element name="Echo">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="value" nillable="true" type="xs:string"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="EchoResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="EchoResult" nillable="true" type="xs:string"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="LogOnBasic">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="logonRequest" nillable="true" type="q1:LogOnDCRequest" xmlns:q1="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Authentication.DC"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="LogOnBasicResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="LogOnBasicResult" nillable="true" type="q2:LogOnDCResponse" xmlns:q2="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Authentication.DC"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="LogOnLdap">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="logonRequest" nillable="true" type="q3:LogOnLdapDCRequest" xmlns:q3="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Authentication.DC"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="LogOnLdapResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="LogOnLdapResult" nillable="true" type="q4:LogOnLdapDCResponse" xmlns:q4="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Authentication.DC"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="LogOff">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="header" nillable="true" type="q5:DCHeader" xmlns:q5="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Common.DataContract"/>
+            <xs:element minOccurs="0" name="logoffRequest" nillable="true" type="q6:LogOffDCRequest" xmlns:q6="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Authentication.DC"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="LogOffResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="LogOffResult" nillable="true" type="q7:LogOffDCResponse" xmlns:q7="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Authentication.DC"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="GetPublicKey">
+        <xs:complexType>
+          <xs:sequence/>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="GetPublicKeyResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="GetPublicKeyResult" nillable="true" type="q8:GetPublicKeyDCResponse" xmlns:q8="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Authentication.DC"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="RefreshToken">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="header" nillable="true" type="q9:DCHeader" xmlns:q9="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Common.DataContract"/>
+            <xs:element minOccurs="0" name="request" nillable="true" type="q10:RefreshTokenDCRequest" xmlns:q10="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Authentication.DC"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="RefreshTokenResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="RefreshTokenResult" nillable="true" type="q11:RefreshTokenDCResponse" xmlns:q11="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Authentication.DC"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="GetVersionInformation">
+        <xs:complexType>
+          <xs:sequence/>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="GetVersionInformationResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="GetVersionInformationResult" nillable="true" type="q12:ArrayOfKeyValueOfstringstring" xmlns:q12="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="GetDbVersionInformation">
+        <xs:complexType>
+          <xs:sequence/>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="GetDbVersionInformationResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="GetDbVersionInformationResult" nillable="true" type="q13:ArrayOfKeyValueOfstringstring" xmlns:q13="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="GetLogLevel">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="loggerName" nillable="true" type="xs:string"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="GetLogLevelResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="GetLogLevelResult" type="q14:LogLevelDC" xmlns:q14="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Common.DataContract"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="SetLogLevel">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="loggerName" nillable="true" type="xs:string"/>
+            <xs:element minOccurs="0" name="logLevel" type="q15:LogLevelDC" xmlns:q15="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Common.DataContract"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="SetLogLevelResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="SetLogLevelResult" type="q16:LogLevelDC" xmlns:q16="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Common.DataContract"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="GetLogOnStat">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="fromDate" nillable="true" type="xs:dateTime"/>
+            <xs:element minOccurs="0" name="toDate" nillable="true" type="xs:dateTime"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="GetLogOnStatResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="GetLogOnStatResult" nillable="true" type="q17:LogOnStatDC" xmlns:q17="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Authentication.DC"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="GetConfiguredLdapCodes">
+        <xs:complexType>
+          <xs:sequence/>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="GetConfiguredLdapCodesResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="GetConfiguredLdapCodesResult" nillable="true" type="q18:GetLdapCodeDCResponse" xmlns:q18="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Authentication.DC"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:schema>
+    <xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://schemas.microsoft.com/2003/10/Serialization/">
+      <xs:element name="anyType" nillable="true" type="xs:anyType"/>
+      <xs:element name="anyURI" nillable="true" type="xs:anyURI"/>
+      <xs:element name="base64Binary" nillable="true" type="xs:base64Binary"/>
+      <xs:element name="boolean" nillable="true" type="xs:boolean"/>
+      <xs:element name="byte" nillable="true" type="xs:byte"/>
+      <xs:element name="dateTime" nillable="true" type="xs:dateTime"/>
+      <xs:element name="decimal" nillable="true" type="xs:decimal"/>
+      <xs:element name="double" nillable="true" type="xs:double"/>
+      <xs:element name="float" nillable="true" type="xs:float"/>
+      <xs:element name="int" nillable="true" type="xs:int"/>
+      <xs:element name="long" nillable="true" type="xs:long"/>
+      <xs:element name="QName" nillable="true" type="xs:QName"/>
+      <xs:element name="short" nillable="true" type="xs:short"/>
+      <xs:element name="string" nillable="true" type="xs:string"/>
+      <xs:element name="unsignedByte" nillable="true" type="xs:unsignedByte"/>
+      <xs:element name="unsignedInt" nillable="true" type="xs:unsignedInt"/>
+      <xs:element name="unsignedLong" nillable="true" type="xs:unsignedLong"/>
+      <xs:element name="unsignedShort" nillable="true" type="xs:unsignedShort"/>
+      <xs:element name="char" nillable="true" type="tns:char"/>
+      <xs:simpleType name="char">
+        <xs:restriction base="xs:int"/>
+      </xs:simpleType>
+      <xs:element name="duration" nillable="true" type="tns:duration"/>
+      <xs:simpleType name="duration">
+        <xs:restriction base="xs:duration">
+          <xs:pattern value="\-?P(\d*D)?(T(\d*H)?(\d*M)?(\d*(\.\d*)?S)?)?"/>
+          <xs:minInclusive value="-P10675199DT2H48M5.4775808S"/>
+          <xs:maxInclusive value="P10675199DT2H48M5.4775807S"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:element name="guid" nillable="true" type="tns:guid"/>
+      <xs:simpleType name="guid">
+        <xs:restriction base="xs:string">
+          <xs:pattern value="[\da-fA-F]{8}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{12}"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:attribute name="FactoryType" type="xs:QName"/>
+      <xs:attribute name="Id" type="xs:ID"/>
+      <xs:attribute name="Ref" type="xs:IDREF"/>
+    </xs:schema>
+    <xs:schema elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Authentication.DC" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Authentication.DC" xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/">
+      <xs:import namespace="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Authentication.DC.Base"/>
+      <xs:import namespace="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Common.DataContract"/>
+      <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/"/>
+      <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/>
+      <xs:complexType name="LogOnDCRequest">
+        <xs:complexContent mixed="false">
+          <xs:extension base="q1:LogOnDCRequestBase" xmlns:q1="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Authentication.DC.Base">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="EncodedPassword" nillable="true" type="xs:string"/>
+              <xs:element minOccurs="0" name="RequestingApp" nillable="true" type="xs:string"/>
+              <xs:element minOccurs="0" name="UserAgent" nillable="true" type="xs:string"/>
+              <xs:element minOccurs="0" name="UserName" nillable="true" type="xs:string"/>
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:element name="LogOnDCRequest" nillable="true" type="tns:LogOnDCRequest"/>
+      <xs:complexType name="LogOnDCResponse">
+        <xs:complexContent mixed="false">
+          <xs:extension base="q2:LogOnDCResponseBase" xmlns:q2="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Authentication.DC.Base">
+            <xs:sequence/>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:element name="LogOnDCResponse" nillable="true" type="tns:LogOnDCResponse"/>
+      <xs:complexType name="LogOnLdapDCRequest">
+        <xs:complexContent mixed="false">
+          <xs:extension base="q3:LogOnDCRequestBase" xmlns:q3="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Authentication.DC.Base">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="EncodedPassword" nillable="true" type="xs:string"/>
+              <xs:element minOccurs="0" name="RequestingApp" nillable="true" type="xs:string"/>
+              <xs:element minOccurs="0" name="UserAgent" nillable="true" type="xs:string"/>
+              <xs:element minOccurs="0" name="UserName" nillable="true" type="xs:string"/>
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:element name="LogOnLdapDCRequest" nillable="true" type="tns:LogOnLdapDCRequest"/>
+      <xs:complexType name="LogOnLdapDCResponse">
+        <xs:complexContent mixed="false">
+          <xs:extension base="q4:LogOnDCResponseBase" xmlns:q4="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Authentication.DC.Base">
+            <xs:sequence/>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:element name="LogOnLdapDCResponse" nillable="true" type="tns:LogOnLdapDCResponse"/>
+      <xs:complexType name="LogOffDCRequest">
+        <xs:complexContent mixed="false">
+          <xs:extension base="q5:LogOffDCRequestBase" xmlns:q5="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Authentication.DC.Base">
+            <xs:sequence/>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:element name="LogOffDCRequest" nillable="true" type="tns:LogOffDCRequest"/>
+      <xs:complexType name="LogOffDCResponse">
+        <xs:complexContent mixed="false">
+          <xs:extension base="q6:LogOffDCResponseBase" xmlns:q6="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Authentication.DC.Base">
+            <xs:sequence/>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:element name="LogOffDCResponse" nillable="true" type="tns:LogOffDCResponse"/>
+      <xs:complexType name="GetPublicKeyDCResponse">
+        <xs:complexContent mixed="false">
+          <xs:extension base="q7:ApiResultDC" xmlns:q7="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Common.DataContract">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="PublicKey" nillable="true" type="xs:string"/>
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:element name="GetPublicKeyDCResponse" nillable="true" type="tns:GetPublicKeyDCResponse"/>
+      <xs:complexType name="RefreshTokenDCRequest">
+        <xs:complexContent mixed="false">
+          <xs:extension base="q8:GenericDBActionDCRequestBase" xmlns:q8="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Common.DataContract">
+            <xs:sequence/>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:element name="RefreshTokenDCRequest" nillable="true" type="tns:RefreshTokenDCRequest"/>
+      <xs:complexType name="RefreshTokenDCResponse">
+        <xs:complexContent mixed="false">
+          <xs:extension base="q9:GenericDBActionDCResponseBase" xmlns:q9="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Common.DataContract">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="SessionTimeout" type="ser:duration"/>
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:element name="RefreshTokenDCResponse" nillable="true" type="tns:RefreshTokenDCResponse"/>
+      <xs:complexType name="LogOnStatDC">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Info" nillable="true" type="tns:ArrayOfLogOnStatInfoDC"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="LogOnStatDC" nillable="true" type="tns:LogOnStatDC"/>
+      <xs:complexType name="ArrayOfLogOnStatInfoDC">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="LogOnStatInfoDC" nillable="true" type="tns:LogOnStatInfoDC"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="ArrayOfLogOnStatInfoDC" nillable="true" type="tns:ArrayOfLogOnStatInfoDC"/>
+      <xs:complexType name="LogOnStatInfoDC">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Count" type="xs:int"/>
+          <xs:element minOccurs="0" name="RequestingApp" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="RequestingWs" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="UserAgent" nillable="true" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="LogOnStatInfoDC" nillable="true" type="tns:LogOnStatInfoDC"/>
+      <xs:complexType name="GetLdapCodeDCResponse">
+        <xs:complexContent mixed="false">
+          <xs:extension base="q10:ApiResultDC" xmlns:q10="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Common.DataContract">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="Codes" nillable="true" type="q11:ArrayOfstring" xmlns:q11="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/>
+              <xs:element minOccurs="0" name="WebServiceConfiguration_Id" type="xs:long"/>
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:element name="GetLdapCodeDCResponse" nillable="true" type="tns:GetLdapCodeDCResponse"/>
+    </xs:schema>
+    <xs:schema elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Authentication.DC.Base" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Authentication.DC.Base" xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/">
+      <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/>
+      <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/"/>
+      <xs:import namespace="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Common.DataContract"/>
+      <xs:complexType name="LogOnDCRequestBase">
+        <xs:sequence/>
+      </xs:complexType>
+      <xs:element name="LogOnDCRequestBase" nillable="true" type="tns:LogOnDCRequestBase"/>
+      <xs:complexType name="LogOnDCResponseBase">
+        <xs:complexContent mixed="false">
+          <xs:extension base="q1:ApiResultDC" xmlns:q1="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Common.DataContract">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="FailedLogonAttempts" nillable="true" type="q2:ArrayOfdateTime" xmlns:q2="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/>
+              <xs:element minOccurs="0" name="FullUserName" nillable="true" type="xs:string"/>
+              <xs:element minOccurs="0" name="Id" type="xs:long"/>
+              <xs:element minOccurs="0" name="IsMasterAvailable" type="xs:boolean"/>
+              <xs:element minOccurs="0" name="IsSecurityTokenOnMaster" type="xs:boolean"/>
+              <xs:element minOccurs="0" name="IsSecurityTokenOnSlave" type="xs:boolean"/>
+              <xs:element minOccurs="0" name="IsSlaveAvailable" type="xs:boolean"/>
+              <xs:element minOccurs="0" name="LastSuccessfulLogon" nillable="true" type="xs:dateTime"/>
+              <xs:element minOccurs="0" name="SecurityToken" nillable="true" type="xs:string"/>
+              <xs:element minOccurs="0" name="SessionTimeout" type="ser:duration"/>
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:element name="LogOnDCResponseBase" nillable="true" type="tns:LogOnDCResponseBase"/>
+      <xs:complexType name="LogOffDCRequestBase">
+        <xs:sequence/>
+      </xs:complexType>
+      <xs:element name="LogOffDCRequestBase" nillable="true" type="tns:LogOffDCRequestBase"/>
+      <xs:complexType name="LogOffDCResponseBase">
+        <xs:complexContent mixed="false">
+          <xs:extension base="q3:ApiResultDC" xmlns:q3="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Common.DataContract">
+            <xs:sequence/>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:element name="LogOffDCResponseBase" nillable="true" type="tns:LogOffDCResponseBase"/>
+    </xs:schema>
+    <xs:schema elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Common.DataContract" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Common.DataContract">
+      <xs:import namespace="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Common.DC"/>
+      <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/"/>
+      <xs:complexType name="ApiResultDC">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="LocalizableMessages" nillable="true" type="q1:ArrayOfLocalizableMessageDC" xmlns:q1="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Common.DC"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="ApiResultDC" nillable="true" type="tns:ApiResultDC"/>
+      <xs:complexType name="DCHeader">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="SecurityToken" nillable="true" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="DCHeader" nillable="true" type="tns:DCHeader"/>
+      <xs:complexType name="GenericDBActionDCRequestBase">
+        <xs:sequence/>
+      </xs:complexType>
+      <xs:element name="GenericDBActionDCRequestBase" nillable="true" type="tns:GenericDBActionDCRequestBase"/>
+      <xs:complexType name="GenericDBActionDCResponseBase">
+        <xs:complexContent mixed="false">
+          <xs:extension base="tns:ApiResultDC">
+            <xs:sequence/>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:element name="GenericDBActionDCResponseBase" nillable="true" type="tns:GenericDBActionDCResponseBase"/>
+      <xs:simpleType name="LogLevelDC">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="Off">
+            <xs:annotation>
+              <xs:appinfo>
+                <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">6</EnumerationValue>
+              </xs:appinfo>
+            </xs:annotation>
+          </xs:enumeration>
+          <xs:enumeration value="Fatal">
+            <xs:annotation>
+              <xs:appinfo>
+                <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">5</EnumerationValue>
+              </xs:appinfo>
+            </xs:annotation>
+          </xs:enumeration>
+          <xs:enumeration value="Error">
+            <xs:annotation>
+              <xs:appinfo>
+                <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">4</EnumerationValue>
+              </xs:appinfo>
+            </xs:annotation>
+          </xs:enumeration>
+          <xs:enumeration value="Warn"/>
+          <xs:enumeration value="Info">
+            <xs:annotation>
+              <xs:appinfo>
+                <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">2</EnumerationValue>
+              </xs:appinfo>
+            </xs:annotation>
+          </xs:enumeration>
+          <xs:enumeration value="Debug">
+            <xs:annotation>
+              <xs:appinfo>
+                <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">1</EnumerationValue>
+              </xs:appinfo>
+            </xs:annotation>
+          </xs:enumeration>
+          <xs:enumeration value="ArrayOfLocalizableMessageDCTrace">
+            <xs:annotation>
+              <xs:appinfo>
+                <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">0</EnumerationValue>
+              </xs:appinfo>
+            </xs:annotation>
+          </xs:enumeration>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:element name="LogLevelDC" nillable="true" type="tns:LogLevelDC"/>
+    </xs:schema>
+    <xs:schema elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Common.DC" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Common.DC">
+      <xs:complexType name="ArrayOfLocalizableMessageDC">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="LocalizableMessageDC" nillable="true" type="tns:LocalizableMessageDC"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="ArrayOfLocalizableMessageDC" nillable="true" type="tns:ArrayOfLocalizableMessageDC"/>
+      <xs:complexType name="LocalizableMessageDC">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Code" type="xs:unsignedInt"/>
+          <xs:element minOccurs="0" name="InvariantText" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="Order" type="xs:int"/>
+          <xs:element minOccurs="0" name="Replacements" nillable="true" type="tns:ArrayOfLocalizableMessageDC"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="LocalizableMessageDC" nillable="true" type="tns:LocalizableMessageDC"/>
+    </xs:schema>
+    <xs:schema elementFormDefault="qualified" targetNamespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+      <xs:complexType name="ArrayOfdateTime">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="dateTime" type="xs:dateTime"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="ArrayOfdateTime" nillable="true" type="tns:ArrayOfdateTime"/>
+      <xs:complexType name="ArrayOfKeyValueOfstringstring">
+        <xs:annotation>
+          <xs:appinfo>
+            <IsDictionary xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsDictionary>
+          </xs:appinfo>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="KeyValueOfstringstring">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Key" nillable="true" type="xs:string"/>
+                <xs:element name="Value" nillable="true" type="xs:string"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="ArrayOfKeyValueOfstringstring" nillable="true" type="tns:ArrayOfKeyValueOfstringstring"/>
+      <xs:complexType name="ArrayOfstring">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="string" nillable="true" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="ArrayOfstring" nillable="true" type="tns:ArrayOfstring"/>
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="IAuthenticationService_Echo_InputMessage">
+    <wsdl:part name="parameters" element="tns:Echo"/>
+  </wsdl:message>
+  <wsdl:message name="IAuthenticationService_Echo_OutputMessage">
+    <wsdl:part name="parameters" element="tns:EchoResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IAuthenticationService_LogOnBasic_InputMessage">
+    <wsdl:part name="parameters" element="tns:LogOnBasic"/>
+  </wsdl:message>
+  <wsdl:message name="IAuthenticationService_LogOnBasic_OutputMessage">
+    <wsdl:part name="parameters" element="tns:LogOnBasicResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IAuthenticationService_LogOnLdap_InputMessage">
+    <wsdl:part name="parameters" element="tns:LogOnLdap"/>
+  </wsdl:message>
+  <wsdl:message name="IAuthenticationService_LogOnLdap_OutputMessage">
+    <wsdl:part name="parameters" element="tns:LogOnLdapResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IAuthenticationService_LogOff_InputMessage">
+    <wsdl:part name="parameters" element="tns:LogOff"/>
+  </wsdl:message>
+  <wsdl:message name="IAuthenticationService_LogOff_OutputMessage">
+    <wsdl:part name="parameters" element="tns:LogOffResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IAuthenticationService_GetPublicKey_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPublicKey"/>
+  </wsdl:message>
+  <wsdl:message name="IAuthenticationService_GetPublicKey_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPublicKeyResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IAuthenticationService_RefreshToken_InputMessage">
+    <wsdl:part name="parameters" element="tns:RefreshToken"/>
+  </wsdl:message>
+  <wsdl:message name="IAuthenticationService_RefreshToken_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RefreshTokenResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IAuthenticationService_GetVersionInformation_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetVersionInformation"/>
+  </wsdl:message>
+  <wsdl:message name="IAuthenticationService_GetVersionInformation_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetVersionInformationResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IAuthenticationService_GetDbVersionInformation_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetDbVersionInformation"/>
+  </wsdl:message>
+  <wsdl:message name="IAuthenticationService_GetDbVersionInformation_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetDbVersionInformationResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IAuthenticationService_GetLogLevel_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetLogLevel"/>
+  </wsdl:message>
+  <wsdl:message name="IAuthenticationService_GetLogLevel_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetLogLevelResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IAuthenticationService_SetLogLevel_InputMessage">
+    <wsdl:part name="parameters" element="tns:SetLogLevel"/>
+  </wsdl:message>
+  <wsdl:message name="IAuthenticationService_SetLogLevel_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SetLogLevelResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IAuthenticationService_GetLogOnStat_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetLogOnStat"/>
+  </wsdl:message>
+  <wsdl:message name="IAuthenticationService_GetLogOnStat_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetLogOnStatResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IAuthenticationService_GetConfiguredLdapCodes_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetConfiguredLdapCodes"/>
+  </wsdl:message>
+  <wsdl:message name="IAuthenticationService_GetConfiguredLdapCodes_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetConfiguredLdapCodesResponse"/>
+  </wsdl:message>
+  <wsdl:portType name="IAuthenticationService">
+    <wsdl:operation name="Echo">
+      <wsdl:input wsaw:Action="http://tempuri.org/IAuthenticationService/Echo" message="tns:IAuthenticationService_Echo_InputMessage"/>
+      <wsdl:output wsaw:Action="http://tempuri.org/IAuthenticationService/EchoResponse" message="tns:IAuthenticationService_Echo_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="LogOnBasic">
+      <wsdl:input wsaw:Action="http://tempuri.org/IAuthenticationService/LogOnBasic" message="tns:IAuthenticationService_LogOnBasic_InputMessage"/>
+      <wsdl:output wsaw:Action="http://tempuri.org/IAuthenticationService/LogOnBasicResponse" message="tns:IAuthenticationService_LogOnBasic_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="LogOnLdap">
+      <wsdl:input wsaw:Action="http://tempuri.org/IAuthenticationService/LogOnLdap" message="tns:IAuthenticationService_LogOnLdap_InputMessage"/>
+      <wsdl:output wsaw:Action="http://tempuri.org/IAuthenticationService/LogOnLdapResponse" message="tns:IAuthenticationService_LogOnLdap_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="LogOff">
+      <wsdl:input wsaw:Action="http://tempuri.org/IAuthenticationService/LogOff" message="tns:IAuthenticationService_LogOff_InputMessage"/>
+      <wsdl:output wsaw:Action="http://tempuri.org/IAuthenticationService/LogOffResponse" message="tns:IAuthenticationService_LogOff_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="GetPublicKey">
+      <wsdl:input wsaw:Action="http://tempuri.org/IAuthenticationService/GetPublicKey" message="tns:IAuthenticationService_GetPublicKey_InputMessage"/>
+      <wsdl:output wsaw:Action="http://tempuri.org/IAuthenticationService/GetPublicKeyResponse" message="tns:IAuthenticationService_GetPublicKey_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="RefreshToken">
+      <wsdl:input wsaw:Action="http://tempuri.org/IAuthenticationService/RefreshToken" message="tns:IAuthenticationService_RefreshToken_InputMessage"/>
+      <wsdl:output wsaw:Action="http://tempuri.org/IAuthenticationService/RefreshTokenResponse" message="tns:IAuthenticationService_RefreshToken_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="GetVersionInformation">
+      <wsdl:input wsaw:Action="http://tempuri.org/IAuthenticationService/GetVersionInformation" message="tns:IAuthenticationService_GetVersionInformation_InputMessage"/>
+      <wsdl:output wsaw:Action="http://tempuri.org/IAuthenticationService/GetVersionInformationResponse" message="tns:IAuthenticationService_GetVersionInformation_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="GetDbVersionInformation">
+      <wsdl:input wsaw:Action="http://tempuri.org/IAuthenticationService/GetDbVersionInformation" message="tns:IAuthenticationService_GetDbVersionInformation_InputMessage"/>
+      <wsdl:output wsaw:Action="http://tempuri.org/IAuthenticationService/GetDbVersionInformationResponse" message="tns:IAuthenticationService_GetDbVersionInformation_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="GetLogLevel">
+      <wsdl:input wsaw:Action="http://tempuri.org/IAuthenticationService/GetLogLevel" message="tns:IAuthenticationService_GetLogLevel_InputMessage"/>
+      <wsdl:output wsaw:Action="http://tempuri.org/IAuthenticationService/GetLogLevelResponse" message="tns:IAuthenticationService_GetLogLevel_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="SetLogLevel">
+      <wsdl:input wsaw:Action="http://tempuri.org/IAuthenticationService/SetLogLevel" message="tns:IAuthenticationService_SetLogLevel_InputMessage"/>
+      <wsdl:output wsaw:Action="http://tempuri.org/IAuthenticationService/SetLogLevelResponse" message="tns:IAuthenticationService_SetLogLevel_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="GetLogOnStat">
+      <wsdl:input wsaw:Action="http://tempuri.org/IAuthenticationService/GetLogOnStat" message="tns:IAuthenticationService_GetLogOnStat_InputMessage"/>
+      <wsdl:output wsaw:Action="http://tempuri.org/IAuthenticationService/GetLogOnStatResponse" message="tns:IAuthenticationService_GetLogOnStat_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="GetConfiguredLdapCodes">
+      <wsdl:input wsaw:Action="http://tempuri.org/IAuthenticationService/GetConfiguredLdapCodes" message="tns:IAuthenticationService_GetConfiguredLdapCodes_InputMessage"/>
+      <wsdl:output wsaw:Action="http://tempuri.org/IAuthenticationService/GetConfiguredLdapCodesResponse" message="tns:IAuthenticationService_GetConfiguredLdapCodes_OutputMessage"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="WSHttpBinding_IAuthenticationService" type="tns:IAuthenticationService">
+    <wsp:PolicyReference URI="#WSHttpBinding_IAuthenticationService_policy"/>
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="Echo">
+      <soap12:operation soapAction="http://tempuri.org/IAuthenticationService/Echo" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="LogOnBasic">
+      <soap12:operation soapAction="http://tempuri.org/IAuthenticationService/LogOnBasic" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="LogOnLdap">
+      <soap12:operation soapAction="http://tempuri.org/IAuthenticationService/LogOnLdap" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="LogOff">
+      <soap12:operation soapAction="http://tempuri.org/IAuthenticationService/LogOff" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPublicKey">
+      <soap12:operation soapAction="http://tempuri.org/IAuthenticationService/GetPublicKey" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RefreshToken">
+      <soap12:operation soapAction="http://tempuri.org/IAuthenticationService/RefreshToken" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVersionInformation">
+      <soap12:operation soapAction="http://tempuri.org/IAuthenticationService/GetVersionInformation" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDbVersionInformation">
+      <soap12:operation soapAction="http://tempuri.org/IAuthenticationService/GetDbVersionInformation" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetLogLevel">
+      <soap12:operation soapAction="http://tempuri.org/IAuthenticationService/GetLogLevel" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SetLogLevel">
+      <soap12:operation soapAction="http://tempuri.org/IAuthenticationService/SetLogLevel" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetLogOnStat">
+      <soap12:operation soapAction="http://tempuri.org/IAuthenticationService/GetLogOnStat" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetConfiguredLdapCodes">
+      <soap12:operation soapAction="http://tempuri.org/IAuthenticationService/GetConfiguredLdapCodes" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="AuthenticationService">
+    <wsdl:port name="WSHttpBinding_IAuthenticationService" binding="tns:WSHttpBinding_IAuthenticationService">
+      <soap12:address location="http://192.168.68.7:8091/SR_1_17_1/AWS/AuthenticationService.svc"/>
+      <wsa10:EndpointReference>
+        <wsa10:Address>http://192.168.68.7:8091/SR_1_17_1/AWS/AuthenticationService.svc</wsa10:Address>
+      </wsa10:EndpointReference>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
