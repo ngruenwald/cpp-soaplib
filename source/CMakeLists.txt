@@ -1,7 +1,7 @@
 
 find_package(Threads REQUIRED)
-find_package(xmlwrp 3.0 REQUIRED)
-find_package(httplib REQUIRED)
+find_package(xmlwrp 3 REQUIRED)
+#find_package(httplib REQUIRED)
 
 if(USE_OPENSSL)
   if(WIN32)

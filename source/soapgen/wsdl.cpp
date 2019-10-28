@@ -5,28 +5,8 @@
 
 void LoadComplexType(
     ExtendedType& type,
-    const xml::Node& complexTypeNode);
-
-/*
-xml::NodeList getChildren(
-    const xml::Node& parent,
-    const char* name)
-{
-    xml::NodeList nodes;
-
-    for (auto xmlNode = xmlFirstElementChild(parent.GetXmlNode());
-         xmlNode != nullptr;
-         xmlNode = xmlNextElementSibling(xmlNode))
-    {
-        if (name == nullptr || xmlStrcmp(xmlNode->name, BAD_CAST name) == 0)
-        {
-            nodes.emplace_back(libxml2::XmlNode(xmlNode));
-        }
-    }
-
-    return nodes;
-}
-*/
+    const xml::Node& complexTypeNode,
+    const std::string& targetNamespace);
 
 std::string getNsPrefix(
     const xml::Node& node,
@@ -76,29 +56,32 @@ std::string getNsHref(
 
 Name getName(
     const xml::Node& node,
-    const char* attributeName)
+    const char* attributeName,
+    const std::string& targetNamespace)
 {
     const auto value = node.GetStringProp(attributeName);
     auto idx = value.find(':');
 
+    Name name;
+
     if (idx == std::string::npos)
     {
-        Name name;
         name.name = value;
-        return name;
+        name.nsHref = targetNamespace;
+        name.nsPrefix = getNsPrefix(node, name.nsHref);
     }
-
-    if (idx + 2 < value.length() && value.substr(idx, 3) == "://")
+    else if (idx + 2 < value.length() && value.substr(idx, 3) == "://")
     {
-        Name name;
         name.name = value;
-        return name;
+        name.nsHref = targetNamespace;
+        name.nsPrefix = getNsPrefix(node, name.nsHref);
     }
-
-    Name name;
-    name.name = value.substr(idx + 1);
-    name.nsPrefix = value.substr(0, idx);
-    name.nsHref = getNsHref(node, name.nsPrefix);
+    else
+    {
+        name.name = value.substr(idx + 1);
+        name.nsPrefix = value.substr(0, idx);
+        name.nsHref = getNsHref(node, name.nsPrefix);
+    }
 
     if (name.nsHref.empty())
     {
@@ -114,8 +97,8 @@ Input LoadInput(
 {
     Input input;
 
-    input.action = getName(inputNode, "Action");
-    input.message = getName(inputNode, "message");
+    input.action = getName(inputNode, "Action", {});
+    input.message = getName(inputNode, "message", {});
 
     return input;
 }
@@ -125,8 +108,8 @@ Output LoadOutput(
 {
     Output output;
 
-    output.action = getName(outputNode, "Action");
-    output.message = getName(outputNode, "message");
+    output.action = getName(outputNode, "Action", {});
+    output.message = getName(outputNode, "message", {});
 
     return output;
 }
@@ -136,7 +119,7 @@ Operation LoadOperation(
 {
     Operation operation;
 
-    operation.name = getName(operationNode, "name");
+    operation.name = getName(operationNode, "name", {});
 
     auto inputNode = operationNode.GetChild("input");
     operation.input = LoadInput(inputNode);
@@ -152,8 +135,8 @@ Port LoadPort(
 {
     Port port;
 
-    port.name = getName(portNode, "name");
-    port.binding = getName(portNode, "binding");
+    port.name = getName(portNode, "name", {});
+    port.binding = getName(portNode, "binding", {});
 
     try
     {
@@ -182,9 +165,9 @@ Service LoadService(
 {
     Service service;
 
-    service.name = getName(serviceNode, "name");
+    service.name = getName(serviceNode, "name", {});
 
-    const auto portNodes = serviceNode.GetChildren("port"); //getChildren(serviceNode, "port");
+    const auto portNodes = serviceNode.GetChildren("port");
     for (const auto& portNode : portNodes)
     {
         service.ports.push_back(LoadPort(portNode));
@@ -198,8 +181,8 @@ Binding LoadBinding(
 {
     Binding binding;
 
-    binding.name = getName(bindingNode, "name");
-    binding.type = getName(bindingNode, "type");
+    binding.name = getName(bindingNode, "name", {});
+    binding.type = getName(bindingNode, "type", {});
 
     // TODO
 
@@ -211,9 +194,9 @@ PortType LoadPortType(
 {
     PortType portType;
 
-    portType.name = getName(portTypeNode, "name");
+    portType.name = getName(portTypeNode, "name", {});
 
-    const auto operationNodes = portTypeNode.GetChildren("operation");  //getChildren(portTypeNode, "operation");
+    const auto operationNodes = portTypeNode.GetChildren("operation");
     for (const auto& operationNode : operationNodes)
     {
         portType.operations.push_back(LoadOperation(operationNode));
@@ -227,15 +210,15 @@ Message LoadMessage(
 {
     Message message;
 
-    message.name = getName(messageNode, "name");
+    message.name = getName(messageNode, "name", {});
 
-    const auto partNodes = messageNode.GetChildren("part"); //getChildren(messageNode, "part");
+    const auto partNodes = messageNode.GetChildren("part");
     for (const auto& partNode : partNodes)
     {
         Message::Part part;
 
-        part.name = getName(partNode, "name");
-        part.element = getName(partNode, "element");
+        part.name = getName(partNode, "name", {});
+        part.element = getName(partNode, "element", {});
 
         message.parts.push_back(part);
     }
@@ -245,10 +228,11 @@ Message LoadMessage(
 
 void LoadElement(
     ExtendedType& type,
-    const xml::Node& elementNode)
+    const xml::Node& elementNode,
+    const std::string& targetNamespace)
 {
     Parameter parameter;
-    parameter.name = getName(elementNode, "name");
+    parameter.name = getName(elementNode, "name", targetNamespace);
 
     int minOccurs = 1;
     int maxOccurs = 1;
@@ -292,7 +276,8 @@ void LoadElement(
     }
     else if (nillable)
     {
-        parameter.kind = Parameter::Pointer;
+        //parameter.kind = Parameter::Pointer;
+        parameter.kind = Parameter::Optional;
     }
     else if (minOccurs == 0 && maxOccurs == 1)
     {
@@ -303,15 +288,13 @@ void LoadElement(
         parameter.kind = Parameter::Mandatory;
     }
 
-
-
     try
     {
-        parameter.type = getName(elementNode, "type");
+        parameter.type = getName(elementNode, "type", targetNamespace);
     }
     catch (const xml::Exception&)
     {
-        const auto childNodes = elementNode.GetChildren(nullptr);   //getChildren(elementNode, nullptr);
+        const auto childNodes = elementNode.GetChildren(nullptr);
         if (!childNodes.empty())
         {
             for (const auto& childNode : childNodes)
@@ -323,7 +306,7 @@ void LoadElement(
                     auto innerType = std::make_shared<ExtendedType>();
                     innerType->name = parameter.name;
                     innerType->name.name;
-                    LoadComplexType(*innerType, childNode);
+                    LoadComplexType(*innerType, childNode, targetNamespace);
                     type.innerTypes.push_back(innerType);
                     if (parameter.type.name.empty())
                     {
@@ -339,29 +322,31 @@ void LoadElement(
 
 void LoadSequence(
     ExtendedType& type,
-    const xml::Node& sequenceNode)
+    const xml::Node& sequenceNode,
+    const std::string& targetNamespace)
 {
-    const auto elementNodes = sequenceNode.GetChildren("element");  //getChildren(sequenceNode, "element");
+    const auto elementNodes = sequenceNode.GetChildren("element");
     for (const auto& elementNode : elementNodes)
     {
-        LoadElement(type, elementNode);
+        LoadElement(type, elementNode, targetNamespace);
     }
 }
 
 void LoadExtension(
     ExtendedType& type,
-    const xml::Node& extensionNode)
+    const xml::Node& extensionNode,
+    const std::string& targetNamespace)
 {
-    type.base = getName(extensionNode, "base");
+    type.base = getName(extensionNode, "base", targetNamespace);
 
-    const auto childNodes = extensionNode.GetChildren(nullptr); //getChildren(extensionNode, nullptr);
+    const auto childNodes = extensionNode.GetChildren(nullptr);
     for (const auto& childNode : childNodes)
     {
         const std::string name = childNode.GetName();
 
         if (name == "sequence")
         {
-            LoadSequence(type, childNode);
+            LoadSequence(type, childNode, targetNamespace);
         }
         else
         {
@@ -372,16 +357,17 @@ void LoadExtension(
 
 void LoadComplexContent(
     ExtendedType& type,
-    const xml::Node& complexContentNode)
+    const xml::Node& complexContentNode,
+    const std::string& targetNamespace)
 {
-    const auto childNodes = complexContentNode.GetChildren(nullptr); //getChildren(complexContentNode, nullptr);
+    const auto childNodes = complexContentNode.GetChildren(nullptr);
     for (const auto& childNode : childNodes)
     {
         const std::string name = childNode.GetName();
 
         if (name == "extension")
         {
-            LoadExtension(type, childNode);
+            LoadExtension(type, childNode, targetNamespace);
         }
         else
         {
@@ -392,20 +378,21 @@ void LoadComplexContent(
 
 void LoadComplexType(
     ExtendedType& type,
-    const xml::Node& complexTypeNode)
+    const xml::Node& complexTypeNode,
+    const std::string& targetNamespace)
 {
-    const auto childNodes = complexTypeNode.GetChildren(nullptr);//getChildren(complexTypeNode, nullptr);
+    const auto childNodes = complexTypeNode.GetChildren(nullptr);
     for (const auto& childNode : childNodes)
     {
         const std::string name = childNode.GetName();
 
         if (name == "complexContent")
         {
-            LoadComplexContent(type, childNode);
+            LoadComplexContent(type, childNode, targetNamespace);
         }
         else if (name == "sequence")
         {
-            LoadSequence(type, childNode);
+            LoadSequence(type, childNode, targetNamespace);
         }
         else
         {
@@ -417,7 +404,8 @@ void LoadComplexType(
 
 TypePtr LoadComplexType(
     const xml::Node& complexTypeNode,
-    const Name* name = nullptr)
+    const Name* name,
+    const std::string& targetNamespace)
 {
     auto type = std::make_shared<ExtendedType>();
     if (name)
@@ -426,17 +414,18 @@ TypePtr LoadComplexType(
     }
     else
     {
-        type->name = getName(complexTypeNode, "name");
+        type->name = getName(complexTypeNode, "name", targetNamespace);
     }
 
-    LoadComplexType(*type, complexTypeNode);
+    LoadComplexType(*type, complexTypeNode, targetNamespace);
 
     return type;
 }
 
 TypePtr LoadSimpleType(
     const xml::Node& simpleTypeNode,
-    const Name* name_ = nullptr)
+    const Name* name_,
+    const std::string& targetNamespace)
 {
     Name name;
     std::optional<Name> base;
@@ -447,7 +436,7 @@ TypePtr LoadSimpleType(
     }
     else
     {
-        name = getName(simpleTypeNode, "name");
+        name = getName(simpleTypeNode, "name", targetNamespace);
     }
 
     // optional base type
@@ -455,7 +444,7 @@ TypePtr LoadSimpleType(
     try
     {
         const auto& restrictionNode = simpleTypeNode.GetChild("restriction");
-        base = getName(restrictionNode, "base");
+        base = getName(restrictionNode, "base", targetNamespace);
     }
     catch (const xml::Exception&)
     {
@@ -469,7 +458,7 @@ TypePtr LoadSimpleType(
 
         const auto& restrictionNode = simpleTypeNode.GetChild("restriction");
 
-        const auto enumerationNodes = restrictionNode.GetChildren("enumeration");//getChildren(restrictionNode, "enumeration");
+        const auto enumerationNodes = restrictionNode.GetChildren("enumeration");
         for (const auto& enumerationNode : enumerationNodes)
         {
             EnumType::Enumeration enumeration;
@@ -509,22 +498,23 @@ TypePtr LoadSimpleType(
 }
 
 TypePtr LoadElement(
-    const xml::Node& elementNode)
+    const xml::Node& elementNode,
+    const std::string& targetNamespace)
 {
-    auto typeName = getName(elementNode, "name");
+    auto typeName = getName(elementNode, "name", targetNamespace);
 
-    const auto childNodes = elementNode.GetChildren(nullptr);//getChildren(elementNode, nullptr);
+    const auto childNodes = elementNode.GetChildren(nullptr);
     for (const auto& childNode : childNodes)
     {
         const std::string name = childNode.GetName();
 
         if (name == "complexType")
         {
-            return LoadComplexType(childNode, &typeName);
+            return LoadComplexType(childNode, &typeName, targetNamespace);
         }
         else if (name == "simpleType")
         {
-            return LoadSimpleType(childNode, &typeName);
+            return LoadSimpleType(childNode, &typeName, targetNamespace);
         }
         else
         {
@@ -540,22 +530,24 @@ std::vector<TypePtr> LoadSchemaTypes(
 {
     std::vector<TypePtr> types;
 
+    const auto targetNamespace = schemaNode.GetStringProp("targetNamespace");
+
     const auto elementNodes = schemaNode.GetChildren("element"); // getChildren(schemaNode, "element");
     for (const auto& elementNode : elementNodes)
     {
-        types.push_back(LoadElement(elementNode));
+        types.push_back(LoadElement(elementNode, targetNamespace));
     }
 
     const auto complexTypeNodes = schemaNode.GetChildren("complexType");//getChildren(schemaNode, "complexType");
     for (const auto& complexTypeNode : complexTypeNodes)
     {
-        types.push_back(LoadComplexType(complexTypeNode));
+        types.push_back(LoadComplexType(complexTypeNode, nullptr, targetNamespace));
     }
 
     const auto simpleTypeNodes = schemaNode.GetChildren("simpleType");//getChildren(schemaNode, "simpleType");
     for (const auto& simpleTypeNode : simpleTypeNodes)
     {
-        types.push_back(LoadSimpleType(simpleTypeNode));
+        types.push_back(LoadSimpleType(simpleTypeNode, nullptr, targetNamespace));
     }
 
     return types;
@@ -586,7 +578,7 @@ std::shared_ptr<Definition> LoadDefinition(
 {
     auto definition = std::make_shared<Definition>();
 
-    definition->name = getName(definitionNode, "name");
+    definition->name = getName(definitionNode, "name", {});
 
     const auto serviceNodes = definitionNode.GetChildren("service");//getChildren(definitionNode, "service");
     for (const auto& serviceNode : serviceNodes)

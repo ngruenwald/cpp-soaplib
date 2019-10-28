@@ -21,6 +21,21 @@ static bool IsInnerType(
     return false;
 }
 
+static bool IsPointerType(
+    const Name& name,
+    const Options& options)
+{
+    for (const auto& pt : options.pointerTypes)
+    {
+        if (name.name == pt)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 static void GenerateTypeHeaderT(
     std::ostream& stream,
     int indentSize,
@@ -70,6 +85,8 @@ static void GenerateTypeHeaderET(
     {
         auto parameterType = ResolveType(parameter.type);
 
+        bool usePointer = IsPointerType(parameter.name, options);
+
         if (!IsNativeType(parameter.type))
         {
             parameterType = typePrefix + parameterType + typeSuffix;
@@ -86,8 +103,7 @@ static void GenerateTypeHeaderET(
             {
                 stream
                     << indent
-                    << "    "
-                    << "std::shared_ptr<";
+                    << "    ";
 
                 if (!IsNativeType(parameter.type) &&
                     !IsInnerType(parameter.type, type.innerTypes))
@@ -96,7 +112,7 @@ static void GenerateTypeHeaderET(
                 }
 
                 stream
-                    << parameterType << ">"
+                    << parameterType
                     << " "
                     << parameter.name.name
                     << ";" << '\n';
@@ -128,8 +144,16 @@ static void GenerateTypeHeaderET(
             {
                 stream
                     << indent
-                    << "    "
-                    << "std::shared_ptr<";
+                    << "    ";
+
+                if (usePointer)
+                {
+                    stream << "std::shared_ptr<";
+                }
+                else
+                {
+                    stream << "std::optional<";
+                }
 
                 if (!IsNativeType(parameter.type) &&
                     !IsInnerType(parameter.type, type.innerTypes))
@@ -149,8 +173,17 @@ static void GenerateTypeHeaderET(
             {
                 stream
                     << indent
-                    << "    "
-                    << "std::vector<std::shared_ptr<";
+                    << "    ";
+
+                if (usePointer)
+                {
+                    stream << "std::vector<std::shared_ptr<";
+                }
+                else
+                {
+                    stream << "std::vector<";
+                }
+
 
                 if (!IsNativeType(parameter.type) &&
                     !IsInnerType(parameter.type, type.innerTypes))
@@ -158,8 +191,16 @@ static void GenerateTypeHeaderET(
                     stream << nspref;
                 }
 
+                stream << parameterType;
+                if (usePointer)
+                {
+                    stream << ">>";
+                }
+                else
+                {
+                    stream << ">";
+                }
                 stream
-                    << parameterType << ">>"
                     << " "
                     << parameter.name.name
                     << ";" << '\n';
@@ -311,12 +352,21 @@ static void GenerateForwardDeclarations(
             continue;
         }
 
-        const auto parameterType = ResolveType(parameter.type);
-
-        if (parameter.kind == Parameter::Mandatory || parameter.kind == Parameter::Optional)
+        if (!IsPointerType(parameter.name, options))
         {
             continue;
         }
+
+        const auto parameterType = ResolveType(parameter.type);
+
+        /*
+        if (parameter.kind == Parameter::Mandatory ||
+            parameter.kind == Parameter::Optional ||
+            parameter.kind == Parameter::Multiple)
+        {
+            continue;
+        }
+        */
 
         stream << "struct " << parameterType << ";" << '\n';
     }
@@ -347,12 +397,26 @@ static void GenerateIncludes(
             continue;
         }
 
-        const auto parameterType = ResolveType(parameter.type);
-
-        if (parameter.kind != Parameter::Mandatory && parameter.kind != Parameter::Optional)
+        if (IsPointerType(parameter.name, options))
         {
             continue;
         }
+
+        if (IsInnerType(parameter.type, extendedType.innerTypes))
+        {
+            continue;
+        }
+
+        const auto parameterType = ResolveType(parameter.type);
+
+        /*
+        if (parameter.kind != Parameter::Mandatory &&
+            parameter.kind != Parameter::Optional &&
+            parameter.kind != Parameter::Multiple)
+        {
+            continue;
+        }
+        */
 
         stream << "#include \"" << /*definition.name.name << "_" <<*/ parameterType << ".hpp\"" << '\n';
      }
@@ -403,6 +467,7 @@ void GenerateHeader(
 
     GenerateIncludes(stream, type, options, definition);
 
+    stream << "namespace xml { class Document; }" << '\n';
     stream << "namespace xml { class Node; }" << '\n';
     stream << '\n';
 
@@ -427,6 +492,14 @@ void GenerateHeader(
 
     stream << ResolveType(type.name) << " " << type.name.name << "FromXml(" << '\n';
     stream << "    " << "const xml::Node& objNode);" << '\n';
+
+    stream << '\n';
+
+    stream << "void " << type.name.name << "ToXml(" << '\n';
+    stream << "    " << "xml::Document& doc," << '\n';
+    //stream << "    " << "xml::Node& parentNode," << '\n';
+    //stream << "    " << "const " << ResolveType(type.name) << "& obj);" << '\n';
+    stream << "    " << "xml::Node& parentNode);" << '\n';
 
     stream << '\n';
 

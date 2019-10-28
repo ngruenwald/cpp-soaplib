@@ -37,12 +37,12 @@ xml::Node SoapService::CreateEnvelope(
 	xml::Document& doc,
 	const std::string& soapAction)
 {
-	auto envelope = doc.AddRootNode("envelope");
+	auto envelope = doc.AddRootNode("Envelope");
 
 	AddNamespace(doc, envelope, "http://tempuri.org/", "t");
 	AddNamespace(doc, envelope, "http://www.w3.org/2005/08/addressing", "a");
 	AddNamespace(doc, envelope, "http://www.w3.org/2001/XMLSchema-instance", "i");
-	AddNamespace(doc, envelope, "http://www.w3.org/2003/05/soap-envelope/", "s");
+	AddNamespace(doc, envelope, "http://www.w3.org/2003/05/soap-envelope", "s");
 
 	//
 	// header

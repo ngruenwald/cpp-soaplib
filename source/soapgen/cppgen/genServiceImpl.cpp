@@ -29,9 +29,11 @@ void GenerateImplementation(
 
     stream << '\n';
 
+    std::string contract = "";
+
     stream << service.name.name << "::" << service.name.name << "(" << '\n';
     stream << "    const std::string& serviceAddress)" << '\n';
-    stream << "    : soaplib::SoapService(serviceAddress)" << '\n';
+    stream << "    : soaplib::SoapService(serviceAddress, \"" << contract << "\")" << '\n';
     stream << "{" << '\n';
     stream << "}" << '\n';
     stream << '\n';
@@ -63,6 +65,8 @@ void GenerateImplementation(
 
         for (const auto operation : portType->operations)
         {
+            const auto& soapAction = operation.input.action.name;
+
             auto inputType = getMessagePartNames(operation.input.message, definition)[0];
             auto outputType = getMessagePartNames(operation.output.message, definition)[0];
 
@@ -86,8 +90,9 @@ void GenerateImplementation(
             stream << "{" << '\n';
 
             stream << "    xml::Document request;" << '\n';
-            stream << "    auto body = CreateEnvelope(request, \"" << ResolveType(inputType) << "\");" << '\n';
-            stream << "    AddChild(request, body, \"" << ResolveType(inputType) << "\", \"t\");" << '\n';
+            stream << "    auto body = CreateEnvelope(request, \"" << soapAction << "\");" << '\n';
+            //stream << "    AddChild(request, body, \"" << ResolveType(inputType) << "\", \"t\");" << '\n';
+            stream << "    " << ResolveType(inputType) << "ToXml(request, body);" << '\n';
             stream << '\n';
             stream << "    auto response = Call(request);" << '\n';
             stream << "    auto envelope = response->GetRootNode();" << '\n';

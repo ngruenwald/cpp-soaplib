@@ -1,0 +1,11 @@
+{
+    "C_Cpp.default.intelliSenseMode": "clang-x64",
+    "C_Cpp.intelliSenseCacheSize": 0,
+    "cmake.configureArgs": [
+        "-DCMAKE_PREFIX_PATH=/opt/eurofunk/libraries",
+        "-DCMAKE_INSTALL_PREFIX=/opt/eurofunk/libraries"
+    ],
+    "files.associations": {
+        "regex": "cpp"
+    }
+}

@@ -23,13 +23,37 @@ static bool IsInnerType(
     return false;
 }
 
+static bool IsPointerType(
+    const Name& name,
+    const Options& options)
+{
+    for (const auto& pt : options.pointerTypes)
+    {
+        if (name.name == pt)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 static void GenerateParseEnum(
     std::ostream& stream,
     const EnumType& type,
     const Options& options,
     const Definition& definition)
 {
+    std::cerr << "GenerateParseEnum not implemented" << '\n';
+}
 
+static void GenerateWriteEnum(
+    std::ostream& stream,
+    const EnumType& type,
+    const Options& options,
+    const Definition& definition)
+{
+    std::cerr << "GenerateWriteEnum not implemented" << '\n';
 }
 
 static void GenerateParseBasic(
@@ -44,6 +68,22 @@ static void GenerateParseBasic(
             << "    "
             << ResolveType(type.base.value(), true)
             << "FromXml(objNode, obj);"
+            << '\n';
+    }
+}
+
+static void GenerateWriteBasic(
+    std::ostream& stream,
+    const BasicType& type,
+    const Options& options,
+    const Definition& definition)
+{
+    if (type.base.has_value())
+    {
+        stream
+            << "    "
+            << ResolveType(type.base.value(), true)
+            << "ToXml(doc, objNode);"
             << '\n';
     }
 }
@@ -65,6 +105,102 @@ static void GenerateParseExtended(
 
     for (const auto parameter : type.parameters)
     {
+        stream
+            << "    "
+            << "obj."
+            << parameter.name.name
+            << " = ";
+
+        bool usePointer = IsPointerType(parameter.name, options);
+
+        switch (parameter.kind)
+        {
+            case Parameter::Mandatory:
+            {
+                stream << "soaplib::getMandatory";
+                break;
+            }
+
+            case Parameter::Pointer:
+            {
+                stream << "soaplib::getPointer";
+                break;
+            }
+
+            case Parameter::Optional:
+            {
+                if (usePointer)
+                {
+                    stream << "soaplib::getPointer";
+                }
+                else
+                {
+                    stream << "soaplib::getOptional";
+                }
+                break;
+            }
+
+            case Parameter::Multiple:
+            {
+                if (usePointer)
+                {
+                    stream << "soaplib::getMultiplePtrs";
+                }
+                else
+                {
+                    stream << "soaplib::getMultiple";
+                }
+
+                break;
+            }
+
+            default:
+            {
+                std::cerr << "parameter kind " << parameter.kind << " not implemented\n";
+
+                stream << "soaplib::getMandatory";
+                break;
+            }
+        }
+
+        std::string typePrefix = "";
+        std::string typeSuffix = "";
+
+        if (IsInnerType(parameter.type, type.innerTypes))
+        {
+            typePrefix += type.name.name + "::";
+            typeSuffix += "T";
+        }
+
+        stream
+            << "<"
+            << typePrefix << ResolveType(parameter.type, false) << typeSuffix
+            << ">(objNode, \""
+            << parameter.name.name
+            << "\", "
+            << ResolveType(parameter.type, true)
+            << "FromXml);"
+            << '\n';
+    }
+}
+
+static void GenerateWriteExtended(
+    std::ostream& stream,
+    const ExtendedType& type,
+    const Options& options,
+    const Definition& definition)
+{
+    if (type.base.has_value())
+    {
+        stream
+            << "    "
+            << ResolveType(type.base.value(), true)
+            << "ToXml(doc, objNode);"
+            << '\n';
+    }
+
+    for (const auto parameter : type.parameters)
+    {/*
         stream
             << "    "
             << "obj."
@@ -104,7 +240,7 @@ static void GenerateParseExtended(
                 stream << "soaplib::getMandatory";
                 break;
             }
-        }
+        }*/
 
         std::string typePrefix = "";
         std::string typeSuffix = "";
@@ -114,7 +250,7 @@ static void GenerateParseExtended(
             typePrefix += type.name.name + "::";
             typeSuffix += "T";
         }
-
+/*
         stream
             << "<"
             << typePrefix << ResolveType(parameter.type, false) << typeSuffix
@@ -124,6 +260,7 @@ static void GenerateParseExtended(
             << ResolveType(parameter.type, true)
             << "FromXml);"
             << '\n';
+            */
     }
 }
 
@@ -246,6 +383,56 @@ void GenerateParser(
     stream << "    " << parameterType << " obj;" << '\n';
     stream << "    " << type.name.name << "FromXml(objNode, obj);" << '\n';
     stream << "    " << "return obj;" << '\n';
+    stream << "}" << '\n';
+    stream << '\n';
+
+    if (isStatic)
+    {
+        stream << "static ";
+    }
+
+    stream << "void " << type.name.name << "ToXml(" << '\n';
+    stream << "    " << "xml::Document& doc," << '\n';
+    //stream << "    " << "xml::Node& parentNode," << '\n';
+    //stream << "    " << "const " << parameterType << "& obj)" << '\n';
+    stream << "    " << "xml::Node& parentNode)" << '\n';
+    stream << "{" << '\n';
+    stream << "    "
+           << "auto objNode = soaplib::addChild(doc, parentNode, "
+           << "\""
+           << type.name.name
+           << "\", \""
+           << type.name.nsHref
+           << "\", \""
+           << type.name.nsPrefix
+           << "\");"
+           << '\n';
+    switch (type.kind)
+    {
+        case Type::Enum:
+        {
+            const auto enumType = reinterpret_cast<const EnumType*>(&type);
+            break;
+        }
+
+        case Type::Basic:
+        {
+            const auto basicType = reinterpret_cast<const BasicType*>(&type);
+            break;
+        }
+
+        case Type::Extended:
+        {
+            const auto extendedType = reinterpret_cast<const ExtendedType*>(&type);
+            break;
+        }
+
+        default:
+        {
+            std::cerr << "type kind " << type.kind << " not implemented\n";
+            break;
+        }
+    }
     stream << "}" << '\n';
     stream << '\n';
 }

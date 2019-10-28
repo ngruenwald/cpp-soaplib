@@ -21,6 +21,8 @@ set(
   genTypeHeader.hpp
   genTypeImpl.cpp
   genTypeImpl.hpp
+  genCMakeLists.cpp
+  genCMakeLists.hpp
 )
 
 add_library(${TARGET} STATIC ${SOURCES})

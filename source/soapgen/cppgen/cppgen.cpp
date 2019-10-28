@@ -9,6 +9,7 @@
 #include "genTypeImpl.hpp"
 #include "genServiceHeader.hpp"
 #include "genServiceImpl.hpp"
+#include "genCMakeLists.hpp"
 
 namespace cppgen {
 
@@ -136,6 +137,30 @@ void GenerateTypes(
     }
 }
 
+//
+// CMake
+//
+
+void GenerateCMake(
+    const Options& options,
+    const Definition& definition)
+{
+    const auto path = GetFilePath("CMakeLists.txt", options, false);
+
+    std::ofstream file(path);
+    if (!file.is_open())
+    {
+        throw std::runtime_error("could not open output file " + path.string());
+    }
+
+    std::cout << "  cmake:  " << path << std::endl;
+    cmake::GenerateCMakeLists(file, options, definition);
+}
+
+//
+//
+//
+
 void Generate(
     const Options& options,
     const Definition& definition)
@@ -145,6 +170,8 @@ void Generate(
     GenerateServices(options, definition);
 
     GenerateTypes(options, definition);
+
+    GenerateCMake(options, definition);
 }
 
 } // namespace cppgen

@@ -112,21 +112,17 @@ add_library(
 target_link_libraries(
   ${target}
   PUBLIC
-  commsys::xmlwrp
-  Threads::Threads
-)
-
-target_link_libraries(
-  ${target}
-  PRIVATE
-  httplib
+    commsys::xmlwrp
+    Threads::Threads
+#  PRIVATE
+#    httplib
 )
 
 target_include_directories(
   ${target}
   PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>
-  $<INSTALL_INTERFACE:${HEADER_INSTALL_PATH}>
+  $<INSTALL_INTERFACE:${HEADER_INSTALL_ROOT}>
 )
 
 # fixme
@@ -164,6 +160,27 @@ install(
   RUNTIME DESTINATION ${LIBRARY_INSTALL_PATH}
   LIBRARY DESTINATION ${LIBRARY_INSTALL_PATH}
   ARCHIVE DESTINATION ${LIBRARY_INSTALL_PATH}
+)
+
+install(
+  FILES
+    soapClient.hpp
+    soapException.hpp
+    soapService.hpp
+    basicTypes.hpp
+    parseHelper.hpp
+  DESTINATION
+    ${HEADER_INSTALL_PATH}
+)
+
+install(
+  FILES
+    types/uuid.hpp
+    types/base64.h
+    types/timestamp.hpp
+    types/duration.hpp
+  DESTINATION
+    ${HEADER_INSTALL_PATH}/types
 )
 
 #
