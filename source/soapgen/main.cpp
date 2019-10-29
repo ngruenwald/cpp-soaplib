@@ -86,6 +86,7 @@ int main(int argc, const char** argv)
     if (!definition)
     {
         std::cerr << "could not load wsdl" << '\n';
+        return -1;
     }
 
     cppgen::Generate(config->cpp, *definition);
