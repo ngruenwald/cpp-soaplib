@@ -124,8 +124,15 @@ Operation LoadOperation(
     auto inputNode = operationNode.GetChild("input");
     operation.input = LoadInput(inputNode);
 
-    auto outputNode = operationNode.GetChild("output");
-    operation.output = LoadOutput(outputNode);
+    try
+    {
+        auto outputNode = operationNode.GetChild("output");
+        operation.output = LoadOutput(outputNode);
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << "operation " << operation.name.name << " has no output" << '\n';
+    }
 
     return operation;
 }

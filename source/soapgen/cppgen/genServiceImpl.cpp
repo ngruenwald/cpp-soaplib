@@ -68,10 +68,22 @@ void GenerateImplementation(
             const auto& soapAction = operation.input.action.name;
 
             auto inputType = getMessagePartNames(operation.input.message, definition)[0];
-            auto outputType = getMessagePartNames(operation.output.message, definition)[0];
+
+            Name outputType;
+            if (!operation.output.message.name.empty())
+            {
+                outputType = getMessagePartNames(operation.output.message, definition)[0];
+            }
+
+            auto _nspref = nspref;
+
+            if (IsNativeType(outputType))
+            {
+                _nspref = "";
+            }
 
             stream
-                << nspref
+                << _nspref
                 << ResolveType(outputType)
                 << " "
                 << service.name.name
@@ -92,13 +104,16 @@ void GenerateImplementation(
             stream << "    xml::Document request;" << '\n';
             stream << "    auto body = CreateEnvelope(request, \"" << soapAction << "\");" << '\n';
             //stream << "    AddChild(request, body, \"" << ResolveType(inputType) << "\", \"t\");" << '\n';
-            stream << "    " << ResolveType(inputType) << "ToXml(request, body);" << '\n';
+            stream << "    " << ResolveType(inputType) << "ToXml(input, request, body, true);" << '\n';
             stream << '\n';
             stream << "    auto response = Call(request);" << '\n';
             stream << "    auto envelope = response->GetRootNode();" << '\n';
             stream << "    auto operation = envelope.GetChild(\"Body\").GetChild(\"" << ResolveType(outputType) << "\");" << '\n';
             stream << '\n';
-            stream << "    return " << nspref << ResolveType(outputType) << "FromXml(operation);" << '\n';
+            if (ResolveType(outputType) != "void")
+            {
+                stream << "    return " << nspref << ResolveType(outputType) << "FromXml(operation);" << '\n';
+            }
             stream << "}" << '\n';
 
             stream << '\n';

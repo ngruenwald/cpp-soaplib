@@ -12,4 +12,7 @@ std::string ResolveType(
     const Name& name,
     bool stripNamespace = false);
 
+std::string FormatParameterName(
+    const std::string& name);
+
 };

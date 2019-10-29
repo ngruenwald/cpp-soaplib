@@ -3,6 +3,8 @@
 #include "typeMap.hpp"
 #include "utils.hpp"
 
+#include <iostream>
+
 namespace cppgen {
 namespace type {
 
@@ -62,7 +64,7 @@ static void GenerateTypeHeaderET(
         nspref += ns + "::";
     }
 
-    stream << indent << "struct " << typePrefix << type.name.name << typeSuffix << '\n';
+    stream << indent << "struct " << typePrefix << ResolveType(type.name, true) << typeSuffix << '\n';
 
     if (type.base.has_value())
     {
@@ -78,23 +80,23 @@ static void GenerateTypeHeaderET(
             options,
             definition,
             {},
-            "T"
+            options.innerTypeSuffix
         );
     }
     for (const auto& parameter : type.parameters)
     {
+        auto parameterName = FormatParameterName(parameter.name.name);
         auto parameterType = ResolveType(parameter.type);
-
         bool usePointer = IsPointerType(parameter.name, options);
 
         if (!IsNativeType(parameter.type))
         {
-            parameterType = typePrefix + parameterType + typeSuffix;
+            parameterType = typePrefix + parameterType;// + typeSuffix;
         }
 
         if (IsInnerType(parameter.type, type.innerTypes))
         {
-            parameterType += "T";
+            parameterType += options.innerTypeSuffix;
         }
 
         switch (parameter.kind)
@@ -114,7 +116,7 @@ static void GenerateTypeHeaderET(
                 stream
                     << parameterType
                     << " "
-                    << parameter.name.name
+                    << parameterName
                     << ";" << '\n';
                 break;
             }
@@ -135,7 +137,7 @@ static void GenerateTypeHeaderET(
                 stream
                     << parameterType << ">"
                     << " "
-                    << parameter.name.name
+                    << parameterName
                     << ";" << '\n';
                 break;
             }
@@ -164,7 +166,7 @@ static void GenerateTypeHeaderET(
                 stream
                     << parameterType << ">"
                     << " "
-                    << parameter.name.name
+                    << parameterName
                     << ";" << '\n';
                 break;
             }
@@ -202,7 +204,7 @@ static void GenerateTypeHeaderET(
                 }
                 stream
                     << " "
-                    << parameter.name.name
+                    << parameterName
                     << ";" << '\n';
                 break;
             }
@@ -222,7 +224,7 @@ static void GenerateTypeHeaderB(
 {
     const std::string indent(indentSize, ' ');
 
-    stream << indent << "struct " << type.name.name << '\n';
+    stream << indent << "struct " << typePrefix << ResolveType(type.name, true) << typeSuffix << '\n';
     if (type.base.has_value())
     {
         stream
@@ -249,7 +251,7 @@ static void GenerateTypeHeaderE(
     stream
         << indent
         << "enum class "
-        << typePrefix << type.name.name << typeSuffix
+        << typePrefix << typePrefix << ResolveType(type.name, true) << typeSuffix << typeSuffix
         << '\n';
 
     stream << indent << "{" << '\n';
@@ -430,7 +432,9 @@ void GenerateHeader(
     const Options& options,
     const Definition& definition)
 {
-    stream << "// " << type.name.name << '\n';
+    auto typeName = ResolveType(type.name, true);
+
+    stream << "// " << typeName << '\n';
     stream << "// " << now() << '\n';
     stream << '\n';
     stream << "#pragma once" << '\n';
@@ -459,7 +463,7 @@ void GenerateHeader(
     {
         stream
             << "#include \""
-            << /*definition.name.name + "_" +*/ baseType.value().name + ".hpp"
+            << /*definition.name.name + "_" +*/ ResolveType(baseType.value(), true) + ".hpp"
             << "\""
             << '\n';
         stream << '\n';
@@ -484,22 +488,22 @@ void GenerateHeader(
 
     stream << '\n';
 
-    stream << "void " << type.name.name << "FromXml(" << '\n';
+    stream << "void " << typeName << "FromXml(" << '\n';
     stream << "    " << "const xml::Node& objNode," << '\n';
     stream << "    " << ResolveType(type.name) << "& obj);" << '\n';
 
     stream << '\n';
 
-    stream << ResolveType(type.name) << " " << type.name.name << "FromXml(" << '\n';
+    stream << typeName << " " << typeName << "FromXml(" << '\n';
     stream << "    " << "const xml::Node& objNode);" << '\n';
 
     stream << '\n';
 
-    stream << "void " << type.name.name << "ToXml(" << '\n';
+    stream << "void " << typeName << "ToXml(" << '\n';
+    stream << "    " << "const " << typeName << "& obj," << '\n';
     stream << "    " << "xml::Document& doc," << '\n';
-    //stream << "    " << "xml::Node& parentNode," << '\n';
-    //stream << "    " << "const " << ResolveType(type.name) << "& obj);" << '\n';
-    stream << "    " << "xml::Node& parentNode);" << '\n';
+    stream << "    " << "xml::Node& parentNode, " << '\n';
+    stream << "    " << "bool createNode);" << '\n';
 
     stream << '\n';
 

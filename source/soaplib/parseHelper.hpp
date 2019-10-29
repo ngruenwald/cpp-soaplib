@@ -9,6 +9,25 @@
 
 namespace soaplib {
 
+inline bool isValidNode(
+    const xml::Node& node)
+{
+    return node.GetXmlNode() != nullptr;
+}
+
+inline bool isNil(
+    const xml::Node& node)
+{
+    try
+    {
+        return node.GetBoolProp("s:nil"); // TODO: use correct namespace
+    }
+    catch(const xml::Exception&)
+    {
+        return false;
+    }
+}
+
 template<typename T>
 T getMandatory(
     const xml::Node& parentNode,
@@ -26,9 +45,21 @@ std::shared_ptr<T> getPointer(
 {
     try
     {
-        return std::make_shared<T>(fromXml(parentNode.GetChild(childName.c_str())));
+        auto node = parentNode.GetChild(childName.c_str());
+
+        if (!isValidNode(node))
+        {
+            return {};
+        }
+
+        if (isNil(node))
+        {
+            return {};
+        }
+
+        return std::make_shared<T>(fromXml(node));
     }
-    catch (const xml::Exception&)
+    catch (const std::exception&)
     {
         return {};
     }
@@ -42,11 +73,22 @@ std::optional<T> getOptional(
 {
     try
     {
-        return std::optional<T>(fromXml(parentNode.GetChild(childName.c_str())));
+        auto node = parentNode.GetChild(childName.c_str());
+
+        if (!isValidNode(node))
+        {
+            return {};
+        }
+
+        if (isNil(node))
+        {
+            return {};
+        }
+
+        return std::optional<T>(fromXml(node));
     }
-    catch (const xml::Exception&)
+    catch (const std::exception&)
     {
-        return {};
     }
 }
 

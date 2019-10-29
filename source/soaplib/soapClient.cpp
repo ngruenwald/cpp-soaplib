@@ -29,7 +29,7 @@ std::shared_ptr<xml::Document> SoapClient::Send(
 	const std::string contentType = "application/soap+xml; charset=utf-8";
 	const std::string content = request.ToString();
 
-	std::cout << content << std::endl <<std::flush;
+//	std::cout << content << std::endl <<std::flush;
 
 	httplib::Client cli(host_.c_str(), port_, timeout_);
     cli.set_keep_alive_max_count(5);

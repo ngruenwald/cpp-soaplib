@@ -1,0 +1,14 @@
+<config>
+    <wsdl path="wsdl/UserManagementService.wsdl" />
+    <cpp>
+        <output path="_output//uws" append-ns="false" types-subfolder="types" />
+        <namespaces>
+            <namespace>admin</namespace>
+            <namespace>uws</namespace>
+        </namespaces>
+        <cmake namespace="admin" />
+        <pointer-types>
+            <param>Replacements</param>
+        </pointer-types>
+    </cpp>
+</config>

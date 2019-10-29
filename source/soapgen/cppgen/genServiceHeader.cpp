@@ -49,14 +49,17 @@ void GenerateHeader(
                     << '\n';
             }
 
-            const auto outputTypes = getMessagePartNames(operation.output.message, definition);
-            for (const auto& outputType : outputTypes)
+            if (!operation.output.action.name.empty())
             {
-                stream
-                    << "#include \"types/"
-                    << /*definition.name.name << "_" <<*/ ResolveType(outputType) << ".hpp"
-                    << "\""
-                    << '\n';
+                const auto outputTypes = getMessagePartNames(operation.output.message, definition);
+                for (const auto& outputType : outputTypes)
+                {
+                    stream
+                        << "#include \"types/"
+                        << /*definition.name.name << "_" <<*/ ResolveType(outputType) << ".hpp"
+                        << "\""
+                        << '\n';
+                }
             }
         }
     }
@@ -104,11 +107,22 @@ void GenerateHeader(
         for (const auto operation : portType->operations)
         {
             auto inputType = getMessagePartNames(operation.input.message, definition)[0];
-            auto outputType = getMessagePartNames(operation.output.message, definition)[0];
+            Name outputType;
+            if (!operation.output.message.name.empty())
+            {
+                outputType = getMessagePartNames(operation.output.message, definition)[0];
+            }
+
+            auto _nspref = nspref;
+
+            if (IsNativeType(outputType))
+            {
+                _nspref = "";
+            }
 
             stream
                 << "    "
-                << nspref
+                << _nspref
                 << ResolveType(outputType)
                 << " "
                 << operation.name.name

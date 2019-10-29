@@ -29,6 +29,8 @@ std::map<std::string, std::string> NativeTypes =
     { "unsignedLong",   "std::uint64_t"      },
     { "Id",             "long"               },
     { "Ref",            "long"               },
+    { "anyType",        "std::string"        },
+    { "",               "void"               },
 };
 
 
@@ -44,6 +46,8 @@ std::string ResolveType(
 {
     auto it = NativeTypes.find(name.name);
     auto tp = it == NativeTypes.end() ? name.name : it->second;
+
+    std::replace(tp.begin(), tp.end(), '.', '_');
 
 #ifdef REPLACE
     if (stripNamespace)
@@ -67,6 +71,14 @@ std::string ResolveType(
 
     return tp.substr(idx + 2);
 #endif
+}
+
+std::string FormatParameterName(
+    const std::string& name)
+{
+    std::string cppName(name);
+    cppName[0] = std::toupper(cppName[0]);
+    return cppName;
 }
 
 } // namespace cppgen

@@ -14,6 +14,8 @@ struct Options
     std::string cmakeNamespace;
 
     std::vector<std::string> pointerTypes;
+
+    std::string innerTypeSuffix = "T";
 };
 
 } // namespace cppgen

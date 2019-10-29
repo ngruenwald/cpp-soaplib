@@ -105,10 +105,12 @@ static void GenerateParseExtended(
 
     for (const auto parameter : type.parameters)
     {
+        std::string parameterName = FormatParameterName(parameter.name.name);
+
         stream
             << "    "
             << "obj."
-            << parameter.name.name
+            << parameterName
             << " = ";
 
         bool usePointer = IsPointerType(parameter.name, options);
@@ -169,14 +171,14 @@ static void GenerateParseExtended(
         if (IsInnerType(parameter.type, type.innerTypes))
         {
             typePrefix += type.name.name + "::";
-            typeSuffix += "T";
+            typeSuffix += options.innerTypeSuffix;
         }
 
         stream
             << "<"
             << typePrefix << ResolveType(parameter.type, false) << typeSuffix
             << ">(objNode, \""
-            << parameter.name.name
+            << parameterName
             << "\", "
             << ResolveType(parameter.type, true)
             << "FromXml);"
@@ -195,16 +197,18 @@ static void GenerateWriteExtended(
         stream
             << "    "
             << ResolveType(type.base.value(), true)
-            << "ToXml(doc, objNode);"
+            << "ToXml(obj, doc, objNode, false);"
             << '\n';
     }
 
     for (const auto parameter : type.parameters)
     {/*
+        auto parameterName = FormatParameterName(parameter.name.name);
+
         stream
             << "    "
             << "obj."
-            << parameter.name.name
+            << parameterName
             << " = ";
 
         switch (parameter.kind)
@@ -248,14 +252,14 @@ static void GenerateWriteExtended(
         if (IsInnerType(parameter.type, type.innerTypes))
         {
             typePrefix += type.name.name + "::";
-            typeSuffix += "T";
+            typeSuffix += options.innerTypeSuffix;
         }
 /*
         stream
             << "<"
             << typePrefix << ResolveType(parameter.type, false) << typeSuffix
             << ">(objNode, \""
-            << parameter.name.name
+            << parameterName
             << "\", "
             << ResolveType(parameter.type, true)
             << "FromXml);"
@@ -328,14 +332,15 @@ void GenerateParser(
         }
     }
 
-    auto parameterType = typePrefix + ResolveType(type.name) + typeSuffix;
+    auto typeName = ResolveType(type.name);
+    auto parameterType = typePrefix + typeName + typeSuffix;
 
     if (isStatic)
     {
         stream << "static ";
     }
 
-    stream << "void " << type.name.name << "FromXml(" << '\n';
+    stream << "void " << typeName << "FromXml(" << '\n';
     stream << "    " << "const xml::Node& objNode," << '\n';
     stream << "    " << parameterType << "& obj)" << '\n';
     stream << "{" << '\n';
@@ -377,53 +382,217 @@ void GenerateParser(
         stream << "static ";
     }
 
-    stream << parameterType << " " << type.name.name << "FromXml(" << '\n';
+    stream << parameterType << " " << typeName << "FromXml(" << '\n';
     stream << "    " << "const xml::Node& objNode)" << '\n';
     stream << "{" << '\n';
     stream << "    " << parameterType << " obj;" << '\n';
-    stream << "    " << type.name.name << "FromXml(objNode, obj);" << '\n';
+    stream << "    " << typeName << "FromXml(objNode, obj);" << '\n';
     stream << "    " << "return obj;" << '\n';
     stream << "}" << '\n';
     stream << '\n';
 
-    if (isStatic)
-    {
-        stream << "static ";
-    }
 
-    stream << "void " << type.name.name << "ToXml(" << '\n';
+    stream << "static void _" << typeName << "ToXml(" << '\n';
+    stream << "    " << "const " << parameterType << "& obj," << '\n';
     stream << "    " << "xml::Document& doc," << '\n';
-    //stream << "    " << "xml::Node& parentNode," << '\n';
-    //stream << "    " << "const " << parameterType << "& obj)" << '\n';
-    stream << "    " << "xml::Node& parentNode)" << '\n';
+    stream << "    " << "xml::Node& objNode)" << '\n';
     stream << "{" << '\n';
-    stream << "    "
-           << "auto objNode = soaplib::addChild(doc, parentNode, "
-           << "\""
-           << type.name.name
-           << "\", \""
-           << type.name.nsHref
-           << "\", \""
-           << type.name.nsPrefix
-           << "\");"
-           << '\n';
+
+    // TODO
     switch (type.kind)
     {
         case Type::Enum:
         {
             const auto enumType = reinterpret_cast<const EnumType*>(&type);
+            stream << "    // TODO: enum type not implemented" << '\n';
             break;
         }
 
         case Type::Basic:
         {
             const auto basicType = reinterpret_cast<const BasicType*>(&type);
+            stream << "    // TODO: basic type not implemented" << '\n';
             break;
         }
 
         case Type::Extended:
         {
             const auto extendedType = reinterpret_cast<const ExtendedType*>(&type);
+
+            for (const auto& parameter : extendedType->parameters)
+            {
+                auto parameterName = FormatParameterName(parameter.name.name);
+                auto parameterNameXml = parameter.name.name;
+                bool usePointer = IsPointerType(parameter.name, options);
+
+                switch (parameter.kind)
+                {
+                    case Parameter::Mandatory:
+                    {
+                        stream << "    {" << '\n';
+                        stream << "        auto pn = soaplib::addChild(doc, objNode, \""
+                               << parameterNameXml
+                               << "\", \"" << parameter.name.nsHref
+                               << "\", \"" << parameter.name.nsPrefix
+                               << "\");" << '\n';
+                        if (IsNativeType(parameter.type))
+                        {
+                            stream << "       "
+                                   << ResolveType(parameter.type, true)
+                                   << "ToXml(pn, obj."
+                                   << parameterName
+                                   << ");"
+                                   << '\n';
+                        }
+                        else
+                        {
+                            stream << "        "
+                                   << ResolveType(parameter.type, true)
+                                   << "ToXml(obj."
+                                   << parameterName
+                                   << ", doc, pn, false);"
+                                   << '\n';
+                        }
+                        stream << "    }" << '\n';
+                        break;
+                    }
+
+                    case Parameter::Optional:
+                    {
+                        if (usePointer)
+                        {
+                            stream << "    if (obj." << parameterName << ")" << '\n';
+                            stream << "    {" << '\n';
+                            stream << "        auto pn = soaplib::addChild(doc, objNode, \""
+                                   << parameterNameXml
+                                   << "\", \"" << parameter.name.nsHref
+                                   << "\", \"" << parameter.name.nsPrefix
+                                   << "\");" << '\n';
+                            if (IsNativeType(parameter.type))
+                            {
+                                stream << "        " << ResolveType(parameter.type, true)
+                                       << "ToXml(pn, *obj." << parameterName << ");"
+                                       << '\n';
+                            }
+                            else
+                            {
+                                stream << "        " << ResolveType(parameter.type, true)
+                                    << "ToXml(*obj."
+                                    << parameterName
+                                    << ", doc, pn, false);"
+                                    << '\n';
+                            }
+                            stream << "    }" << '\n';
+                        }
+                        else
+                        {
+                            stream << "    if (obj." << parameterName << ".has_value())" << '\n';
+                            stream << "    {" << '\n';
+                            stream << "        auto pn = soaplib::addChild(doc, objNode, \""
+                                << parameterNameXml
+                                << "\", \"" << parameter.name.nsHref
+                                << "\", \"" << parameter.name.nsPrefix
+                                << "\");" << '\n';
+                            if (IsNativeType(parameter.type))
+                            {
+                                stream << "        " << ResolveType(parameter.type, true)
+                                       << "ToXml(pn, obj." << parameterName << ".value());"
+                                       << '\n';
+                            }
+                            else
+                            {
+                                stream << "        " << ResolveType(parameter.type, true)
+                                       << "ToXml(obj."
+                                       << parameterName
+                                       << ".value(), doc, pn, false);"
+                                       << '\n';
+                            }
+                            stream << "    }" << '\n';
+                        }
+                        break;
+                    }
+
+                    case Parameter::Pointer:
+                    {
+                        stream << "    if (obj." << parameterName << ")" << '\n';
+                        stream << "    {" << '\n';
+                        stream << "        auto pn = soaplib::addChild(doc, objNode, \""
+                               << parameterNameXml
+                               << "\", \"" << parameter.name.nsHref
+                               << "\", \"" << parameter.name.nsPrefix
+                               << "\");" << '\n';
+                        if (IsNativeType(parameter.type))
+                        {
+                            stream << "        " << ResolveType(parameter.type, true)
+                                   << "ToXml(pn, *obj." << parameterName << ");"
+                                   << '\n';
+                        }
+                        else
+                        {
+                            stream << "        " << ResolveType(parameter.type, true)
+                                   << "ToXml(*obj."
+                                   << parameterName
+                                   << ", doc, pn, false);"
+                                   << '\n';
+                        }
+                        stream << "    }" << '\n';
+                        break;
+                    }
+
+                    case Parameter::Multiple:
+                    {
+                        if (usePointer)
+                        {
+                            stream << "    for (const auto& entry : obj." << parameterName << ")" << '\n';
+                            stream << "    {" << '\n';
+                            stream << "        if (entry)" << '\n';
+                            stream << "        {" << '\n';
+                            stream << "            auto pn = soaplib::addChild(doc, objNode, \""
+                                << parameterNameXml
+                                << "\", \"" << parameter.name.nsHref
+                                << "\", \"" << parameter.name.nsPrefix
+                                << "\");" << '\n';
+                            if (IsNativeType(parameter.type))
+                            {
+                                stream << "            " << ResolveType(parameter.type, true)
+                                       << "ToXml(pn, *entry);"
+                                       << '\n';
+                            }
+                            else
+                            {
+                                stream << "            " << ResolveType(parameter.type, true)
+                                       << "ToXml(*entry, doc, pn, false);" << '\n';
+                            }
+                            stream << "        }" << '\n';
+                            stream << "    }" << '\n';
+                        }
+                        else
+                        {
+                            stream << "    for (const auto& entry : obj." << parameterName << ")" << '\n';
+                            stream << "    {" << '\n';
+                            stream << "        auto pn = soaplib::addChild(doc, objNode, \""
+                                << parameterNameXml
+                                << "\", \"" << parameter.name.nsHref
+                                << "\", \"" << parameter.name.nsPrefix
+                                << "\");" << '\n';
+                            if (IsNativeType(parameter.type))
+                            {
+                                stream << "        " << ResolveType(parameter.type, true)
+                                       << "ToXml(pn, entry);"
+                                       << '\n';
+                            }
+                            else
+                            {
+                                stream << "        " << ResolveType(parameter.type, true)
+                                       << "ToXml(entry, doc, pn, false);" << '\n';
+                            }
+                            stream << "    }" << '\n';
+                        }
+                        break;
+                    }
+                }
+            }
+
             break;
         }
 
@@ -433,6 +602,39 @@ void GenerateParser(
             break;
         }
     }
+
+    stream << "}" << '\n';
+    stream << '\n';
+
+    if (isStatic)
+    {
+        stream << "static ";
+    }
+
+    stream << "void " << typeName << "ToXml(" << '\n';
+    stream << "    " << "const " << parameterType << "& obj," << '\n';
+    stream << "    " << "xml::Document& doc," << '\n';
+    stream << "    " << "xml::Node& parentNode, " << '\n';
+    stream << "    " << "bool createNode)" << '\n';
+    stream << "{" << '\n';
+    stream << "    if (createNode)" << '\n';
+    stream << "    {" << '\n';
+    stream << "        "
+           << "auto objNode = soaplib::addChild(doc, parentNode, "
+           << "\""
+           << type.name.name
+           << "\", \""
+           << type.name.nsHref
+           << "\", \""
+           << type.name.nsPrefix
+           << "\");"
+           << '\n';
+    stream << "        _" << typeName << "ToXml(obj, doc, objNode);" << '\n';
+    stream << "    }" << '\n';
+    stream << "    else" << '\n';
+    stream << "    {" << '\n';
+    stream << "        _" << typeName << "ToXml(obj, doc, parentNode);" << '\n';
+    stream << "    }" << '\n';
     stream << "}" << '\n';
     stream << '\n';
 }
@@ -443,10 +645,12 @@ void GenerateImplementation(
     const Options& options,
     const Definition& definition)
 {
-    stream << "// " << type.name.name << '\n';
+    auto typeName = ResolveType(type.name);
+
+    stream << "// " << typeName << '\n';
     stream << "// " << now() << '\n';
     stream << '\n';
-    stream << "#include \"" << /*definition.name.name + "_" +*/ type.name.name << ".hpp\"" << '\n';
+    stream << "#include \"" << /*definition.name.name + "_" +*/ typeName << ".hpp\"" << '\n';
     stream << '\n';
     stream << "#include <soaplib/parseHelper.hpp>" << '\n';
     stream << '\n';
