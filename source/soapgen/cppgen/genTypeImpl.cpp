@@ -44,7 +44,25 @@ static void GenerateParseEnum(
     const Options& options,
     const Definition& definition)
 {
-    std::cerr << "GenerateParseEnum not implemented" << '\n';
+    stream << "    auto s = stringFromXml(objNode);" << '\n';
+
+    bool elseIf = false;
+
+    for (const auto& enumeration : type.enumerations)
+    {
+        stream << "    ";
+        if (elseIf)
+        {
+            stream << "else ";
+        }
+        stream << "if (s == \"" << enumeration.text << "\")" << '\n';
+
+        stream << "    {" << '\n';
+        stream << "        obj = " << ResolveType(type.name) << "::" << enumeration.text << ";" << '\n';
+        stream << "    }" << '\n';
+
+        elseIf = true;
+    }
 }
 
 static void GenerateWriteEnum(
@@ -53,7 +71,25 @@ static void GenerateWriteEnum(
     const Options& options,
     const Definition& definition)
 {
-    std::cerr << "GenerateWriteEnum not implemented" << '\n';
+    stream << "    std::string s;" << '\n';
+    stream << "    switch (obj)" << '\n';
+    stream << "    {" << '\n';
+
+    std::string typeName = ResolveType(type.name);
+
+    for (const auto& enumeration : type.enumerations)
+    {
+        stream << "        case " << typeName << "::" << enumeration.text << ":" << '\n';
+        stream << "        {" << '\n';
+        stream << "            s = \"" << enumeration.text << "\";" << '\n';
+        stream << "            break;" << '\n';
+        stream << "        }" << '\n';
+    }
+
+    stream << "        default: break;" << '\n';
+
+    stream << "    }" << '\n';
+    stream << "    stringToXml(objNode, s);" << '\n';
 }
 
 static void GenerateParseBasic(
@@ -404,14 +440,14 @@ void GenerateParser(
         case Type::Enum:
         {
             const auto enumType = reinterpret_cast<const EnumType*>(&type);
-            stream << "    // TODO: enum type not implemented" << '\n';
+            GenerateWriteEnum(stream, *enumType, options, definition);
             break;
         }
 
         case Type::Basic:
         {
             const auto basicType = reinterpret_cast<const BasicType*>(&type);
-            stream << "    // TODO: basic type not implemented" << '\n';
+            GenerateWriteBasic(stream, *basicType, options, definition);
             break;
         }
 
