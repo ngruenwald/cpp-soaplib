@@ -19,10 +19,11 @@ void GenerateCMakeLists(
     stream << '\n';
 
     stream << "file(GLOB_RECURSE SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cpp)" << '\n';
-    stream << "file(GLOB_RECURSE HEADERS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.hpp)" << '\n';
+    stream << "file(GLOB MAIN_HEADERS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.hpp)" << '\n';
+    stream << "file(GLOB TYPE_HEADERS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} types/*.hpp)" << '\n';
     stream << '\n';
 
-    stream << "add_library(" << target << " STATIC ${SOURCES} ${HEADERS})" << '\n';
+    stream << "add_library(" << target << " STATIC ${SOURCES} ${MAIN_HEADERS} ${TYPE_HEADERS})" << '\n';
     if (!options.cmakeNamespace.empty())
     {
         stream << "add_library(" << options.cmakeNamespace << "::" << target << " ALIAS " << target << ")" << '\n';
@@ -34,6 +35,29 @@ void GenerateCMakeLists(
            << "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..> "
            << "$<INSTALL_INTERFACE:${HEADER_INSTALL_PATH}>"
            << ")" << '\n';
+
+    stream << '\n';
+
+    stream << "if(WIN32)" << '\n';
+    stream << "  set_target_properties(" << target << " PROPERTIES"
+           << " RELEASE_POSTFIFX \"_static_${COMPILER_POSTFIX}\""
+           << " RELWITHDEBINFO_POSTFIX \"_static_${COMPILER_POSTFIX}\""
+           << " DEBUG_POSTFIX \"_static_${COMPILER_POSTFIX}d\")" << '\n';
+    stream << "else()" << '\n';
+    stream << "  set_target_properties(" << target << " PROPERTIES"
+           << " RELEASE_POSTFIX \"-${PROJECT_VERSION}\""
+           << " RELWITHDEBINFO_POSTFIX \"-${PROJECT_VERSION}\""
+           << " DEBUG_POSTFIX \"-${PROJECT_VERSION}d\")" << '\n';
+    stream << "endif()" << '\n';
+
+    stream << '\n';
+
+    stream << "install(FILES ${MAIN_HEADERS} DESTINATION ${HEADER_INSTALL_PATH}/"
+           << target << ")" << '\n';
+    stream << "install(FILES ${TYPE_HEADERS} DESTINATION ${HEADER_INSTALL_PATH}/"
+           << target << "/types)" << '\n';
+
+    stream << '\n';
 }
 
 } // namespace cmake
