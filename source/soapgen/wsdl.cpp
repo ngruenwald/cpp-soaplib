@@ -696,7 +696,7 @@ TypePtr GetBaseType(
     const Definition& definition,
     bool checkNs)
 {
-    if (type)
+    if (!type)
     {
         return {};
     }
