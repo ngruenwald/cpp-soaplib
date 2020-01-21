@@ -23,7 +23,7 @@ SoapService::SoapService(
 void SoapService::SetRequestTimeout(
     int timeoutSeconds)
 {
-    client_.SetRequestTimeout(timeoutSeconds);
+    client_.SetReadTimeout(timeoutSeconds);
 }
 
 std::string SoapService::ns(

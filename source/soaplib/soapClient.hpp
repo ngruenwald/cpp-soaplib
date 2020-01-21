@@ -16,7 +16,7 @@ public:
 
 	~SoapClient();
 
-    void SetRequestTimeout(
+    void SetReadTimeout(
         int timeoutSeconds);
 
 	std::shared_ptr<xml::Document> Send(

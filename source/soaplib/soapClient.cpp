@@ -23,7 +23,7 @@ SoapClient::~SoapClient()
 {
 }
 
-void SoapClient::SetRequestTimeout(
+void SoapClient::SetReadTimeout(
     int timeoutSeconds)
 {
     timeout_ = timeoutSeconds;
@@ -45,7 +45,7 @@ std::shared_ptr<xml::Document> SoapClient::Send(
 //	std::cout << content << std::endl <<std::flush;
 
 	httplib::Client cli(host_.c_str(), port_);
-    cli.set_timeout_sec(timeoutSeconds);
+    cli.set_read_timeout(timeoutSeconds, 0);
     cli.set_keep_alive_max_count(5);
 	auto response = cli.Post(path_.c_str(), content, contentType.c_str());
 
