@@ -16,8 +16,15 @@ public:
 
 	~SoapClient();
 
+    void SetRequestTimeout(
+        int timeoutSeconds);
+
 	std::shared_ptr<xml::Document> Send(
 		const xml::Document& request);
+
+    std::shared_ptr<xml::Document> Send(
+        const xml::Document& request,
+        int timeoutSeconds);
 
 private:
 	void extractAddressParts(

@@ -20,6 +20,12 @@ SoapService::SoapService(
 	ParseServiceAddress(serviceAddress);
 }
 
+void SoapService::SetRequestTimeout(
+    int timeoutSeconds)
+{
+    client_.SetRequestTimeout(timeoutSeconds);
+}
+
 std::string SoapService::ns(
 	const std::string& ns,
 	const std::string& name)
@@ -31,6 +37,13 @@ std::shared_ptr<xml::Document> SoapService::Call(
 	const xml::Document& request)
 {
 	return client_.Send(request);
+}
+
+std::shared_ptr<xml::Document> SoapService::Call(
+	const xml::Document& request,
+    int timeoutSeconds)
+{
+	return client_.Send(request, timeoutSeconds);
 }
 
 xml::Node SoapService::CreateEnvelope(

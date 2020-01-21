@@ -22,6 +22,9 @@ public:
 		const std::string& serviceAddress,
 		const std::string& serviceNamespace);
 
+    void SetRequestTimeout(
+        int timeoutSeconds);
+
 protected:
 	std::string SopaNS() const { return "s"; }
 	std::string TempNS() const { return "t"; }
@@ -36,6 +39,10 @@ protected:
 protected:
 	std::shared_ptr<xml::Document> Call(
 		const xml::Document& request);
+
+    std::shared_ptr<xml::Document> Call(
+		const xml::Document& request,
+        int timeoutSeconds);
 
 	xml::Node CreateEnvelope(
 		xml::Document& doc,

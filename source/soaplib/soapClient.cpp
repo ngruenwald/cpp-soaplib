@@ -23,15 +23,29 @@ SoapClient::~SoapClient()
 {
 }
 
+void SoapClient::SetRequestTimeout(
+    int timeoutSeconds)
+{
+    timeout_ = timeoutSeconds;
+}
+
 std::shared_ptr<xml::Document> SoapClient::Send(
 	const xml::Document& request)
+{
+    return Send(request, timeout_);
+}
+
+std::shared_ptr<xml::Document> SoapClient::Send(
+	const xml::Document& request,
+    int timeoutSeconds)
 {
 	const std::string contentType = "application/soap+xml; charset=utf-8";
 	const std::string content = request.ToString();
 
 //	std::cout << content << std::endl <<std::flush;
 
-	httplib::Client cli(host_.c_str(), port_, timeout_);
+	httplib::Client cli(host_.c_str(), port_);
+    cli.set_timeout_sec(timeoutSeconds);
     cli.set_keep_alive_max_count(5);
 	auto response = cli.Post(path_.c_str(), content, contentType.c_str());
 
