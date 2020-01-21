@@ -1,12 +1,12 @@
 <config>
     <wsdl path="wsdl/DispatcherService.wsdl" />
     <cpp>
-        <output path="../source/dws" append-ns="false" types-subfolder="types" />
+        <output path="_output/dws" append-ns="false" types-subfolder="types" />
         <namespaces>
             <namespace>admin</namespace>
             <namespace>dws</namespace>
         </namespaces>
-        <cmake namespace="admin" />
+        <cmake namespace="admin" export="adminlib" />
         <pointer-types>
             <param>Replacements</param>
         </pointer-types>

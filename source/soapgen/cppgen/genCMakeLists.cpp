@@ -58,6 +58,19 @@ void GenerateCMakeLists(
            << target << "/types)" << '\n';
 
     stream << '\n';
+
+    if (!options.cmakeExport.empty())
+    {
+        stream << "install(\n"
+            << "  TARGETS " << target << "\n"
+            << "  EXPORT  " << options.cmakeExport << "\n"
+            << "  RUNTIME DESTINATION ${LIBRARY_INSTALL_PATH}\n"
+            << "  LIBRARY DESTINATION ${LIBRARY_INSTALL_PATH}\n"
+            << "  ARCHIVE DESTINATION ${LIBRARY_INSTALL_PATH}\n"
+            << ")\n";
+
+        stream << '\n';
+    }
 }
 
 } // namespace cmake

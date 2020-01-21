@@ -52,6 +52,7 @@ std::shared_ptr<Config> LoadConfig(
 
 
         XML_OPTIONAL(config->cpp.cmakeNamespace = doc.GetNode("/config/cpp/cmake").GetStringProp("namespace"));
+        XML_OPTIONAL(config->cpp.cmakeExport = doc.GetNode("/config/cpp/cmake").GetStringProp("export"));
 
         return config;
     }

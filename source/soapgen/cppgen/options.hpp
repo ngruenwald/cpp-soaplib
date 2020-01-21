@@ -11,7 +11,9 @@ struct Options
     bool appendNamespacesToPath = true;
     std::string typesSubfolder = "types";
     std::vector<std::string> namespaces;
+
     std::string cmakeNamespace;
+    std::string cmakeExport;
 
     std::vector<std::string> pointerTypes;
 

@@ -6,7 +6,7 @@
             <namespace>admin</namespace>
             <namespace>authentication</namespace>
         </namespaces>
-        <cmake namespace="admin" />
+        <cmake namespace="admin" export="adminlib" />
         <pointer-types>
             <param>Replacements</param>
         </pointer-types>
