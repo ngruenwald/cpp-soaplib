@@ -39,6 +39,7 @@ Timestamp::Timestamp(__time64_t tt, int ms)
 }
 #else
 Timestamp::Timestamp(time_t tt, int ms)
+    : empty_(false)
 {
 	gmtime_r(&tt, &tm_);
 	ms_ = ms;

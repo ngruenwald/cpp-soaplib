@@ -31,7 +31,7 @@ protected:
 
 	static std::string ns(
 		const std::string& ns,
-		const std::string name);
+		const std::string& name);
 
 protected:
 	std::shared_ptr<xml::Document> Call(
