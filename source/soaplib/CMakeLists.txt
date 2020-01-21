@@ -100,6 +100,7 @@ add_library(
   types/duration.hpp
   basicTypes.cpp
   basicTypes.hpp
+  parseHelper.cpp
   parseHelper.hpp
 )
 

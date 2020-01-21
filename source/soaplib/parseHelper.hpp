@@ -9,24 +9,11 @@
 
 namespace soaplib {
 
-inline bool isValidNode(
-    const xml::Node& node)
-{
-    return node.GetXmlNode() != nullptr;
-}
+bool isValidNode(
+    const xml::Node& node);
 
-inline bool isNil(
-    const xml::Node& node)
-{
-    try
-    {
-        return node.GetBoolProp("s:nil"); // TODO: use correct namespace
-    }
-    catch(const xml::Exception&)
-    {
-        return false;
-    }
-}
+bool isNil(
+    const xml::Node& node);
 
 template<typename T>
 T getMandatory(
@@ -135,55 +122,17 @@ std::shared_ptr<T> set(
     return std::make_shared<T>(value);
 }
 
-inline void addNamespace(
+void addNamespace(
 	xml::Document& doc,
 	xml::Node& node,
 	const std::string& href,
-	const std::string& prefix)
-{
-	auto np = node.GetXmlNode();
+	const std::string& prefix);
 
-    if (!prefix.empty())
-    {
-        auto ns = xmlSearchNs(doc.GetDoc(), np, BAD_CAST prefix.c_str());
-		if (ns)
-		{
-			xmlSetNs(np, ns);
-            return;
-		}
-    }
-
-	if (!href.empty())
-	{
-		auto ns = xmlSearchNsByHref(doc.GetDoc(), np, BAD_CAST href.c_str());
-        if (ns)
-        {
-            xmlSetNs(np, ns);
-            return;
-        }
-	}
-
-    if (href.empty() || prefix.empty())
-    {
-        return;
-    }
-
-	xmlSetNs(np, xmlNewNs(np, BAD_CAST href.c_str(), BAD_CAST prefix.c_str()));
-}
-
-inline xml::Node addChild(
+xml::Node addChild(
 	xml::Document& doc,
 	xml::Node& parentNode,
 	const std::string& name,
     const std::string& href,
-    const std::string& prefix)
-{
-	auto node = parentNode.AddChild(name.c_str());
-    if (!href.empty() || !prefix.empty())
-    {
-	    addNamespace(doc, node, href, prefix);
-    }
-	return node;
-}
+    const std::string& prefix);
 
 } // namespace soaplib
