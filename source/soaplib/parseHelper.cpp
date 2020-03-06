@@ -21,6 +21,20 @@ bool isNil(
     }
 }
 
+std::string generateRandomPrefix()
+{
+    const int length = 3;
+
+    std::string prefix;
+
+    for (int idx = 0; idx < length; ++idx)
+    {
+        prefix += 'a' + (char)(rand() % ('z' - 'a'));
+    }
+
+    return prefix;
+}
+
 void addNamespace(
 	xml::Document& doc,
 	xml::Node& node,
@@ -29,16 +43,27 @@ void addNamespace(
 {
 	auto np = node.GetXmlNode();
 
+    std::string pre = prefix;
+    bool prefixExists = false;
+
+    // search for a matching prefix
     if (!prefix.empty())
     {
         auto ns = xmlSearchNs(doc.GetDoc(), np, BAD_CAST prefix.c_str());
 		if (ns)
 		{
-			xmlSetNs(np, ns);
-            return;
+            prefixExists = true;
+
+            // only apply if the href is equal
+            if (href.compare((const char*)ns->href) == 0)
+            {
+			    xmlSetNs(np, ns);
+                return;
+            }
 		}
     }
 
+    // search for a matching href
 	if (!href.empty())
 	{
 		auto ns = xmlSearchNsByHref(doc.GetDoc(), np, BAD_CAST href.c_str());
@@ -54,7 +79,26 @@ void addNamespace(
         return;
     }
 
-	xmlSetNs(np, xmlNewNs(np, BAD_CAST href.c_str(), BAD_CAST prefix.c_str()));
+    while (prefixExists)
+    {
+        pre = generateRandomPrefix();
+        auto ns = xmlSearchNs(doc.GetDoc(), np, BAD_CAST pre.c_str());
+		if (ns)
+		{
+            // only apply if the href is equal
+            if (href.compare((const char*)ns->href) == 0)
+            {
+			    xmlSetNs(np, ns);
+                return;
+            }
+		}
+        else
+        {
+            prefixExists = false;
+        }
+    }
+
+	xmlSetNs(np, xmlNewNs(np, BAD_CAST href.c_str(), BAD_CAST pre.c_str()));
 }
 
 xml::Node addChild(
