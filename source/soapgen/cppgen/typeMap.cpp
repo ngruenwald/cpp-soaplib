@@ -33,6 +33,14 @@ std::map<std::string, std::string> NativeTypes =
     { "",               "void"               },
 };
 
+static bool _applyHacks = false;
+
+void SetApplyHacks(
+    bool applyHacks)
+{
+    _applyHacks = applyHacks;
+}
+
 
 bool IsNativeType(
     const Name& name)
@@ -72,6 +80,36 @@ std::string ResolveType(
     return tp.substr(idx + 2);
 #endif
 }
+
+std::string ResolveParamType(
+    const std::string& paramName,
+    const Name& name,
+    bool stripNamespace)
+{
+    auto type = ResolveType(name, stripNamespace);
+
+    if (!_applyHacks)
+    {
+        return type;
+    }
+
+    //
+    // ucip admin hack
+    //
+
+    if (type == "ListDCResponseBase")
+    {
+        auto idx = paramName.find("_GetListResult");
+
+        if (idx != std::string::npos)
+        {
+            type = paramName.substr(0, idx) + "DCResponse";
+        }
+    }
+
+    return type;
+}
+
 
 std::string FormatParameterName(
     const std::string& name)

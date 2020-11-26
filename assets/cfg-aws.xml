@@ -10,5 +10,6 @@
         <pointer-types>
             <param>Replacements</param>
         </pointer-types>
+        <hacks enable="true" />
     </cpp>
 </config>

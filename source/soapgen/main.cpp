@@ -54,6 +54,8 @@ std::shared_ptr<Config> LoadConfig(
         XML_OPTIONAL(config->cpp.cmakeNamespace = doc.GetNode("/config/cpp/cmake").GetStringProp("namespace"));
         XML_OPTIONAL(config->cpp.cmakeExport = doc.GetNode("/config/cpp/cmake").GetStringProp("export"));
 
+        XML_OPTIONAL(config->cpp.enableHacks = doc.GetNode("/config/cpp/hacks").GetBoolProp("enable"));
+
         return config;
     }
     catch(const std::exception& e)

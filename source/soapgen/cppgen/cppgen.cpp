@@ -166,6 +166,8 @@ void Generate(
     const Options& options,
     const Definition& definition)
 {
+    SetApplyHacks(options.enableHacks);
+
     GenerateFolders(options);
 
     GenerateServices(options, definition);

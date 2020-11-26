@@ -18,6 +18,8 @@ struct Options
     std::vector<std::string> pointerTypes;
 
     std::string innerTypeSuffix = "T";
+
+    bool enableHacks = false;
 };
 
 } // namespace cppgen
