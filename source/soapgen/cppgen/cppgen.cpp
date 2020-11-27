@@ -419,8 +419,6 @@ void Generate(
     const Options& options,
     /*const*/ Definition& definition)
 {
-    //SetApplyHacks(options.enableHacks);
-
     if (options.enableHacks)
     {
         // remove stuff that doesn't work

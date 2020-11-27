@@ -212,11 +212,11 @@ static void GenerateParseExtended(
 
         stream
             << "<"
-            << typePrefix << ResolveParamType(parameter.name.name, parameter.type, false) << typeSuffix
+            << typePrefix << ResolveType(parameter.type, false) << typeSuffix
             << ">(objNode, \""
             << parameterName
             << "\", "
-            << ResolveParamType(parameter.name.name, parameter.type, true)
+            << ResolveType(parameter.type, true)
             << "FromXml);"
             << '\n';
     }
@@ -334,7 +334,7 @@ static void GenerateIncludes(
             continue;
         }
 
-        const auto parameterType = ResolveParamType(parameter.name.name, parameter.type);
+        const auto parameterType = ResolveType(parameter.type);
 
         stream << "#include \"" << /*definition.name.name << "_" <<*/ parameterType << ".hpp\"" << '\n';
      }
@@ -537,7 +537,7 @@ void GenerateParser(
                             }
                             else
                             {
-                                stream << "        " << ResolveParamType(parameter.name.name, parameter.type, true)
+                                stream << "        " << ResolveType(parameter.type, true)
                                        << "ToXml(obj."
                                        << parameterName
                                        << ".value(), doc, pn, false);"
@@ -565,7 +565,7 @@ void GenerateParser(
                         }
                         else
                         {
-                            stream << "        " << ResolveParamType(parameter.name.name, parameter.type, true)
+                            stream << "        " << ResolveType(parameter.type, true)
                                    << "ToXml(*obj."
                                    << parameterName
                                    << ", doc, pn, false);"
@@ -596,7 +596,7 @@ void GenerateParser(
                             }
                             else
                             {
-                                stream << "            " << ResolveParamType(parameter.name.name, parameter.type, true)
+                                stream << "            " << ResolveType(parameter.type, true)
                                        << "ToXml(*entry, doc, pn, false);" << '\n';
                             }
                             stream << "        }" << '\n';
@@ -619,7 +619,7 @@ void GenerateParser(
                             }
                             else
                             {
-                                stream << "        " << ResolveParamType(parameter.name.name, parameter.type, true)
+                                stream << "        " << ResolveType(parameter.type, true)
                                        << "ToXml(entry, doc, pn, false);" << '\n';
                             }
                             stream << "    }" << '\n';

@@ -86,7 +86,7 @@ static void GenerateTypeHeaderET(
     for (const auto& parameter : type.parameters)
     {
         auto parameterName = FormatParameterName(parameter.name.name);
-        auto parameterType = ResolveParamType(parameter.name.name, parameter.type);
+        auto parameterType = ResolveType(parameter.type);
         bool usePointer = IsPointerType(parameter.name, options);
 
         if (!IsNativeType(parameter.type))
@@ -409,7 +409,7 @@ static void GenerateIncludes(
             continue;
         }
 
-        const auto parameterType = ResolveParamType(parameter.name.name, parameter.type);
+        const auto parameterType = ResolveType(parameter.type);
 
         /*
         if (parameter.kind != Parameter::Mandatory &&
