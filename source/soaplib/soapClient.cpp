@@ -23,6 +23,12 @@ SoapClient::~SoapClient()
 {
 }
 
+void SoapClient::EnableLogging(
+    bool enable)
+{
+    logging_ = enable;
+}
+
 void SoapClient::SetReadTimeout(
     int timeoutSeconds)
 {
@@ -42,7 +48,10 @@ std::shared_ptr<xml::Document> SoapClient::Send(
 	const std::string contentType = "application/soap+xml; charset=utf-8";
 	const std::string content = request.ToString();
 
-//	std::cout << content << std::endl <<std::flush;
+    if (logging_)
+    {
+        std::cout << content << std::endl << std::flush;
+    }
 
 	httplib::Client cli(host_.c_str(), port_);
     cli.set_read_timeout(timeoutSeconds, 0);
@@ -58,6 +67,11 @@ std::shared_ptr<xml::Document> SoapClient::Send(
 	{
 		throw SoapException("request was not successful: " + response->status);
 	}
+
+    if (logging_)
+    {
+        std::cout << response->body << std::endl << std::flush;
+    }
 
 	return std::make_shared<xml::Document>(
 		response->body.c_str(),

@@ -22,6 +22,9 @@ public:
 		const std::string& serviceAddress,
 		const std::string& serviceNamespace);
 
+    void EnableLogging(
+        bool enable);
+
     void SetRequestTimeout(
         int timeoutSeconds);
 

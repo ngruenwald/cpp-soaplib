@@ -20,6 +20,12 @@ SoapService::SoapService(
 	ParseServiceAddress(serviceAddress);
 }
 
+void SoapService::EnableLogging(
+    bool enable)
+{
+    client_.EnableLogging(enable);
+}
+
 void SoapService::SetRequestTimeout(
     int timeoutSeconds)
 {

@@ -16,6 +16,9 @@ public:
 
 	~SoapClient();
 
+    void EnableLogging(
+        bool enable);
+
     void SetReadTimeout(
         int timeoutSeconds);
 
@@ -35,6 +38,7 @@ private:
 	int port_;
 	std::string path_;
 	int timeout_;	// seconds
+    bool logging_ = false;
 
 };
 
