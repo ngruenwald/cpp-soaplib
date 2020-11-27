@@ -126,12 +126,19 @@ target_include_directories(
   $<INSTALL_INTERFACE:${HEADER_INSTALL_ROOT}>
 )
 
-# fixme
+# https://gitlab.kitware.com/cmake/cmake/-/issues/15415
 target_include_directories(
   ${target}
   PRIVATE
-  ${CMAKE_SOURCE_DIR}/contrib/libs/include
+  $<TARGET_PROPERTY:contrib-cpp-httplib,INTERFACE_INCLUDE_DIRECTORIES>
 )
+
+target_compile_definitions(
+  ${target}
+  PRIVATE
+  $<TARGET_PROPERTY:contrib-cpp-httplib,INTERFACE_COMPILE_DEFINITIONS>
+)
+
 
 if(WIN32)
   set_target_properties(
