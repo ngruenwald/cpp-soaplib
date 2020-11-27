@@ -11,5 +11,21 @@
             <param>Replacements</param>
         </pointer-types>
         <timestamp enable="false" />
+        <hacks enable="true">
+            <create-distinct-list-objects enable="true" />
+            <ignored-wsdl-types>
+                <operation name="SignalingType_GetList" />
+                <message name="IDispatcherService_SignalingType_GetList_InputMessage" />
+                <message name="IDispatcherService_SignalingType_GetList_OutputMessage" />
+                <type name="SignalingType_GetList" />
+                <type name="SignalingType_GetListResponse" />
+
+                <operation name="SignalingOnIncomingCall_GetList" />
+                <message name="IDispatcherService_SignalingOnIncomingCall_GetList_InputMessage" />
+                <message name="IDispatcherService_SignalingOnIncomingCall_GetList_OutputMessage" />
+                <type name="SignalingOnIncomingCall_GetList" />
+                <type name="SignalingOnIncomingCall_GetListResponse" />
+            </ignored-wsdl-types>
+        </hacks>
     </cpp>
 </config>

@@ -32,6 +32,8 @@ struct Type
     Name name;
 
     Type(Type::Kind k): kind(k) {}
+
+    virtual std::shared_ptr<Type> Clone() = 0;
 };
 
 typedef std::shared_ptr<Type> TypePtr;
@@ -62,6 +64,12 @@ struct BasicType : Type
     std::optional<Name> base;
 
     BasicType() : Type(Type::Basic) {}
+
+    std::shared_ptr<Type> Clone() override
+    {
+        auto clone = std::make_shared<BasicType>(*this);
+        return std::static_pointer_cast<Type>(clone);
+    }
 };
 
 struct ExtendedType : Type
@@ -71,6 +79,12 @@ struct ExtendedType : Type
     std::vector<TypePtr> innerTypes;
 
     ExtendedType() : Type(Type::Extended) {}
+
+    std::shared_ptr<Type> Clone() override
+    {
+        auto clone = std::make_shared<ExtendedType>(*this);
+        return std::static_pointer_cast<Type>(clone);
+    }
 };
 
 struct EnumType : Type
@@ -84,6 +98,12 @@ struct EnumType : Type
     std::vector<EnumType::Enumeration> enumerations;
 
     EnumType() : Type(Type::Enum) {}
+
+    std::shared_ptr<Type> Clone() override
+    {
+        auto clone = std::make_shared<EnumType>(*this);
+        return std::static_pointer_cast<Type>(clone);
+    }
 };
 
 

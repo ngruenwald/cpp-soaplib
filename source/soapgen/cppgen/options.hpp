@@ -20,7 +20,11 @@ struct Options
     std::string innerTypeSuffix = "T";
 
     bool writeTimestamp = true;
+
     bool enableHacks = false;
+    std::vector<std::string> ignoredOperations;
+    std::vector<std::string> ignoredMessages;
+    std::vector<std::string> ignoredTypes;
 };
 
 } // namespace cppgen

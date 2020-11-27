@@ -57,6 +57,40 @@ std::shared_ptr<Config> LoadConfig(
         XML_OPTIONAL(config->cpp.writeTimestamp = doc.GetNode("/config/cpp/timestamp").GetBoolProp("enable"));
 
         XML_OPTIONAL(config->cpp.enableHacks = doc.GetNode("/config/cpp/hacks").GetBoolProp("enable"));
+        try
+        {
+            auto tpNodes = doc.GetNodes("/config/cpp/hacks/ignored-wsdl-types/operation");
+            for (const auto& tpNode : tpNodes)
+            {
+                config->cpp.ignoredOperations.push_back(tpNode.GetStringProp("name"));
+            }
+        }
+        catch(const std::exception& e)
+        {
+        }
+        try
+        {
+            auto tpNodes = doc.GetNodes("/config/cpp/hacks/ignored-wsdl-types/message");
+            for (const auto& tpNode : tpNodes)
+            {
+                config->cpp.ignoredMessages.push_back(tpNode.GetStringProp("name"));
+            }
+        }
+        catch(const std::exception& e)
+        {
+        }
+        try
+        {
+            auto tpNodes = doc.GetNodes("/config/cpp/hacks/ignored-wsdl-types/type");
+            for (const auto& tpNode : tpNodes)
+            {
+                config->cpp.ignoredTypes.push_back(tpNode.GetStringProp("name"));
+            }
+        }
+        catch(const std::exception& e)
+        {
+        }
+
 
         return config;
     }

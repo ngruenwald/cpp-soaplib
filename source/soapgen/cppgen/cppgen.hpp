@@ -9,6 +9,6 @@ namespace cppgen {
 
 void Generate(
     const Options& options,
-    const Definition& definition);
+    /*const*/ Definition& definition);
 
 } // namespace cppgen

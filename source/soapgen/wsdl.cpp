@@ -1,12 +1,15 @@
 #include "wsdl.hpp"
 
 #include <iostream>
+#include <limits>
+
 #include <libxmlwrp.hpp>
 
 void LoadComplexType(
     ExtendedType& type,
     const xml::Node& complexTypeNode,
     const std::string& targetNamespace);
+
 
 std::string getNsPrefix(
     const xml::Node& node,
@@ -642,6 +645,8 @@ std::shared_ptr<Definition> LoadWsdl(
 
     return {};
 }
+
+
 #ifdef DEPCHECK
 bool NameCompare(
     const Name& a,
