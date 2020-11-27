@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 3.0)
 
-find_package(xmlwrp 3.0 REQUIRED)
-
 add_subdirectory(cppgen)
 
 add_executable(
@@ -20,11 +18,28 @@ target_link_libraries(
 target_link_libraries(
   soapgen
   PUBLIC
-  commsys::xmlwrp
+  xmlwrp::xmlwrp
+  LibXml2::LibXml2
+)
+
+target_link_libraries(
+  soapgen
+  PUBLIC
+  stdc++fs
 )
 
 set_target_properties(
   soapgen
   PROPERTIES
   RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
+)
+
+#
+# Install files
+#
+
+install(
+  TARGETS ${target}
+  EXPORT  soaplibTargets
+  RUNTIME DESTINATION bin
 )

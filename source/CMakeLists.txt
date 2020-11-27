@@ -1,7 +1,10 @@
 
 find_package(Threads REQUIRED)
-find_package(xmlwrp 3 REQUIRED)
-#find_package(httplib REQUIRED)
+#find_package(xmlwrp 3 REQUIRED)
+
+find_package(LibXml2 REQUIRED)
+commart_find_package(xmlwrp 3.3.0 REQUIRED COMMART)
+check_missing_libs()
 
 if(USE_OPENSSL)
   if(WIN32)

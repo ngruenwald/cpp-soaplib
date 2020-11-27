@@ -113,10 +113,9 @@ add_library(
 target_link_libraries(
   ${target}
   PUBLIC
-    commsys::xmlwrp
-    Threads::Threads
-#  PRIVATE
-#    httplib
+  xmlwrp::xmlwrp
+  LibXml2::LibXml2
+  Threads::Threads
 )
 
 target_include_directories(

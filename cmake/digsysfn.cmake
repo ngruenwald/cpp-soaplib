@@ -1,13 +1,186 @@
+cmake_minimum_required(VERSION 3.8)
+
 # @file   test_function.cmake
 # @date   15/08/17, 08-Oct-2015
 # @author ngruenwald, cgruber
 
-# Defines the format of the build info export [ JSON, HTML, TEMPL ]
-if (USE_CMAKEPP)
-  set(EXPORT_FORMAT TEMPL)
-else()
-  set(EXPORT_FORMAT HTML)
+if(NOT DEFINED DIGSYSFN_WINSANE)
+  # WINSANE... interpret it as you want.
+  #  * Disables leading zeros
+  set(DIGSYSFN_WINSANE FALSE)
 endif()
+
+# Defines the format of the build info export [ JSON, HTML ]
+set(EXPORT_FORMAT HTML)
+
+set(MSG_PREFIX "EF_CMAKE_MODULES: ")
+
+#
+# commart_find_package(<name> [version] [COMMART] [HDRONLY] [NOEXPORT]
+#                      [PATH path]
+#                      [TARGET target]
+#                      [HEADER_FILES file1 [file2 ...]
+#                      [LIBRARY_NAMES name1 [name2 ...])
+#
+function(commart_find_package name)
+  set(options COMMART HDRONLY NOEXPORT)
+  set(oneValueArgs PATH TARGET)
+  set(multiValueArgs HEADER_FILES LIBRARY_NAMES)
+  set(argPrefix ARG)
+  cmake_parse_arguments(${argPrefix} "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+  
+  set(version ${ARGV1})
+ 
+  if(COMMART IN_LIST ARGV)
+    # don't use find_package
+    message(TRACE "COMMART option set -- skipping find_package")
+  else()
+    # filter out commart args
+    # WARNING: this might break stuff (e.g. same value in different args)
+    
+    set(args ${ARGV})
+    
+    # remove options  
+    foreach(item ${options})
+      list(REMOVE_ITEM args ${item})
+    endforeach()
+    
+    # remove oneValueArgs
+    foreach(item ${oneValueArgs})
+      list(REMOVE_ITEM args ${item})
+      if(DEFINED ${argPrefix}_${item} AND NOT "${${argPrefix}_${item}}" STREQUAL "")
+        list(REMOVE_ITEM args ${${argPrefix}_${item}})
+      endif()
+    endforeach()
+    
+    # remove multiValueArgs
+    foreach(item ${multiValueArgs})
+      list(REMOVE_ITEM args ${item})
+      if(DEFINED ${argPrefix}_${item} AND NOT "${${argPrefix}_${item}}" STREQUAL "")
+        foreach(itemValue ${${argPrefix}_${item}})
+          list(REMOVE_ITEM args "${itemValue}")
+        endforeach()
+      endif()
+    endforeach()
+    
+    # forward to cmake's find_package
+    set(CMAKE_FIND_PACKAGE_SORT_ORDER_NATURAL)
+    set(CMAKE_FIND_PACKAGE_SORT_DIRECTION_DESC)
+    
+    if(DEFINED SEARCH_ROOTS AND NOT "${SEARCH_ROOTS}" STREQUAL "")
+      list(APPEND search_paths ${SEARCH_ROOTS})
+    endif()
+    if(DEFINED CMAKE_PREFIX_PATH AND NOT "${CMAKE_PREFIX_PATH}" STREQUAL "")
+      list(APPEND search_paths ${CMAKE_PREFIX_PATH})
+    endif()
+    if(NOT DEFINED search_paths OR "${search_paths}" STREQUAL "")
+      list(APPEND search_paths /opt/eurofunk/libraries)
+      list(APPEND search_paths /usr/local)
+      list(APPEND search_paths /usr)
+    endif()
+    
+    find_package(${args} QUIET PATHS ${search_paths} NO_DEFAULT_PATH)
+    find_package(${args} QUIET)
+    message(TRACE "find_package ${name}_FOUND: ${${name}_FOUND}")
+          
+    if(${${name}_FOUND})
+      if(NOT ${ARG_NOEXPORT})
+        _EXPORT_DEPENDENCY(${args})
+      endif()
+      
+      # try to extract the package version
+      if(DEFINED ${name}_VERSION)
+        set(pkg_version ${${name}_VERSION})
+      elseif(DEFINED ${name}_VERSION_STRING)
+        set(pkg_version ${${name}_VERSION_STRING})
+      else()
+        string(TOUPPER ${name} uname)
+        if(DEFINED ${uname}_VERSION)
+          set(pkg_version ${${uname}_VERSION})
+        elseif(DEFINED ${uname}_VERSION_STRING)
+          set(pkg_version ${${uname}_VERSION_STRING})
+        endif()
+      endif()
+
+      # build version info string
+      if("${pkg_version}" STREQUAL "${version}" OR "${pkg_version}" STREQUAL "")
+        set(version_info ${version})
+      elseif(NOT "${pkg_version}" STREQUAL "")
+        if("${version}" STREQUAL "")
+          set(version_info ${pkg_version})
+        else()
+          set(version_info "${pkg_version} (${version})")
+        endif()
+      endif()
+            
+      # print success message
+      message(STATUS "${MSG_PREFIX}using: ${name} ${version_info} (pkg)")
+      return()
+    endif()
+  endif()
+
+  # use our own lookup routines
+  
+  if(NOT DEFINED version)
+    message(FATAL_ERROR "${name} -- version is required")
+    return()
+  endif()
+  
+  commart_find_library(${ARGV})
+  
+  if(NOT ${ARG_NOEXPORT})
+    _EXPORT_COMMART_DEPENDENCY(${ARGV})
+  endif()
+  
+  set(DIGCOM_LIB_BINARIES "${DIGCOM_LIB_BINARIES}" PARENT_SCOPE)
+  set(DIGCOM_LIB_INCLUDES "${DIGCOM_LIB_INCLUDES}" PARENT_SCOPE)
+  set(DIGCOM_LIB_NOTFOUND "${DIGCOM_LIB_NOTFOUND}" PARENT_SCOPE)
+  set(DIGCOM_LIB_INFO     "${DIGCOM_LIB_INFO}"     PARENT_SCOPE)
+  set(DIGCOM_LIB_TARGETS  "${DIGCOM_LIB_TARGETS}"  PARENT_SCOPE)
+endfunction()
+
+macro(_EXPORT_DEPENDENCY args)
+  set(FIND_PACKAGE_DEPENDENCIES "${FIND_PACKAGE_DEPENDENCIES}\nfind_dependency(${args})" PARENT_SCOPE)
+endmacro()
+
+macro(_EXPORT_COMMART_DEPENDENCY args)
+  #set(FIND_COMMART_PACKAGE_DEPENDENCIES "${FIND_COMMART_PACKAGE_DEPENDENCIES}\nfind_commart_lib(${args})" PARENT_SCOPE)
+  list(GET args 0 name)
+  list(GET args 1 version)
+  set(
+    FIND_COMMART_PACKAGE_DEPENDENCIES 
+    "${FIND_COMMART_PACKAGE_DEPENDENCIES}\nmessage(DEBUG \"Dependency ${PROJECT_NAME} ${PROJECT_VERSION} requires ${name} ${version}\")" 
+    PARENT_SCOPE
+  )
+endmacro()
+
+#
+# commart_find_library(<name> <version> [HDRONLY]
+#                      [PATH path]
+#                      [HEADER_FILES file1 [file2 ...]
+#                      [LIBRARY_NAMES name1 [name2 ...]
+#                      [TARGET target])
+#
+function(commart_find_library name version)
+  set(options HDRONLY)
+  set(oneValueArgs PATH TARGET)
+  set(multiValueArgs HEADER_FILES LIBRARY_NAMES)
+  cmake_parse_arguments(ARG "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+  if(${ARG_HDRONLY})
+    set(type "hdronly")
+  else()
+    set(type "full")
+  endif()
+  
+  find_digcom_lib("${name}" "${version}" "${type}" "${ARG_PATH}" "${ARG_HEADER_FILES}" "${ARG_LIBRARY_NAMES}" "${ARG_TARGET}")
+
+  set(DIGCOM_LIB_BINARIES "${DIGCOM_LIB_BINARIES}" PARENT_SCOPE)
+  set(DIGCOM_LIB_INCLUDES "${DIGCOM_LIB_INCLUDES}" PARENT_SCOPE)
+  set(DIGCOM_LIB_NOTFOUND "${DIGCOM_LIB_NOTFOUND}" PARENT_SCOPE)
+  set(DIGCOM_LIB_INFO     "${DIGCOM_LIB_INFO}"     PARENT_SCOPE)
+  set(DIGCOM_LIB_TARGETS  "${DIGCOM_LIB_TARGETS}"  PARENT_SCOPE)
+endfunction()
 
 # find_digcom_lib
 # @param[in] name    Name of the library
@@ -16,14 +189,16 @@ endif()
 # @param[in] ARGV3   Optional: Path (if library name doesn't match the path name)
 # @param[in] ARGV4   Optional: Header file used in search
 # @param[in] ARGV5   Optional: Library name(s)
+# @param[in] ARGV6   Optional: Target name
 # @modifies DIGCOM_LIB_BINARIES The 'global' list of libraries.
 # @modifies DIGCOM_LIB_INCLUDES The 'global' list of include paths.
 # @modifies DIGCOM_LIB_NOTFOUND The 'global' list of missing libraries.
 # @modifies DIGCOM_LIB_INFO The 'global' list of digcom libaries.
+# @modifies DIGCOM_LIB_TARGETS The 'global' list of "commart" targets.
 function(find_digcom_lib name version_string)
   if(DEFINED ARGV2)
     if(NOT "${ARGV2}" STREQUAL "full" AND NOT "${ARGV2}" STREQUAL "hdronly")
-      message(FATAL_ERROR "Provided library type (\"${ARGV2}\") is invalid.\nMust be one of: \"full\", \"hdronly\"")
+      message(FATAL_ERROR "${MSG_PREFIX}Provided library type (\"${ARGV2}\") is invalid.\nMust be one of: \"full\", \"hdronly\"")
     endif()
     set(type ${ARGV2})
   else()
@@ -52,13 +227,20 @@ function(find_digcom_lib name version_string)
     endif()
   endif()
 
-  set(verbosity 1)
+  if(DEFINED ARGV6 AND NOT "${ARGV6}" STREQUAL "")
+    set(target_name ${ARGV6})
+  else()
+    set(target_name ${name}::${name})
+  endif()
+
+  set(verbosity 0)
 
   split_version_string(${version_string} major minor patch custom)
-  __find_digcom_lib(${path} ${name} "${major}" "${minor}" "${patch}" "${custom}" "${type}" lib_bin lib_inc "${hint_file}" ${verbosity})
+  __find_digcom_lib(${path} ${name} "${major}" "${minor}" "${patch}" "${custom}" "${type}" lib_bin lib_inc "${hint_file}" "${lib_names}" ${verbosity})
 
   list(APPEND DIGCOM_LIB_BINARIES ${lib_bin})
   list(APPEND DIGCOM_LIB_INCLUDES ${lib_inc})
+  list(APPEND DIGCOM_LIB_TARGETS ${target_name})
   add_digcom_lib_info(${name} ${version_string})
 
   if("${type}" STREQUAL "hdronly")
@@ -66,12 +248,31 @@ function(find_digcom_lib name version_string)
       list(APPEND DIGCOM_LIB_NOTFOUND ${name})
     else()
       set(${name}_VERSION ${version_string} PARENT_SCOPE)
+
+      add_library(${target_name} INTERFACE IMPORTED)
+
+      set_target_properties(
+        ${target_name}
+        PROPERTIES
+        INTERFACE_INCLUDE_DIRECTORIES ${lib_inc}
+      )
     endif()
   else()
     if("${lib_bin}" STREQUAL "")
       list(APPEND DIGCOM_LIB_NOTFOUND ${name})
     else()
       set(${name}_VERSION ${version_string} PARENT_SCOPE)
+
+      add_library(${target_name} STATIC IMPORTED)
+
+      set_target_properties(
+        ${target_name}
+        PROPERTIES
+        INTERFACE_INCLUDE_DIRECTORIES ${lib_inc}
+        IMPORTED_LOCATION ${lib_bin}
+        IMPORTED_IMPLIB ${lib_bin}
+        INTERFACE_LINK_LIBRARIES ${lib_bin}
+      )
     endif()
   endif()
 
@@ -79,6 +280,7 @@ function(find_digcom_lib name version_string)
   set(DIGCOM_LIB_INCLUDES "${DIGCOM_LIB_INCLUDES}" PARENT_SCOPE)
   set(DIGCOM_LIB_NOTFOUND "${DIGCOM_LIB_NOTFOUND}" PARENT_SCOPE)
   set(DIGCOM_LIB_INFO     "${DIGCOM_LIB_INFO}"     PARENT_SCOPE)
+  set(DIGCOM_LIB_TARGETS  "${DIGCOM_LIB_TARGETS}"  PARENT_SCOPE)
 endfunction(find_digcom_lib)
 
 # __find_include_path
@@ -100,7 +302,7 @@ function(__find_include_path result name version version_exp major minor patch c
     set(verbosity 0)
   endif()
 
-  vmessage(STATUS "find_include_path ${name} ${version}" ${verbosity})
+  vmessage(STATUS "${MSG_PREFIX}find_include_path ${name} ${version}" ${verbosity})
 
   set(name_lib ${name}lib)
   set(lib_name lib${name})
@@ -148,7 +350,7 @@ function(__find_include_path result name version version_exp major minor patch c
   #
 
   foreach(path ${search_paths})
-    vmessage(STATUS "searching includes in '${path}'" ${verbosity})
+    vmessage(STATUS "${MSG_PREFIX}searching includes in '${path}'" ${verbosity})
 
     find_path(
       ${var}
@@ -175,7 +377,7 @@ function(__find_include_path result name version version_exp major minor patch c
     )
 
     if(${var})
-      vmessage(STATUS "found includes for ${name} ${version} in ${${var}} [1]" ${verbosity})
+      vmessage(STATUS "${MSG_PREFIX}found includes for ${name} ${version} in ${${var}} [1]" ${verbosity})
       set(${result} ${${var}} PARENT_SCOPE)
       return()
     endif()
@@ -212,7 +414,7 @@ function(__find_include_path result name version version_exp major minor patch c
 
     if(${var})
       get_filename_component(path ${${var}} DIRECTORY)
-      vmessage(STATUS "found includes for ${name} ${version} in ${path} (${${var}}) [2]" ${verbosity})
+      vmessage(STATUS "${MSG_PREFIX}found includes for ${name} ${version} in ${path} (${${var}}) [2]" ${verbosity})
       set(${result} ${path} PARENT_SCOPE)
       return()
     endif()
@@ -248,7 +450,7 @@ function(__find_include_path result name version version_exp major minor patch c
       else()
         set(full_path ${base_path})
       endif()
-      vmessage(STATUS "found includes for ${name} ${version} in ${full_path} (${${var}})" ${verbosity})
+      vmessage(STATUS "${MSG_PREFIX}found includes for ${name} ${version} in ${full_path} (${${var}})" ${verbosity})
       set(${result} ${full_path} PARENT_SCOPE)
       return()
     endif()
@@ -271,7 +473,7 @@ function(__find_include_path result name version version_exp major minor patch c
   )
 
   if(${var})
-    vmessage(STATUS "found includes for ${name} ${version} in ${path} (${${var}}) [3]" ${verbosity})
+    vmessage(STATUS "${MSG_PREFIX}found includes for ${name} ${version} in ${path} (${${var}}) [3]" ${verbosity})
     set(${result} ${${var}} PARENT_SCOPE)
     return()
   endif()
@@ -280,7 +482,7 @@ function(__find_include_path result name version version_exp major minor patch c
   # No more tries
   #
 
-  vmessage(STATUS "did not find includes for ${name} ${version}" ${verbosity})
+  vmessage(STATUS "${MSG_PREFIX}did not find includes for ${name} ${version}" ${verbosity})
 
   set(${result} ${${var}} PARENT_SCOPE)
 
@@ -303,19 +505,19 @@ endfunction(__find_include_path)
 function(__find_digcom_lib path name major minor patch custom type lib_bin lib_inc)
   # parameters
   if(NOT DEFINED name)
-    message(SEND_ERROR "library name not specified.")
+    message(SEND_ERROR "${MSG_PREFIX}library name not specified.")
   endif()
 
   if(NOT DEFINED major)
-    message(SEND_ERROR "major version not specified")
+    message(SEND_ERROR "${MSG_PREFIX}major version not specified")
   endif()
 
   if(NOT DEFINED minor)
-    message(SEND_ERROR "minor version not specified")
+    message(SEND_ERROR "${MSG_PREFIX}minor version not specified")
   endif()
 
   if(NOT DEFINED patch)
-    message(SEND_ERROR "patch version not specified")
+    message(SEND_ERROR "${MSG_PREFIX}patch version not specified")
   endif()
 
   if(DEFINED ARGV9)
@@ -334,16 +536,26 @@ function(__find_digcom_lib path name major minor patch custom type lib_bin lib_i
 
   get_version_string("${major}" "${minor}" "${patch}" "${custom}" version)
   get_expanded_version_string("${major}" "${minor}" "${patch}" "${custom}" version_exp)
-  vmessage(STATUS "find_digcom_lib: ${name} ${major}.${minor}.${patch} [.${custom}] (${version})" ${verbosity})
+  vmessage(STATUS "${MSG_PREFIX}find_digcom_lib: ${name} ${major}.${minor}.${patch} [.${custom}] (${version})" ${verbosity})
+
+  if(DEFINED lib_names AND NOT "${lib_names}" STREQUAL "")
+    set(_lib_names ${lib_names})
+    list(FILTER _lib_names EXCLUDE REGEX "^.*\.[a|so|lib]$" )
+    if(NOT "${_lib_names}" STREQUAL "")
+      list(TRANSFORM _lib_names APPEND "-${version}.a" OUTPUT_VARIABLE _lib_names_ver)
+      list(TRANSFORM _lib_names APPEND "-${version_exp}.a" OUTPUT_VARIABLE _lib_names_vex)
+      set(lib_names ${lib_names} ${_lib_names_ver} ${_lib_names_vex})
+    endif()
+  endif()
 
   # libraries path
   if(WIN32)
     if(NOT DEFINED DIGCOM_LIB)
       string(REGEX REPLACE "\\\\" "/" DIGCOM_LIB $ENV{DIGCOM_LIB}) # only forward slashes
       if(NOT DEFINED DIGCOM_LIB)
-        message(FATAL_ERROR "DIGCOM_LIB path not defined.")
+        message(FATAL_ERROR "${MSG_PREFIX}DIGCOM_LIB path not defined.")
       else()
-        vmessage(STATUS " DIGCOM Libraries: ${DIGCOM_LIB}" ${verbosity})
+        vmessage(STATUS "${MSG_PREFIX} DIGCOM Libraries: ${DIGCOM_LIB}" ${verbosity})
       endif()
     endif()
   endif()
@@ -351,7 +563,7 @@ function(__find_digcom_lib path name major minor patch custom type lib_bin lib_i
   # postfixes
   if(NOT DEFINED DEBUG_POSTFIX)
     set(DEBUG_POSTFIX d)
-    vmessage(STATUS "    DEBUG_POSTFIX: ${DEBUG_POSTFIX}" ${verbosity})
+    vmessage(STATUS "${MSG_PREFIX}    DEBUG_POSTFIX: ${DEBUG_POSTFIX}" ${verbosity})
   endif()
 
   if(WIN32)
@@ -372,7 +584,7 @@ function(__find_digcom_lib path name major minor patch custom type lib_bin lib_i
       if(MSVC12)
         set(COMPILER_POSTFIX "vc120")
       endif()
-      vmessage(STATUS " COMPILER_POSTFIX: ${COMPILER_POSTFIX}" ${verbosity})
+      vmessage(STATUS "${MSG_PREFIX} COMPILER_POSTFIX: ${COMPILER_POSTFIX}" ${verbosity})
     endif()
 
     set(LIB_NAME ${name}_static_${COMPILER_POSTFIX}.lib)
@@ -393,12 +605,28 @@ function(__find_digcom_lib path name major minor patch custom type lib_bin lib_i
 
   # find it
   if(WIN32)
-    set(dir1 "${DIGCOM_LIB}/${path}/V_${version}")
-    set(dir2 "${DIGCOM_LIB}/lib${path}/V_${version}")
+    if(DEFINED SEARCH_ROOTS)
+      list(GET SEARCH_ROOTS 0 base_path)
+    else()
+      set(base_path "${DIGCOM_LIB}")
+    endif()
+    if(DIGSYSFN_WINSANE)
+      set(dir1 "${base_path}/${name}-${version}")
+      set(dir2 "${base_path}/lib${name}-${version}")
+    else()
+      set(dir1 "${base_path}/${path}/V_${version}")
+      set(dir2 "${base_path}/lib${path}/V_${version}")
+    endif()
+    set(dir3 "${base_path}/${path}/${version}")
+    set(dir4 "${base_path}/lib${path}/${version}")
     if(EXISTS "${dir1}" AND IS_DIRECTORY "${dir1}")
       set(LIB_ROOT ${dir1})
     elseif(EXISTS "${dir2}" AND IS_DIRECTORY "${dir2}")
       set(LIB_ROOT ${dir2})
+    elseif(EXISTS "${dir3}" AND IS_DIRECTORY "${dir3}")
+      set(LIB_ROOT ${dir3})
+    elseif(EXISTS "${dir4}" AND IS_DIRECTORY "${dir4}")
+      set(LIB_ROOT ${dir4})
     endif()
   else()
     if(DEFINED SEARCH_ROOTS)
@@ -412,7 +640,7 @@ function(__find_digcom_lib path name major minor patch custom type lib_bin lib_i
     endif()
   endif()
 
-  vmessage(STATUS "search_paths: ${search_paths}" ${verbosity})
+  vmessage(STATUS "${MSG_PREFIX}search_paths: ${search_paths}" ${verbosity})
 
   set(LIB NOTFOUND)
   set(LIB_DBG NOTFOUND)
@@ -447,7 +675,7 @@ function(__find_digcom_lib path name major minor patch custom type lib_bin lib_i
         set(DIST_LIB_NAME "lib${name}.a")
       endif()
       foreach(path ${search_paths})
-        vmessage(STATUS "searching binaries in '${path}'" ${verbosity})
+        vmessage(STATUS "${MSG_PREFIX}searching binaries in '${path}'" ${verbosity})
         find_library(
           LIB
           NAMES
@@ -463,13 +691,19 @@ function(__find_digcom_lib path name major minor patch custom type lib_bin lib_i
           PATHS
             ${path}/lib64
             ${path}/lib
+            # versioned sub folders
+            ${path}/lib64/${name}-${version}
+            ${path}/lib/${name}-${version}
+            # just in case with 'lib' prefix
+            ${path}/lib64/lib${name}-${version}
+            ${path}/lib/lib${name}-${version}
             # e.g. glog
             ${path}/lib64/${name}/${version}
             ${path}/lib/${name}/${version}
           NO_DEFAULT_PATH # system path(s) should be included in the search_paths
         )
         if(NOT ${LIB} STREQUAL "LIB-NOTFOUND")
-          vmessage(STATUS "found binaries for ${name} ${version} at ${LIB} (${path})" ${verbosity})
+          vmessage(STATUS "${MSG_PREFIX}found binaries for ${name} ${version} at ${LIB} (${path})" ${verbosity})
           break()
         endif()
       endforeach()
@@ -489,6 +723,9 @@ function(__find_digcom_lib path name major minor patch custom type lib_bin lib_i
           PATHS
             ${path}/lib64
             ${path}/lib
+            # versioned subfolders for find_package
+            ${path}/lib64/${name}-${version}
+            ${path}/lib/${name}-${version}
             # e.g. glog
             ${path}/lib64/${name}/${version}
             ${path}/lib/${name}/${version}
@@ -511,7 +748,7 @@ function(__find_digcom_lib path name major minor patch custom type lib_bin lib_i
   endif()
 
   if(${LIB} STREQUAL "LIB-NOTFOUND")
-    message(STATUS "not found: ${name} ${version} (binaries not found)")
+    message(STATUS "${MSG_PREFIX}not found: ${name} ${version} (binaries not found)")
   else()
     if("${type}" STREQUAL "hdronly")
     else()
@@ -533,17 +770,17 @@ function(__find_digcom_lib path name major minor patch custom type lib_bin lib_i
     endif()
 
     if(NOT INC)
-      message(STATUS "not found: ${name} ${version} (includes not found)")
+      message(STATUS "${MSG_PREFIX}not found: ${name} ${version} (includes not found)")
       set(${lib_inc} "" PARENT_SCOPE)
       set(${lib_bin} "" PARENT_SCOPE)
     else()
       set(${lib_inc} "${INC}" PARENT_SCOPE)
 
-      vmessage(STATUS " ${name} binaries: ${LIB} ${LIB_DBG}" ${verbosity})
-      vmessage(STATUS " ${name} includes: ${INC}" ${verbosity})
+      vmessage(STATUS "${MSG_PREFIX} ${name} binaries: ${LIB} ${LIB_DBG}" ${verbosity})
+      vmessage(STATUS "${MSG_PREFIX} ${name} includes: ${INC}" ${verbosity})
 
       if(${verbosity} EQUAL 0)
-        message(STATUS "using: ${name} ${version}")
+        message(STATUS "${MSG_PREFIX}using: ${name} ${version}")
       endif()
     endif()
   endif()
@@ -552,7 +789,7 @@ endfunction(__find_digcom_lib)
 # check_missing_libs
 function(check_missing_libs)
   if(NOT "${DIGCOM_LIB_NOTFOUND}" STREQUAL "")
-    message(FATAL_ERROR "Missing libraries: ${DIGCOM_LIB_NOTFOUND}\n")
+    message(FATAL_ERROR "${MSG_PREFIX}Missing libraries: ${DIGCOM_LIB_NOTFOUND}\n")
   endif()
 endfunction()
 
@@ -570,12 +807,12 @@ endfunction()
 # @modifies THIRD_LIB_INFO The 'global' list of third party libaries.
 function(find_third_lib name version)
   if(WIN32)
-    message(SEND_ERROR "digsyslibs.cmake: function find_third_lib not yet tested on windows.")
+    message(SEND_ERROR "${MSG_PREFIX}digsyslibs.cmake: function find_third_lib not yet tested on windows.")
   endif()
 
   if(DEFINED ARGV2)
     if (NOT "${ARGV2}" STREQUAL "full" AND NOT "${ARGV2}" STREQUAL "hdronly")
-      message(FATAL_ERROR "Provided library type (\"${ARGV2}\") is invalid.\nMust be one of: \"full\", \"hdronly\"")
+      message(FATAL_ERROR "${MSG_PREFIX}Provided library type (\"${ARGV2}\") is invalid.\nMust be one of: \"full\", \"hdronly\"")
     endif()
     set(type ${ARGV2})
   else()
@@ -668,7 +905,7 @@ function(find_third_lib name version)
     endif()
   endif()
 
-  message(STATUS "using: ${${name}_bin} including ${${name}_inc}")
+  message(STATUS "${MSG_PREFIX}using: ${${name}_bin} including ${${name}_inc}")
 
   set(THIRD_LIB_BINARIES "${THIRD_LIB_BINARIES}" PARENT_SCOPE)
   set(THIRD_LIB_INCLUDES "${THIRD_LIB_INCLUDES}" PARENT_SCOPE)
@@ -709,10 +946,6 @@ function(format_lib_info name version lib_info)
     # format as JSON array/list entry
     set(${lib_info} "{\"name\": \"${name}\", \"version\": \"${version_string}\"}" PARENT_SCOPE)
   endif()
-  if(${EXPORT_FORMAT} STREQUAL TEMPL)
-    # use a format suitable for cmakepp template generator
-    set(${lib_info} "{ name:'${name}', version:'${version}' }" PARENT_SCOPE)
-  endif()
 endfunction(format_lib_info)
 
 # export_project_info
@@ -725,10 +958,6 @@ function(export_project_info file_name)
   if(${EXPORT_FORMAT} STREQUAL JSON)
     # export as JSON
     export_project_info_json("${file_name}.json")
-  endif()
-  if(${EXPORT_FORMAT} STREQUAL TEMPL)
-    # use file_name as input for the template generator
-    export_project_info_templ("${file_name}")
   endif()
 endfunction(export_project_info)
 
@@ -745,7 +974,7 @@ function(export_project_info_html file_name)
   set(html ${html} "<div>\n")
   set(html ${html} "<h2>Build Parameters</h2>\n")
   set(html ${html} "<ul>\n")
-  set(html ${html} "<li>SVN revision: ${SVN_REVISION}</li>\n")
+  set(html ${html} "<li>SCM revision: ${PROJECT_VERSION_SCM}</li>\n")
   set(html ${html} "<li>Release tag: ${RELEASE_TAG}</li>\n")
   set(html ${html} "<li>Build node: ${BUILD_NODE}</li>\n")
   set(html ${html} "</ul>\n")
@@ -806,38 +1035,6 @@ function(export_project_info_json file_name)
   file(WRITE ${file_name} ${json})
 endfunction(export_project_info_json)
 
-if(${EXPORT_FORMAT} STREQUAL TEMPL)
-  include(cmakepp)
-
-  function(export_project_info_templ template_file)
-    string(REGEX REPLACE ";" ", " digcom_libs "${DIGCOM_LIB_INFO}")
-    string(REGEX REPLACE ";" ", " third_libs "${THIRD_LIB_INFO}")
-
-    data("{
-      project:'${PROJECT_NAME}',
-      version:'${PROJECT_VERSION}',
-      svn-revision:'${SVN_REVISION}',
-      release-tag:'${RELEASE_TAG}',
-      build-node:'${BUILD_NODE}'
-    }")
-    ans(info)
-
-    data("[ ${digcom_libs} ]")
-    ans(digcom)
-
-    data("[ ${third_libs} ]")
-    ans(third)
-
-    template_run_file("${template_file}")
-    ans(generated_content)
-
-    string(REGEX REPLACE "(.*/)(.*)\\.in$" "\\2" output_file ${template_file})
-    message(STATUS "Writing build info to ${output_file}")
-
-    file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/${output_file}" "${generated_content}")
-  endfunction(export_project_info_templ)
-endif()
-
 # vmessage
 # @param[in] level      The message level (see cmake message doc).
 # @param[in] text       The text to print.
@@ -891,7 +1088,7 @@ function(expand_version_number_os number result)
   if("${number}" STREQUAL "")
     set(${result} "" PARENT_SCOPE)
   else()
-    if(WIN32)
+    if(WIN32 AND NOT DIGSYSFN_WINSANE)
       string(REGEX REPLACE "^(.)$" "0\\1" expanded_number "${number}")
       set(${result} "${expanded_number}" PARENT_SCOPE)
     else()
@@ -923,7 +1120,7 @@ function(split_version_string version_string version_major version_minor version
   separate_arguments(version_list)
   list(LENGTH version_list len)
   if(${len} LESS 3)
-    message(SEND_ERROR "${name}: invalid version format (${version_string}); must be  {major}.{minor}.{patch} [.{custom}]")
+    message(SEND_ERROR "${MSG_PREFIX}${name}: invalid version format (${version_string}); must be  {major}.{minor}.{patch} [.{custom}]")
   else()
     list(GET version_list 0 major)
     list(GET version_list 1 minor)
@@ -941,8 +1138,8 @@ function(split_version_string version_string version_major version_minor version
 endfunction(split_version_string)
 
 # set_project_version
-# @param[in] ARGV1                  The version string (major.minor.patch).
-# @param[in] ARGV2                  If set to "PREFER_TAG", the SVN_TAG_VERSION variable is used first
+# @param[in] version_string         The version string (major.minor.patch).
+# @param[in] ARGV1                  If set to "PREFER_TAG", the SCM_TAG_VERSION variable is used first
 # @modifies  PROJECT_VERSION        The version string as provided.
 # @modifies  PROJECT_VERSION_STRING The formatted version string.
 # @modifies  PROJECT_VERSION_MAJOR  The major number.
@@ -950,24 +1147,16 @@ endfunction(split_version_string)
 # @modifies  PROJECT_VERSION_PATCH  The patch number.
 # @modifies  PROJECT_VERSION_CUSTOM The custom number. (When we mess with 3rd party libs.)
 # @modifies  PROJECT_VERSION_INT    The project version as integer number.
-function(set_project_version)
+function(set_project_version version_string)
   set(PROJECT_VERSION_TYPE "cmake" PARENT_SCOPE)
 
-  if(DEFINED ARGV1 AND NOT "${ARGV1}" STREQUAL "")
-    set(version_string ${ARGV1})
-  elseif(DEFINED PROJECT_VERSION AND NOT "${PROJECT_VERSION}" STREQUAL "")
-    set(version_string ${PROJECT_VERSION})
-  else()
-    message(ERROR "Either set PROJECT_VERSION or pass the version in ARGV1.")
-  endif()
-
-  if(DEFINED ARGV2 AND "${ARGV2}" STREQUAL "PREFER_TAG")
-    if(DEFINED SVN_TAG_VERSION)
-      #message(STATUS "using tag version as project version")
-      set(version_string ${SVN_TAG_VERSION})
+  if(DEFINED ARGV1 AND "${ARGV1}" STREQUAL "PREFER_TAG")
+    if(DEFINED SCM_TAG_VERSION)
+      #message(STATUS "${MSG_PREFIX}using tag version as project version")
+      set(version_string ${SCM_TAG_VERSION})
       set(PROJECT_VERSION_TYPE "tag" PARENT_SCOPE)
     else()
-      #message(STATUS "no svn tag version available")
+      #message(STATUS "${MSG_PREFIX}no scm tag version available")
     endif()
   endif()
 
@@ -988,10 +1177,76 @@ function(set_project_version)
   set(PROJECT_VERSION_INT ${version_integer} PARENT_SCOPE)
 endfunction(set_project_version)
 
+#
+# setup_install_paths([NAME name] [VERSION version] [QUIET])
+#
+# @param[in] NAME                   The project name.
+# @param[in] VERSION                The project version.
+# @param[in] QUIET                  If TRUE will not print the paths.
+# @modifies  CONFIG_INSTALL_PATH    Location for cmake config installation.
+# @modifies  LIBRARY_INSTALL_PATH   Location for library installation.
+# @modifies  HEADER_INSTALL_PATH    Location for header installation.
+# @modifies  HEADER_INSTALL_ROOT    The root location for header installation.
+function(setup_install_paths)
+  set(options QUIET)
+  set(oneValueArgs NAME VERSION)
+  cmake_parse_arguments(ARG "${options}" "${oneValueArgs}" "" ${ARGN})
+
+  if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
+    set(LIBSUFFIX 64)
+  else()
+    set(LIBSUFFIX "")
+  endif()
+
+  if(DEFINED ARG_NAME AND NOT "${ARG_NAME}" STREQUAL "")
+    set(project_name ${ARG_NAME})
+  else()
+    set(project_name ${PROJECT_NAME})
+  endif()
+
+  if(DEFINED ARG_VERSION AND NOT "${ARG_VERSION}" STREQUAL "")
+    set(project_version ${ARG_VERSION})
+  elseif(DEFINED PROJECT_VERSION_STRING AND NOT "${PROJECT_VERSION_STRING}" STREQUAL "")
+    set(project_version ${PROJECT_VERSION_STRING})
+  else()
+    set(project_version ${PROJECT_VERSION})
+  endif()
+
+  if(WIN32)
+    if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+      set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/binaries/${project_version}" CACHE STRING "Install path" FORCE)
+      message(STATUS "Set install prefix to ${CMAKE_INSTALL_PREFIX}")
+    endif()
+
+    set(LIBRARY_INSTALL_PATH lib)
+    set(HEADER_INSTALL_ROOT include)
+    set(HEADER_INSTALL_PATH ${HEADER_INSTALL_ROOT}/${PROJECT_NAME_PREFIX}${project_name})
+    set(CONFIG_INSTALL_PATH cmake)
+  else()
+    set(LIBRARY_INSTALL_PATH lib${LIBSUFFIX}/${project_name}-${project_version})
+    set(HEADER_INSTALL_ROOT include/${project_name}/${project_version})
+    set(HEADER_INSTALL_PATH ${HEADER_INSTALL_ROOT}/${PROJECT_NAME_PREFIX}${project_name})
+    set(CONFIG_INSTALL_PATH ${LIBRARY_INSTALL_PATH}/cmake)
+  endif()
+
+  set(LIBRARY_INSTALL_PATH ${LIBRARY_INSTALL_PATH} PARENT_SCOPE)
+  set(HEADER_INSTALL_ROOT ${HEADER_INSTALL_ROOT} PARENT_SCOPE)
+  set(HEADER_INSTALL_PATH ${HEADER_INSTALL_PATH} PARENT_SCOPE)
+  set(CONFIG_INSTALL_PATH ${CONFIG_INSTALL_PATH} PARENT_SCOPE)
+
+  if(NOT ARG_QUIET)
+    message(STATUS "${MSG_PREFIX}CMAKE_INSTALL_PREFIX: ${CMAKE_INSTALL_PREFIX}")
+    message(STATUS "${MSG_PREFIX}LIBRARY_INSTALL_PATH: ${LIBRARY_INSTALL_PATH}")
+    message(STATUS "${MSG_PREFIX}CONFIG_INSTALL_PATH:  ${CONFIG_INSTALL_PATH}")
+    message(STATUS "${MSG_PREFIX}HEADER_INSTALL_ROOT:  ${HEADER_INSTALL_ROOT}")
+    message(STATUS "${MSG_PREFIX}HEADER_INSTALL_PATH:  ${HEADER_INSTALL_PATH}")
+  endif()
+endfunction()
+
 # debug
 # @param[in] msg The debug message to print.
 macro(debug msg)
-  message(STATUS "DEBUG ${msg}")
+  message(STATUS "${MSG_PREFIX}DEBUG ${msg}")
 endmacro()
 
 # debugValue
@@ -1003,10 +1258,14 @@ endmacro()
 # Initialize global variables
 set(DIGCOM_LIB_INCLUDES "")
 set(DIGCOM_LIB_BINARIES "")
+set(DIGCOM_LIB_TARGETS "")
 set(THIRD_LIB_INCLUDES "")
 set(THIRD_LIB_BINARIES "")
 set(DIGCOM_LIB_INFO "")
 set(THIRD_LIB_INFO "")
+
+set(FIND_PACKAGE_DEPENDENCIES "")
+set(FIND_COMMART_PACKAGE_DEPENDENCIES "")
 
 if(WIN32)
   if(NOT DEFINED DIGCOM_LIB)
@@ -1017,6 +1276,17 @@ if(WIN32)
       $ENV{DIGCOM_LIB}
     )
   endif()
-  message(STATUS "DIGCOM_LIB: ${DIGCOM_LIB}")
+  message(STATUS "${MSG_PREFIX}DIGCOM_LIB: ${DIGCOM_LIB}")
 endif()
 
+
+#
+# Prefix path
+#
+
+option(EFP "Enable eurofunk prefix path" OFF) # name kept short because i'm a lazy typer ;)
+set(EF_PREFIX_PATH "/opt/eurofunk/libraries")
+
+if(EFP)
+  list(APPEND CMAKE_PREFIX_PATH "${EF_PREFIX_PATH}")
+endif()
