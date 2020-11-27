@@ -19,6 +19,7 @@ struct Options
 
     std::string innerTypeSuffix = "T";
 
+    bool writeTimestamp = true;
     bool enableHacks = false;
 };
 

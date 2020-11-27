@@ -684,7 +684,10 @@ void GenerateImplementation(
     auto typeName = ResolveType(type.name);
 
     stream << "// " << typeName << '\n';
-    stream << "// " << now() << '\n';
+    if (options.writeTimestamp)
+    {
+        stream << "// " << now() << '\n';
+    }
     stream << '\n';
     stream << "#include \"" << /*definition.name.name + "_" +*/ typeName << ".hpp\"" << '\n';
     stream << '\n';

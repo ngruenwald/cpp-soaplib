@@ -15,7 +15,10 @@ void GenerateHeader(
     const Definition& definition)
 {
     stream << "// " << service.name.name << '\n';
-    stream << "// " << now() << '\n';
+    if (options.writeTimestamp)
+    {
+        stream << "// " << now() << '\n';
+    }
     stream << '\n';
     stream << "#pragma once" << '\n';
     stream << '\n';

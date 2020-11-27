@@ -435,7 +435,10 @@ void GenerateHeader(
     auto typeName = ResolveType(type.name, true);
 
     stream << "// " << typeName << '\n';
-    stream << "// " << now() << '\n';
+    if (options.writeTimestamp)
+    {
+        stream << "// " << now() << '\n';
+    }
     stream << '\n';
     stream << "#pragma once" << '\n';
     stream << '\n';

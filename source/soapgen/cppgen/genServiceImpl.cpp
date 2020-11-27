@@ -15,7 +15,10 @@ void GenerateImplementation(
     const Definition& definition)
 {
     stream << "// " << service.name.name << '\n';
-    stream << "// " << now() << '\n';
+    if (options.writeTimestamp)
+    {
+        stream << "// " << now() << '\n';
+    }
     stream << '\n';
     stream << "#include \"" << service.name.name << ".hpp\"" << '\n';
     stream << '\n';
