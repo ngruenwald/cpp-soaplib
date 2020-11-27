@@ -6,7 +6,7 @@
 #include <mutex>
 #include <sstream>
 
-#include <httplib/httplib.h>
+#include <cpp-httplib/httplib.h>
 #include <libxmlwrp.hpp>
 
 namespace soaplib {
@@ -55,7 +55,10 @@ std::shared_ptr<xml::Document> SoapClient::Send(
 
 	httplib::Client cli(host_.c_str(), port_);
     cli.set_read_timeout(timeoutSeconds, 0);
-    cli.set_keep_alive_max_count(5);
+    cli.set_compress(true);
+    cli.set_decompress(true);
+    cli.set_keep_alive(true);
+
 	auto response = cli.Post(path_.c_str(), content, contentType.c_str());
 
 	if (!response)
