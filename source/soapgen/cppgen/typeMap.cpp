@@ -29,7 +29,7 @@ std::map<std::string, std::string> NativeTypes =
     { "unsignedLong",   "std::uint64_t"      },
     { "Id",             "long"               },
     { "Ref",            "long"               },
-    { "anyType",        "std::string"        },
+    { "anyType",        "SoapLibAnyType"     },
     { "",               "void"               },
 };
 
@@ -37,7 +37,15 @@ std::map<std::string, std::string> NativeTypes =
 bool IsNativeType(
     const Name& name)
 {
-    return NativeTypes.find(name.name) != NativeTypes.end();
+    // TODO
+    auto it = NativeTypes.find(name.name);
+
+    if (it->second == "SoapLibAnyType")
+    {
+        return false;
+    }
+
+    return it != NativeTypes.end();
 }
 
 std::string ResolveType(

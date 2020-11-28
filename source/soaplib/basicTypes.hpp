@@ -16,6 +16,12 @@ namespace xml { class Node; }
 
 //namespace soaplib {
 
+struct SoapBaseType
+{
+    virtual ~SoapBaseType() = default;
+};
+
+
 std::int8_t int8_tFromXml(
     const xml::Node& node);
 

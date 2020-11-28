@@ -58,7 +58,7 @@ static void GenerateParseEnum(
         stream << "if (s == \"" << enumeration.text << "\")" << '\n';
 
         stream << "    {" << '\n';
-        stream << "        obj = " << ResolveType(type.name) << "::" << enumeration.text << ";" << '\n';
+        stream << "        obj.Value = " << ResolveType(type.name) << "::" << enumeration.text << ";" << '\n';
         stream << "    }" << '\n';
 
         elseIf = true;
@@ -72,7 +72,7 @@ static void GenerateWriteEnum(
     const Definition& definition)
 {
     stream << "    std::string s;" << '\n';
-    stream << "    switch (obj)" << '\n';
+    stream << "    switch (obj.Value)" << '\n';
     stream << "    {" << '\n';
 
     std::string typeName = ResolveType(type.name);
@@ -427,6 +427,14 @@ void GenerateParser(
     stream << "}" << '\n';
     stream << '\n';
 
+    stream << "std::shared_ptr<SoapBaseType> " << typeName << "PtrFromXml(" << '\n';
+    stream << "    " << "const xml::Node& objNode)" << '\n';
+    stream << "{" << '\n';
+    stream << "    auto obj = std::make_shared<" << parameterType << ">();" << '\n';
+    stream << "    " << typeName << "FromXml(objNode, *obj.get());" << '\n';
+    stream << "    " << "return std::static_pointer_cast<SoapBaseType>(obj);" << '\n';
+    stream << "}" << '\n';
+    stream << '\n';
 
     stream << "static void _" << typeName << "ToXml(" << '\n';
     stream << "    " << "const " << parameterType << "& obj," << '\n';

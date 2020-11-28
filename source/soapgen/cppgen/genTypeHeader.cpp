@@ -70,6 +70,12 @@ static void GenerateTypeHeaderET(
     {
         stream << indent << "    : " << ResolveType(type.base.value()) << '\n';
     }
+    else
+    {
+        stream << indent << "    : " << "SoapBaseType" << '\n';
+    }
+
+
     stream << indent << "{" << '\n';
     for (const auto& innerType : type.innerTypes)
     {
@@ -233,6 +239,15 @@ static void GenerateTypeHeaderB(
             << typePrefix << ResolveType(type.base.value()) << typeSuffix
             << '\n';
     }
+    else
+    {
+        stream
+            << indent
+            << "    : "
+            << typePrefix << "SoapBaseType" << typeSuffix
+            << '\n';
+    }
+
     stream << indent << "{" << '\n';
     stream << indent << "};" << '\n';
 }
@@ -248,19 +263,18 @@ static void GenerateTypeHeaderE(
 {
     const std::string indent(indentSize, ' ');
 
-    stream
-        << indent
-        << "enum class "
-        << typePrefix << typePrefix << ResolveType(type.name, true) << typeSuffix << typeSuffix
-        << '\n';
-
+    stream << indent << "struct " << typePrefix << ResolveType(type.name, true) << typeSuffix << '\n';
+    stream << indent << "    : " << typePrefix << "SoapBaseType" << typeSuffix << '\n';
     stream << indent << "{" << '\n';
-
+    stream << indent << indent << "enum Values" << '\n';
+    stream << indent << indent << "{" << '\n';
     for (const auto& enumeration : type.enumerations)
     {
-        stream << indent << "    " << enumeration.text << ',' << '\n';
+        stream << indent << indent << "    " << enumeration.text << ',' << '\n';
     }
-
+    stream << indent << indent << "};" << '\n';
+    stream << indent << indent << '\n';
+    stream << indent << indent << "Values Value;" << '\n';
     stream << indent << "};" << '\n';
 }
 
@@ -442,6 +456,7 @@ void GenerateHeader(
     stream << '\n';
     stream << "#pragma once" << '\n';
     stream << '\n';
+    stream << "#include <memory>" << '\n';
     stream << "#include <soaplib/basicTypes.hpp>" << '\n';
     stream << '\n';
 
@@ -498,6 +513,11 @@ void GenerateHeader(
     stream << '\n';
 
     stream << typeName << " " << typeName << "FromXml(" << '\n';
+    stream << "    " << "const xml::Node& objNode);" << '\n';
+
+    stream << '\n';
+
+    stream << "std::shared_ptr<SoapBaseType> " << typeName << "PtrFromXml(" << '\n';
     stream << "    " << "const xml::Node& objNode);" << '\n';
 
     stream << '\n';

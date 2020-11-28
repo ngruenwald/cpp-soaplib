@@ -77,6 +77,8 @@ std::optional<T> getOptional(
     catch (const std::exception&)
     {
     }
+
+    return {};
 }
 
 template<typename T>

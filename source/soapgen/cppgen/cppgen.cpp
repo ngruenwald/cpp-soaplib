@@ -8,6 +8,8 @@
 #include "typeMap.hpp"
 #include "genTypeHeader.hpp"
 #include "genTypeImpl.hpp"
+#include "genAnyTypeHeader.hpp"
+#include "genAnyTypeImpl.hpp"
 #include "genServiceHeader.hpp"
 #include "genServiceImpl.hpp"
 #include "genCMakeLists.hpp"
@@ -137,6 +139,32 @@ void GenerateTypes(
         std::cout << "  * impl: " << implPath << std::endl;
         type::GenerateImplementation(implFile, type, options, definition);
     }
+}
+
+void GenerateAnyType(
+    const Options& options,
+    const Definition& definition)
+{
+    std::string baseName{"SoapLibAnyType"};
+
+    const auto headerPath = GetFilePath(baseName + ".hpp", options, true);
+    const auto implPath = GetFilePath(baseName + ".cpp", options, true);
+
+    std::ofstream hdrFile(headerPath);
+    if (!hdrFile.is_open())
+    {
+        throw std::runtime_error("could not open output file " + headerPath.string());
+    }
+    std::cout << "  * hdr:  " << headerPath << std::endl;
+    type::GenerateAnyTypeHeader(hdrFile, options, definition);
+
+    std::ofstream implFile(implPath);
+    if (!implFile.is_open())
+    {
+        throw std::runtime_error("could not open output file " + implPath.string());
+    }
+    std::cout << "  * impl: " << implPath << std::endl;
+    type::GenerateAnyTypeImplementation(implFile, options, definition);
 }
 
 //
@@ -436,6 +464,8 @@ void Generate(
     GenerateServices(options, definition);
 
     GenerateTypes(options, definition);
+
+    GenerateAnyType(options, definition);
 
     GenerateCMake(options, definition);
 }
