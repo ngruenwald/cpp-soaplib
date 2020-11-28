@@ -1,16 +1,63 @@
+set(PARSER_TESTS OFF)
+
+if(PARSER_TESTS)
+  add_subdirectory(generated)
+endif())
+
+
+find_library(LIBUUID uuid PATHS /usr/local/lib64 /usr/local/lib)
+
+set(target unit_test)
 
 add_executable(
-  unit_tests
+  ${target}
   unit_tests.cpp
+  pointer_tests.cpp
 )
 
-add_test(
-  NAME unit_tests
-  COMMAND unit_tests
+if(PARSER_TESTS)
+  target_sources(
+    ${target}
+    parser_tests.cpp
+  )
+endif()
+
+target_link_libraries(
+  ${target}
+  PUBLIC
+  contrib-catch2
+)
+
+target_link_libraries(
+  ${target}
+  PUBLIC
+  LibXml2::LibXml2
+  xmlwrp::xmlwrp
+)
+
+if(PARSER_TESTS)
+  target_link_libraries(
+    ${target}
+    PUBLIC
+    admin::DispatcherService
+  )
+endif()
+
+
+target_link_libraries(
+  ${target}
+  PUBLIC
+  ${LIBUUID}
+)
+
+target_compile_definitions(
+  ${target}
+  PUBLIC
+  FIXTURES_PATH="${CMAKE_CURRENT_SOURCE_DIR}/fixtures"
 )
 
 set_target_properties(
-  unit_tests
+  ${target}
   PROPERTIES
   RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
 )
