@@ -9,9 +9,10 @@
         <cmake namespace="admin" export="adminlib" />
         <pointer-types>
             <param>Replacements</param>
+            <param>Groups</param>
         </pointer-types>
         <timestamp enable="false" />
-        <hacks enable="true">
+        <hacks enable="false">
             <create-distinct-list-objects enable="true" />
             <ignored-wsdl-types>
                 <operation name="SignalingType_GetList" />
