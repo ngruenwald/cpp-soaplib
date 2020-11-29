@@ -36,6 +36,7 @@ The library itself uses [cpp-httplib][1] for the basic HTTP handling.
 - [ ]  auto detect and resolve cyclic references
 - [ ]  c++ 11 support (currently built with c++ 17 enabled)
 - [ ]  cleanup cmake scripts
+- [ ]  generate doxygen files
 
 ----
 
