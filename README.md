@@ -3,7 +3,7 @@
 
 This is a toolkit for C++ to create SOAP client applications.
 
-It includes a generator _soapgen_ that will turn a service defintion (WSDL)
+It includes a generator _(soapgen)_ that will turn a service defintion (WSDL)
 into C++ code. Currently it only supports single file definitions.
 
 The library itself uses [cpp-httplib][1] for the basic HTTP handling.
