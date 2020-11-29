@@ -23,18 +23,19 @@ The library itself uses [cpp-httplib][1] for the basic HTTP handling.
 
 ## TODO
 
-- [ ] all types (int, string, etc.) should be derived from SoapType
-- [ ] add operators for direct value access on simple types (single member and value types)
-- [ ] abort if unknown type is detected
-- [ ] use templates for code generation ([inja][3])
-- [ ] use command line parameters for configuration ([cxxopts][4])
-- [ ] use libxml2 directly, remove xmlwrp dependency
-- [ ] replace shared_ptr with unique_ptr where possible
-- [ ] add unit tests (remove client project)
-- [ ] support for split definition files
-- [ ] support file download in generator
-- [ ] auto detect and resolve cyclic references
-- [ ] c++ 11 support (currently built with c++ 17 enabled)
+- [ ]  all types (int, string, etc.) should be derived from SoapType
+- [ ]  add operators for direct value access on simple types (single member and value types)
+- [ ]  abort if unknown type is detected
+- [ ]  use templates for code generation ([inja][3])
+- [ ]  use command line parameters for configuration ([cxxopts][4])
+- [ ]  use libxml2 directly, remove xmlwrp dependency
+- [ ]  replace shared_ptr with unique_ptr where possible
+- [ ]  add unit tests (remove client project)
+- [ ]  support for split definition files
+- [ ]  support file download in generator
+- [ ]  auto detect and resolve cyclic references
+- [ ]  c++ 11 support (currently built with c++ 17 enabled)
+- [ ]  cleanup cmake scripts
 
 ----
 
