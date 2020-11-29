@@ -2,7 +2,7 @@ set(PARSER_TESTS OFF)
 
 if(PARSER_TESTS)
   add_subdirectory(generated)
-endif())
+endif()
 
 
 find_library(LIBUUID uuid PATHS /usr/local/lib64 /usr/local/lib)
@@ -18,6 +18,7 @@ add_executable(
 if(PARSER_TESTS)
   target_sources(
     ${target}
+    PRIVATE
     parser_tests.cpp
   )
 endif()
