@@ -44,7 +44,7 @@ static void GenerateParseEnum(
     const Options& options,
     const Definition& definition)
 {
-    stream << "    auto s = stringFromXml(objNode);" << '\n';
+    stream << "    auto s = StringFromXml(objNode);" << '\n';
 
     bool elseIf = false;
 
@@ -89,7 +89,7 @@ static void GenerateWriteEnum(
     stream << "        default: break;" << '\n';
 
     stream << "    }" << '\n';
-    stream << "    stringToXml(objNode, s);" << '\n';
+    stream << "    StringToXml(objNode, s);" << '\n';
 }
 
 static void GenerateParseBasic(
@@ -427,12 +427,12 @@ void GenerateParser(
     stream << "}" << '\n';
     stream << '\n';
 
-    stream << "std::shared_ptr<SoapBaseType> " << typeName << "PtrFromXml(" << '\n';
+    stream << "std::shared_ptr<soaplib::SoapBaseType> " << typeName << "PtrFromXml(" << '\n';
     stream << "    " << "const xml::Node& objNode)" << '\n';
     stream << "{" << '\n';
     stream << "    auto obj = std::make_shared<" << parameterType << ">();" << '\n';
     stream << "    " << typeName << "FromXml(objNode, *obj.get());" << '\n';
-    stream << "    " << "return std::static_pointer_cast<SoapBaseType>(obj);" << '\n';
+    stream << "    " << "return std::static_pointer_cast<soaplib::SoapBaseType>(obj);" << '\n';
     stream << "}" << '\n';
     stream << '\n';
 

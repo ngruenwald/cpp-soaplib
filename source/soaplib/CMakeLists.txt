@@ -94,6 +94,9 @@ add_library(
   types/uuid.hpp
   types/base64.cpp
   types/base64.h
+  types/simpleTypes.cpp
+  types/simpleTypes.hpp
+  types/soapBaseType.hpp
   types/timestamp.cpp
   types/timestamp.hpp
   types/duration.cpp
@@ -182,6 +185,8 @@ install(
 
 install(
   FILES
+    types/simpleTypes.hpp
+    types/soapBaseType.hpp
     types/uuid.hpp
     types/base64.h
     types/timestamp.hpp

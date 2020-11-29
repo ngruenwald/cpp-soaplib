@@ -32,6 +32,10 @@ void GenerateImplementation(
 
     stream << '\n';
 
+    stream << "using namespace ::soaplib;" << '\n';
+
+    stream << '\n';
+
     std::string contract = "";
 
     stream << service.name.name << "::" << service.name.name << "(" << '\n';
@@ -113,9 +117,9 @@ void GenerateImplementation(
             stream << "    auto envelope = response->GetRootNode();" << '\n';
             stream << "    auto operation = envelope.GetChild(\"Body\").GetChild(\"" << ResolveType(outputType) << "\");" << '\n';
             stream << '\n';
-            if (ResolveType(outputType) != "void")
+            if (ResolveType(outputType) != "void")    // TODO: same as above?
             {
-                stream << "    return " << nspref << ResolveType(outputType) << "FromXml(operation);" << '\n';
+                stream << "    return " << _nspref << ResolveType(outputType) << "FromXml(operation);" << '\n';
             }
             stream << "}" << '\n';
 

@@ -40,7 +40,7 @@ void GenerateAnyTypeHeader(
 
     stream << "struct " << typeName << '\n';
     stream << "{" << '\n';
-    stream << "    std::shared_ptr<SoapBaseType> Value;" << '\n';
+    stream << "    std::shared_ptr<soaplib::SoapBaseType> Value;" << '\n';
     stream << "};" << '\n';
 
     stream << '\n';

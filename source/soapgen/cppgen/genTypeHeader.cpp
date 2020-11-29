@@ -72,7 +72,7 @@ static void GenerateTypeHeaderET(
     }
     else
     {
-        stream << indent << "    : " << "SoapBaseType" << '\n';
+        stream << indent << "    : " << "soaplib::SoapBaseType" << '\n';
     }
 
 
@@ -244,7 +244,7 @@ static void GenerateTypeHeaderB(
         stream
             << indent
             << "    : "
-            << typePrefix << "SoapBaseType" << typeSuffix
+            << typePrefix << "soaplib::SoapBaseType" << typeSuffix
             << '\n';
     }
 
@@ -264,7 +264,7 @@ static void GenerateTypeHeaderE(
     const std::string indent(indentSize, ' ');
 
     stream << indent << "struct " << typePrefix << ResolveType(type.name, true) << typeSuffix << '\n';
-    stream << indent << "    : " << typePrefix << "SoapBaseType" << typeSuffix << '\n';
+    stream << indent << "    : " << typePrefix << "soaplib::SoapBaseType" << typeSuffix << '\n';
     stream << indent << "{" << '\n';
     stream << indent << indent << "enum Values" << '\n';
     stream << indent << indent << "{" << '\n';
@@ -517,7 +517,7 @@ void GenerateHeader(
 
     stream << '\n';
 
-    stream << "std::shared_ptr<SoapBaseType> " << typeName << "PtrFromXml(" << '\n';
+    stream << "std::shared_ptr<soaplib::SoapBaseType> " << typeName << "PtrFromXml(" << '\n';
     stream << "    " << "const xml::Node& objNode);" << '\n';
 
     stream << '\n';

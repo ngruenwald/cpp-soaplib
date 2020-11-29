@@ -123,7 +123,7 @@ static void GenerateTypeMap(
     const Options& options,
     const Definition& definition)
 {
-    stream << "static std::map<std::string, std::shared_ptr<SoapBaseType>(*)(const xml::Node&)> typeMap =" << '\n';
+    stream << "static std::map<std::string, std::shared_ptr<soaplib::SoapBaseType>(*)(const xml::Node&)> typeMap =" << '\n';
     stream << "{" << '\n';
 
     for (const auto& type : definition.types)
@@ -133,18 +133,12 @@ static void GenerateTypeMap(
             continue;
         }
 
-        if (IsNativeType(type->name))
-        {
-            continue;
-        }
+        // if (IsNativeType(type->name))
+        // {
+        //     continue;
+        // }
 
         auto typeName = ResolveType(type->name, true);
-
-        // TODO
-        if (typeName == "int" || typeName == "Duration" || typeName == "uuid")
-        {
-            continue;
-        }
 
         stream << "    { \"" << typeName << "\", " << typeName << "PtrFromXml" << " }," << '\n';
     }
@@ -169,6 +163,7 @@ void GenerateAnyTypeImplementation(
     stream << "#include <map>" << '\n';
     stream << "#include \"" << typeName << ".hpp\"" << '\n';
     stream << '\n';
+    stream << "#include <soaplib/basicTypes.hpp>" << '\n';
     stream << "#include <soaplib/parseHelper.hpp>" << '\n';
     stream << '\n';
 
@@ -186,6 +181,10 @@ void GenerateAnyTypeImplementation(
     {
         stream << "namespace " << ns << " {" << '\n';
     }
+
+    stream << '\n';
+
+    stream << "using namespace ::soaplib;" << '\n';
 
     stream << '\n';
 
