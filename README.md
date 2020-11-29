@@ -18,6 +18,7 @@ The library itself uses [cpp-httplib][1] for the basic HTTP handling.
 * [cpp-httplib][1] (soaplib, _included_)
 * [Catch2][5] (unit tests, _included_)
 * [LibXml2][2] (soapgen, soaplib)
+* [OpenSSL][6] (soaplib)
 
 
 ## TODO
@@ -88,4 +89,4 @@ Run with:
 [3]: https://github.com/pantor/inja
 [4]: https://github.com/jarro2783/cxxopts
 [5]: https://github.com/catchorg/Catch2
-
+[6]: https://www.openssl.org/
