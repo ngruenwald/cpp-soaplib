@@ -23,8 +23,9 @@ The library itself uses [cpp-httplib][1] for the basic HTTP handling.
 
 ## TODO
 
-- [ ]  all types (int, string, etc.) should be derived from _SoapLibBaseType_
-- [ ]  add operators for direct value access on simple types (single member and value types)
+- [x]  all types (int, string, etc.) should be derived from _SoapLibBaseType_
+- [~]  add operators for direct value access on simple types (single member and value types)
+- [ ]  implement missing data types
 - [ ]  abort if unknown type is detected
 - [ ]  use templates for code generation ([inja][3])
 - [ ]  use command line parameters for configuration ([cxxopts][4])
