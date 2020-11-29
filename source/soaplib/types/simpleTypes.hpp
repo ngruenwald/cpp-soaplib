@@ -128,8 +128,8 @@ soaplib::Void VoidFromXml(const xml::Node& node);
 std::shared_ptr<soaplib::SoapBaseType> VoidPtrFomXml(const xml::Node& node);
 void VoidToXml(xml::Node& node, const soaplib::Void& obj);
 
-// TODO: quick fix ... solve this properly
-namespace soaplib { soaplib::Void VoidFromXml(const xml::Node& node) { return ::VoidFromXml(node); } }
+// // TODO: quick fix ... solve this properly
+namespace soaplib { inline soaplib::Void VoidFromXml(const xml::Node& node) { return ::VoidFromXml(node); } }
 
 //
 // signed integers
