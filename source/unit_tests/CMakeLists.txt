@@ -13,6 +13,7 @@ add_executable(
   ${target}
   unit_tests.cpp
   pointer_tests.cpp
+  type_tests.cpp
 )
 
 if(PARSER_TESTS)
@@ -22,6 +23,12 @@ if(PARSER_TESTS)
     parser_tests.cpp
   )
 endif()
+
+target_link_libraries(
+  ${target}
+  PUBLIC
+  soaplib::soaplib
+)
 
 target_link_libraries(
   ${target}

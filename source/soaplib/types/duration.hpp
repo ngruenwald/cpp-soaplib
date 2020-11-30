@@ -1,5 +1,6 @@
 #pragma once
 
+#include <chrono>
 #include <memory>
 #include <string>
 #include <soaplib/types/soapBaseType.hpp>
@@ -12,10 +13,35 @@ namespace soaplib {
 class Duration
     : public SoapBaseType
 {
+public:
+    Duration() = default;
+
+    Duration(
+        int years, int months, int days,
+        int hours, int minutes, int seconds)
+        : years_(years), months_(months), days_(days)
+        , hours_(hours), minutes_(minutes), seconds_(seconds)
+    {
+    }
+
+    int Years() const { return years_; }
+    int Months() const { return months_; }
+    int Days() const { return days_; }
+    int Hours() const { return hours_; }
+    int Minutes() const { return minutes_; }
+    int Seconds() const { return seconds_; }
 
 public:
-	static std::string ToString(const Duration& t);
-	static Duration FromString(const std::string& s);
+    static std::string ToString(const Duration& t);
+    static Duration FromString(const std::string& s);
+
+private:
+    int years_ = 0;
+    int months_ = 0;
+    int days_ = 0;
+    int hours_ = 0;
+    int minutes_ = 0;
+    int seconds_ = 0;
 
 }; // Duration
 

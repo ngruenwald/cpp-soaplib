@@ -8,12 +8,52 @@ namespace soaplib {
 
 std::string Duration::ToString(const Duration& t)
 {
-	return {};
+    std::ostringstream oss;
+    oss << 'P';
+    if (t.Years() > 0) oss << t.Years() << 'Y';
+    if (t.Months() > 0) oss << t.Months() << 'M';
+    if (t.Days() > 0) oss << t.Days() << 'D';
+
+    if (t.Hours() > 0 || t.Minutes() > 0 || t.Seconds() > 0)
+    {
+        oss << 'T';
+        if (t.Hours() > 0) oss << t.Hours() << 'H';
+        if (t.Minutes() > 0) oss << t.Minutes() << 'M';
+        if (t.Seconds() > 0) oss << t.Seconds() << 'S';
+    }
+
+    return oss.str();
 }
 
 Duration Duration::FromString(const std::string& s)
 {
-	return {};
+    auto d = Duration{};
+
+    if (!s.empty() && s[0] == 'P')
+    {
+        bool inTime = false;
+        std::string::size_type beg = 1, end = 1;
+        while (end < s.length())
+        {
+            for (end = beg; end < s.length() && std::isdigit(s[end]); ++end);
+            auto val = beg != end ? std::stoi(s.substr(beg, end - beg)) : 0;
+
+            switch (s[end])
+            {
+                case 'Y': d.years_ = val; break;
+                case 'M': inTime ? d.minutes_ = val : d.months_ = val; break;
+                case 'D': d.days_ = val; break;
+                case 'T': inTime = true; break;
+                case 'H': d.hours_ = val; break;
+                case 'S': d.seconds_ = val; break;
+                default: break;
+            }
+
+            beg = end + 1;
+        }
+    }
+
+	return d;
 }
 
 } // namespace soaplib
