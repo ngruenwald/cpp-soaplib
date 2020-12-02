@@ -1,5 +1,8 @@
 #include "uuid.hpp"
 
+#include <libxmlwrp.hpp>
+
+
 #ifdef HAVE_BASE64
 #include "b64.h"
 #endif // HAVE_BASE64
@@ -162,3 +165,35 @@ bool uuid::validate_uuid_str(
 }
 
 } // namespace soaplib
+
+
+void uuidFromXml(
+    const xml::Node& node,
+    soaplib::uuid& obj)
+{
+    auto s = node.GetStringVal();
+    obj = soaplib::uuid::from_string(s);
+}
+
+soaplib::uuid uuidFromXml(
+    const xml::Node& node)
+{
+    auto obj = soaplib::uuid{};
+    uuidFromXml(node, obj);
+    return obj;
+}
+
+std::shared_ptr<soaplib::SoapBaseType> uuidPtrFromXml(
+    const xml::Node& node)
+{
+    auto obj = std::make_shared<soaplib::uuid>();
+    uuidFromXml(node, *obj.get());
+    return std::static_pointer_cast<soaplib::SoapBaseType>(obj);
+}
+
+void uuidToXml(
+    xml::Node& node,
+    const soaplib::uuid& value)
+{
+    node.SetVal(value.to_string());
+}

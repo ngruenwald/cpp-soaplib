@@ -1,4 +1,4 @@
-/* 
+/*
    base64.cpp and base64.h
 
    base64 encoding and decoding with C++.
@@ -32,7 +32,10 @@
 #include "base64.h"
 #include <iostream>
 
-static const std::string base64_chars = 
+#include <libxmlwrp.hpp>
+
+
+static const std::string base64_chars =
              "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
              "abcdefghijklmnopqrstuvwxyz"
              "0123456789+/";
@@ -119,4 +122,38 @@ std::string base64_decode(std::string const& encoded_string) {
   }
 
   return ret;
+}
+
+
+void Base64FromXml(
+    const xml::Node& node,
+    soaplib::Base64& obj)
+{
+    auto s = node.GetStringVal();
+    obj = soaplib::Base64(base64_decode(s));
+}
+
+soaplib::Base64 Base64FromXml(
+    const xml::Node& node)
+{
+    soaplib::Base64 obj;
+    Base64FromXml(node, obj);
+    return obj;
+}
+
+std::shared_ptr<soaplib::SoapBaseType> Base64PtrFomXml(
+    const xml::Node& node)
+{
+    auto obj = std::make_shared<soaplib::Base64>();
+    Base64FromXml(node, *obj.get());
+    return std::static_pointer_cast<soaplib::SoapBaseType>(obj);
+}
+
+void Base64ToXml(
+    xml::Node& node,
+    const soaplib::Base64& value)
+{
+    auto ptr = reinterpret_cast<const unsigned char*>(value.Data().c_str());
+    auto len = value.Data().length();
+    node.SetVal(base64_encode(ptr, len));
 }

@@ -21,6 +21,10 @@ set(
   genTypeHeader.hpp
   genTypeImpl.cpp
   genTypeImpl.hpp
+  genAnyTypeHeader.cpp
+  genAnyTypeHeader.hpp
+  genAnyTypeImpl.cpp
+  genAnyTypeImpl.hpp
   genCMakeLists.cpp
   genCMakeLists.hpp
 )

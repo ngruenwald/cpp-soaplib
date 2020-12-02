@@ -5,6 +5,8 @@
 #include <iomanip>
 #include <sstream>
 
+#include <libxmlwrp.hpp>
+
 namespace soaplib {
 
 Timestamp Timestamp::Empty{};
@@ -110,3 +112,35 @@ Timestamp Timestamp::FromString(const std::string& s)
 }
 
 } // namespace soaplib
+
+
+void TimestampFromXml(
+    const xml::Node& node,
+    soaplib::Timestamp& obj)
+{
+    auto s = node.GetStringVal();
+    obj = soaplib::Timestamp::FromString(s);
+}
+
+soaplib::Timestamp TimestampFromXml(
+    const xml::Node& node)
+{
+    auto obj = soaplib::Timestamp{};
+    TimestampFromXml(node, obj);
+    return obj;
+}
+
+std::shared_ptr<soaplib::SoapBaseType> TimestampPtrFomXml(
+    const xml::Node& node)
+{
+    auto obj = std::make_shared<soaplib::Timestamp>();
+    TimestampFromXml(node, *obj.get());
+    return std::static_pointer_cast<soaplib::SoapBaseType>(obj);
+}
+
+void TimestampToXml(
+    xml::Node& node,
+    const soaplib::Timestamp& value)
+{
+    node.SetVal(soaplib::Timestamp::ToString(value));
+}

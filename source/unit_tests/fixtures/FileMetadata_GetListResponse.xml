@@ -1,0 +1,187 @@
+<s:Envelope xmlns:s="http://www.w3.org/2003/05/soap-envelope" xmlns:a="http://www.w3.org/2005/08/addressing">
+    <s:Header>
+        <a:Action s:mustUnderstand="1">http://tempuri.org/IDispatcherService/FileMetadata_GetListResponse</a:Action>
+        <a:RelatesTo>urn:uuid:1b04e338-247d-4244-b10f-d75342f5b138</a:RelatesTo>
+    </s:Header>
+    <s:Body>
+        <FileMetadata_GetListResponse xmlns="http://tempuri.org/">
+            <FileMetadata_GetListResult xmlns:b="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Common.DataContract" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+                <b:LocalizableMessages i:nil="true" xmlns:c="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Common.DC"/>
+                <b:CRUDOperationRights i:nil="true" xmlns:c="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/>
+                <b:List>
+                    <b:ReturnEntity>
+                        <b:Value i:type="c:FileMetadataGetListDCResponseItem" xmlns:c="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Dispatcher.DC.Entities">
+                            <c:FileMetadataDetails>
+                                <c:Author i:nil="true"/>
+                                <c:Content i:nil="true"/>
+                                <c:Created i:nil="true"/>
+                                <c:Extension i:nil="true"/>
+                                <c:MimeType i:nil="true"/>
+                                <c:MultiLanguageFields i:nil="true" xmlns:d="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Dispatcher.DC.Messages"/>
+                                <c:OriginalFileName i:nil="true"/>
+                                <c:SendRequired i:nil="true"/>
+                                <c:Size>0</c:Size>
+                                <c:Tenant_Id>0</c:Tenant_Id>
+                                <c:UniversalIdentifier>8a583996-03e8-4113-ade6-b3fee3a18f25</c:UniversalIdentifier>
+                                <c:Updated i:nil="true"/>
+                                <c:Version>3</c:Version>
+                                <c:VoiceMessage_Count i:nil="true"/>
+                            </c:FileMetadataDetails>
+                            <c:Id>2</c:Id>
+                        </b:Value>
+                    </b:ReturnEntity>
+                    <b:ReturnEntity>
+                        <b:Value i:type="c:FileMetadataGetListDCResponseItem" xmlns:c="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Dispatcher.DC.Entities">
+                            <c:FileMetadataDetails>
+                                <c:Author i:nil="true"/>
+                                <c:Content i:nil="true"/>
+                                <c:Created i:nil="true"/>
+                                <c:Extension i:nil="true"/>
+                                <c:MimeType i:nil="true"/>
+                                <c:MultiLanguageFields i:nil="true" xmlns:d="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Dispatcher.DC.Messages"/>
+                                <c:OriginalFileName i:nil="true"/>
+                                <c:SendRequired i:nil="true"/>
+                                <c:Size>0</c:Size>
+                                <c:Tenant_Id>0</c:Tenant_Id>
+                                <c:UniversalIdentifier>9b9f7f2e-94cb-43de-92a3-68aaf9b2bd3d</c:UniversalIdentifier>
+                                <c:Updated i:nil="true"/>
+                                <c:Version>6</c:Version>
+                                <c:VoiceMessage_Count i:nil="true"/>
+                            </c:FileMetadataDetails>
+                            <c:Id>21</c:Id>
+                        </b:Value>
+                    </b:ReturnEntity>
+                    <b:ReturnEntity>
+                        <b:Value i:type="c:FileMetadataGetListDCResponseItem" xmlns:c="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Dispatcher.DC.Entities">
+                            <c:FileMetadataDetails>
+                                <c:Author i:nil="true"/>
+                                <c:Content i:nil="true"/>
+                                <c:Created i:nil="true"/>
+                                <c:Extension i:nil="true"/>
+                                <c:MimeType i:nil="true"/>
+                                <c:MultiLanguageFields i:nil="true" xmlns:d="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Dispatcher.DC.Messages"/>
+                                <c:OriginalFileName i:nil="true"/>
+                                <c:SendRequired i:nil="true"/>
+                                <c:Size>0</c:Size>
+                                <c:Tenant_Id>0</c:Tenant_Id>
+                                <c:UniversalIdentifier>eaff8fb2-eaa2-45c4-948a-51d75c1da97b</c:UniversalIdentifier>
+                                <c:Updated i:nil="true"/>
+                                <c:Version>1</c:Version>
+                                <c:VoiceMessage_Count i:nil="true"/>
+                            </c:FileMetadataDetails>
+                            <c:Id>28</c:Id>
+                        </b:Value>
+                    </b:ReturnEntity>
+                    <b:ReturnEntity>
+                        <b:Value i:type="c:FileMetadataGetListDCResponseItem" xmlns:c="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Dispatcher.DC.Entities">
+                            <c:FileMetadataDetails>
+                                <c:Author i:nil="true"/>
+                                <c:Content i:nil="true"/>
+                                <c:Created i:nil="true"/>
+                                <c:Extension i:nil="true"/>
+                                <c:MimeType i:nil="true"/>
+                                <c:MultiLanguageFields i:nil="true" xmlns:d="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Dispatcher.DC.Messages"/>
+                                <c:OriginalFileName i:nil="true"/>
+                                <c:SendRequired i:nil="true"/>
+                                <c:Size>0</c:Size>
+                                <c:Tenant_Id>0</c:Tenant_Id>
+                                <c:UniversalIdentifier>3b3885c0-8346-4945-9acb-029222923f1a</c:UniversalIdentifier>
+                                <c:Updated i:nil="true"/>
+                                <c:Version>3</c:Version>
+                                <c:VoiceMessage_Count i:nil="true"/>
+                            </c:FileMetadataDetails>
+                            <c:Id>6</c:Id>
+                        </b:Value>
+                    </b:ReturnEntity>
+                    <b:ReturnEntity>
+                        <b:Value i:type="c:FileMetadataGetListDCResponseItem" xmlns:c="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Dispatcher.DC.Entities">
+                            <c:FileMetadataDetails>
+                                <c:Author i:nil="true"/>
+                                <c:Content i:nil="true"/>
+                                <c:Created i:nil="true"/>
+                                <c:Extension i:nil="true"/>
+                                <c:MimeType i:nil="true"/>
+                                <c:MultiLanguageFields i:nil="true" xmlns:d="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Dispatcher.DC.Messages"/>
+                                <c:OriginalFileName i:nil="true"/>
+                                <c:SendRequired i:nil="true"/>
+                                <c:Size>0</c:Size>
+                                <c:Tenant_Id>0</c:Tenant_Id>
+                                <c:UniversalIdentifier>1a0c0668-9fe0-46d8-8912-c421ea483707</c:UniversalIdentifier>
+                                <c:Updated i:nil="true"/>
+                                <c:Version>1</c:Version>
+                                <c:VoiceMessage_Count i:nil="true"/>
+                            </c:FileMetadataDetails>
+                            <c:Id>23</c:Id>
+                        </b:Value>
+                    </b:ReturnEntity>
+                    <b:ReturnEntity>
+                        <b:Value i:type="c:FileMetadataGetListDCResponseItem" xmlns:c="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Dispatcher.DC.Entities">
+                            <c:FileMetadataDetails>
+                                <c:Author i:nil="true"/>
+                                <c:Content i:nil="true"/>
+                                <c:Created i:nil="true"/>
+                                <c:Extension i:nil="true"/>
+                                <c:MimeType i:nil="true"/>
+                                <c:MultiLanguageFields i:nil="true" xmlns:d="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Dispatcher.DC.Messages"/>
+                                <c:OriginalFileName i:nil="true"/>
+                                <c:SendRequired i:nil="true"/>
+                                <c:Size>0</c:Size>
+                                <c:Tenant_Id>0</c:Tenant_Id>
+                                <c:UniversalIdentifier>653013f0-9e48-4ac6-bb56-6614bd0005b3</c:UniversalIdentifier>
+                                <c:Updated i:nil="true"/>
+                                <c:Version>4</c:Version>
+                                <c:VoiceMessage_Count i:nil="true"/>
+                            </c:FileMetadataDetails>
+                            <c:Id>5</c:Id>
+                        </b:Value>
+                    </b:ReturnEntity>
+                    <b:ReturnEntity>
+                        <b:Value i:type="c:FileMetadataGetListDCResponseItem" xmlns:c="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Dispatcher.DC.Entities">
+                            <c:FileMetadataDetails>
+                                <c:Author i:nil="true"/>
+                                <c:Content i:nil="true"/>
+                                <c:Created i:nil="true"/>
+                                <c:Extension i:nil="true"/>
+                                <c:MimeType i:nil="true"/>
+                                <c:MultiLanguageFields i:nil="true" xmlns:d="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Dispatcher.DC.Messages"/>
+                                <c:OriginalFileName i:nil="true"/>
+                                <c:SendRequired i:nil="true"/>
+                                <c:Size>0</c:Size>
+                                <c:Tenant_Id>0</c:Tenant_Id>
+                                <c:UniversalIdentifier>d43eaf77-4874-4408-9637-1cbfcadc21c1</c:UniversalIdentifier>
+                                <c:Updated i:nil="true"/>
+                                <c:Version>2</c:Version>
+                                <c:VoiceMessage_Count i:nil="true"/>
+                            </c:FileMetadataDetails>
+                            <c:Id>24</c:Id>
+                        </b:Value>
+                    </b:ReturnEntity>
+                    <b:ReturnEntity>
+                        <b:Value i:type="c:FileMetadataGetListDCResponseItem" xmlns:c="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Dispatcher.DC.Entities">
+                            <c:FileMetadataDetails>
+                                <c:Author i:nil="true"/>
+                                <c:Content i:nil="true"/>
+                                <c:Created i:nil="true"/>
+                                <c:Extension i:nil="true"/>
+                                <c:MimeType i:nil="true"/>
+                                <c:MultiLanguageFields i:nil="true" xmlns:d="http://schemas.datacontract.org/2004/07/Eurofunk.Idds.Administration.Dispatcher.DC.Messages"/>
+                                <c:OriginalFileName i:nil="true"/>
+                                <c:SendRequired i:nil="true"/>
+                                <c:Size>0</c:Size>
+                                <c:Tenant_Id>0</c:Tenant_Id>
+                                <c:UniversalIdentifier>c31d75bd-78d9-44ff-9bc8-79af895f26d8</c:UniversalIdentifier>
+                                <c:Updated i:nil="true"/>
+                                <c:Version>6</c:Version>
+                                <c:VoiceMessage_Count i:nil="true"/>
+                            </c:FileMetadataDetails>
+                            <c:Id>1</c:Id>
+                        </b:Value>
+                    </b:ReturnEntity>
+                </b:List>
+                <b:NextReconnectToSlave i:nil="true"/>
+                <b:NumberOfPages>0</b:NumberOfPages>
+                <b:NumberOfRecords>0</b:NumberOfRecords>
+            </FileMetadata_GetListResult>
+        </FileMetadata_GetListResponse>
+    </s:Body>
+</s:Envelope>

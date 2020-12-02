@@ -2,6 +2,8 @@
 
 #include <libxmlwrp.hpp>
 
+#if 0
+
 #ifdef WIN32
 #include <string.h>
 inline bool _strCaseCompare(
@@ -272,3 +274,4 @@ void uuidToXml(
 }
 
 //} // namespace soaplib
+#endif

@@ -90,14 +90,19 @@ add_library(
   soapException.hpp
   soapService.cpp
   soapService.hpp
+  types/dateTypes.cpp
+  types/dateTypes.hpp
   types/uuid.cpp
   types/uuid.hpp
   types/base64.cpp
   types/base64.h
-  types/timestamp.cpp
-  types/timestamp.hpp
-  types/duration.cpp
-  types/duration.hpp
+  types/simpleTypes.cpp
+  types/simpleTypes.hpp
+  types/soapBaseType.hpp
+#  types/timestamp.cpp
+#  types/timestamp.hpp
+#  types/duration.cpp
+#  types/duration.hpp
   basicTypes.cpp
   basicTypes.hpp
   parseHelper.cpp
@@ -182,6 +187,10 @@ install(
 
 install(
   FILES
+    types/dateTypes.cpp
+    types/dateTypes.hpp
+    types/simpleTypes.hpp
+    types/soapBaseType.hpp
     types/uuid.hpp
     types/base64.h
     types/timestamp.hpp

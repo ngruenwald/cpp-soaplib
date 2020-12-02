@@ -1,11 +1,17 @@
 #pragma once
 
 #include <chrono>
+#include <memory>
 #include <string>
+#include <soaplib/types/soapBaseType.hpp>
+
+
+namespace xml { class Node; }
 
 namespace soaplib {
 
 class Timestamp
+    : public SoapBaseType
 {
 public:
 	static Timestamp Empty;
@@ -46,3 +52,9 @@ inline soaplib::Timestamp from_string(const std::string& s)
 	return Timestamp::FromString(s);
 }
 */
+
+
+void TimestampFromXml(const xml::Node& node, soaplib::Timestamp& obj);
+soaplib::Timestamp TimestampFromXml(const xml::Node& node);
+std::shared_ptr<soaplib::SoapBaseType> TimestampPtrFomXml(const xml::Node& node);
+void TimestampToXml(xml::Node& node, const soaplib::Timestamp& value);

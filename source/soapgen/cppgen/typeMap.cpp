@@ -7,37 +7,80 @@ namespace cppgen {
 
 std::map<std::string, std::string> NativeTypes =
 {
-    { "byte",           "std::uint8_t"       },
-    { "boolean",        "bool"               },
-    { "string",         "std::string"        },
-    { "anyURI",         "std::string"        },
-    { "QName",          "std::string"        },
-    { "duration",       "soaplib::Duration"  },
-    { "dateTime",       "soaplib::Timestamp" },
-    { "guid",           "soaplib::uuid"      },
-    { "base64Binary",   "soaplib::Base64"    },
-    { "decimal",        "double"             },
-    { "double",         "double"             },
-    { "float",          "float"              },
-    { "char",           "std::int"           },
-    { "short",          "std::int16_t"       },
-    { "int",            "std::int32_t"       },
-    { "long",           "std::int64_t"       },
-    { "unsignedByte",   "std::uint8_t"       },
-    { "unsignedShort",  "std::uint16_t"      },
-    { "unsignedInt",    "std::uint32_t"      },
-    { "unsignedLong",   "std::uint64_t"      },
-    { "Id",             "long"               },
-    { "Ref",            "long"               },
-    { "anyType",        "std::string"        },
-    { "",               "void"               },
+    // string types
+    { "ENTITIES",           "soaplib::String"   },
+    { "ENTITY",             "soaplib::String"   },
+    { "ID",                 "soaplib::String"   },
+    { "IDREF",              "soaplib::String"   },
+    { "language",           "soaplib::String"   },
+    { "Name",               "soaplib::String"   },
+    { "NCName",             "soaplib::String"   },
+    { "NMTOKEN",            "soaplib::String"   },
+    { "NMTOKENS",           "soaplib::String"   },
+    { "normalizedStrings",  "soaplib::String"   },
+    { "QName",              "soaplib::String"   },
+    { "string",             "soaplib::String"   },
+    { "token",              "soaplib::String",  },
+
+    // date types
+    { "date",               "soaplib::Date"     },
+    { "time",               "soaplib::Time"     },
+    { "dateTime",           "soaplib::DateTime" },
+    { "duration",           "soaplib::Duration" },
+    { "gDay",               "soaplib::Date"     },
+    { "gMonth",             "soaplib::Date"     },
+    { "gMonthDay",          "soaplib::Date"     },
+    { "gYear",              "soaplib::Date"     },
+    { "gYearMonth",         "soaplib::Date"     },
+
+    // numeric types
+    { "byte",               "soaplib::UInt8"    },
+    { "char",               "soaplib::Int8"     },
+    { "decimal",            "soaplib::Double"   },
+    { "int",                "soaplib::Int32"    },
+    { "integer",            "soaplib::Int32"    },
+    { "long",               "soaplib::Int64"    },
+    { "negativeInteger",    "soaplib::Int32"    },
+    { "nonNegativeInteger", "soaplib::Int32"    },
+    { "nonPositiveInteger", "soaplib::Int32"    },
+    { "positiveInteger",    "soaplib::Int32"    },
+    { "short",              "soaplib::Int16"    },
+    { "unsignedByte",       "soaplib::UInt8"    },
+    { "unsignedShort",      "soaplib::UInt16"   },
+    { "unsignedInt",        "soaplib::UInt32"   },
+    { "unsignedLong",       "soaplib::UInt64"   },
+
+    // miscellaneous
+    { "anyURI",             "soaplib::String"   },
+    { "base64Binary",       "soaplib::Base64"   },
+    { "boolean",            "soaplib::Bool"     },
+    { "double",             "soaplib::Double"   },
+    { "float",              "soaplib::Float"    },
+    { "hexBinary",          "soaplib::String"   },
+    { "float",              "soaplib::Float"    },
+    { "NOTATION",           "soaplib::String"   },
+
+    // custom
+    { "guid",               "soaplib::uuid"     },
+    { "Id",                 "soaplib::Int64"    },
+    { "Ref",                "soaplib::Int64"    },
+    { "anyType",            "SoapLibAnyType"    },
+    { "",                   "soaplib::Void"     },
 };
 
 
 bool IsNativeType(
     const Name& name)
 {
-    return NativeTypes.find(name.name) != NativeTypes.end();
+    // TODO
+    auto it = NativeTypes.find(name.name);
+
+    if (it->second == "SoapLibAnyType")
+    {
+        return false;
+    }
+
+    return it != NativeTypes.end();
 }
 
 std::string ResolveType(

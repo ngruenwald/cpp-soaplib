@@ -7,14 +7,20 @@
 #include <optional>
 #include <vector>
 
+#include <soaplib/types/soapBaseType.hpp>
+#include <soaplib/types/simpleTypes.hpp>
+#include <soaplib/types/dateTypes.hpp>
 #include <soaplib/types/uuid.hpp>
-#include <soaplib/types/timestamp.hpp>
-#include <soaplib/types/duration.hpp>
+//#include <soaplib/types/timestamp.hpp>
+//#include <soaplib/types/duration.hpp>
 #include <soaplib/types/base64.h>
+
+#if 0
 
 namespace xml { class Node; }
 
 //namespace soaplib {
+
 
 std::int8_t int8_tFromXml(
     const xml::Node& node);
@@ -136,3 +142,4 @@ void uuidToXml(
     const soaplib::uuid& value);
 
 //} // namespace soaplib
+#endif

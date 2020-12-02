@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <string>
 
 #ifdef WIN32
@@ -8,9 +9,15 @@
 #include <uuid/uuid.h>	// libuuid
 #endif // WIN32
 
+#include <soaplib/types/soapBaseType.hpp>
+
+
+namespace xml { class Node; }
+
 namespace soaplib {
 
 class uuid
+    : public SoapBaseType
 {
 public:
     uuid(void);
@@ -85,3 +92,9 @@ inline std::istream& operator>>(
 }
 
 } // namespace soaplib
+
+
+void uuidFromXml(const xml::Node& node, soaplib::uuid& obj);
+soaplib::uuid uuidFromXml(const xml::Node& node);
+std::shared_ptr<soaplib::SoapBaseType> uuidPtrFromXml(const xml::Node& node);
+void uuidToXml(xml::Node& node, const soaplib::uuid& value);
