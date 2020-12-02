@@ -411,7 +411,7 @@ soaplib::Duration DurationFromXml(const xml::Node& n)
     return du;
 }
 
-std::shared_ptr<soaplib::Duration> DurationPtrFromXml(const xml::Node& n)
+std::shared_ptr<soaplib::SoapBaseType> DurationPtrFromXml(const xml::Node& n)
 {
     auto ptr = std::make_shared<soaplib::Duration>();
     DurationFromXml(n, *ptr.get());

@@ -132,5 +132,5 @@ void DateTimeToXml(xml::Node& n, const soaplib::DateTime& d);
 
 void DurationFromXml(const xml::Node& n, soaplib::Duration& d);
 soaplib::Duration DurationFromXml(const xml::Node& n);
-std::shared_ptr<soaplib::Duration> DurationPtrFromXml(const xml::Node& n);
+std::shared_ptr<soaplib::SoapBaseType> DurationPtrFromXml(const xml::Node& n);
 void DurationToXml(xml::Node& n, const soaplib::Duration& d);
