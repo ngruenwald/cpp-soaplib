@@ -1,6 +1,6 @@
 #include "duration.hpp"
 
-#include <libxmlwrp.hpp>
+#include "xml/xml.hpp"
 
 
 namespace soaplib {

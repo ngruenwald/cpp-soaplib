@@ -32,7 +32,7 @@
 #include "base64.h"
 #include <iostream>
 
-#include <libxmlwrp.hpp>
+#include "xml/xml.hpp"
 
 
 static const std::string base64_chars =
@@ -126,7 +126,7 @@ std::string base64_decode(std::string const& encoded_string) {
 
 
 void Base64FromXml(
-    const xml::Node& node,
+    const soaplib::xml::Node& node,
     soaplib::Base64& obj)
 {
     auto s = node.GetStringVal();
@@ -134,7 +134,7 @@ void Base64FromXml(
 }
 
 soaplib::Base64 Base64FromXml(
-    const xml::Node& node)
+    const soaplib::xml::Node& node)
 {
     soaplib::Base64 obj;
     Base64FromXml(node, obj);
@@ -142,7 +142,7 @@ soaplib::Base64 Base64FromXml(
 }
 
 std::shared_ptr<soaplib::SoapBaseType> Base64PtrFomXml(
-    const xml::Node& node)
+    const soaplib::xml::Node& node)
 {
     auto obj = std::make_shared<soaplib::Base64>();
     Base64FromXml(node, *obj.get());
@@ -150,7 +150,7 @@ std::shared_ptr<soaplib::SoapBaseType> Base64PtrFomXml(
 }
 
 void Base64ToXml(
-    xml::Node& node,
+    soaplib::xml::Node& node,
     const soaplib::Base64& value)
 {
     auto ptr = reinterpret_cast<const unsigned char*>(value.Data().c_str());

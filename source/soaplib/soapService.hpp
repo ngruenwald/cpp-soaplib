@@ -3,7 +3,7 @@
 #include <memory>
 #include <string>
 
-#include <libxmlwrp.hpp>
+#include <soaplib/xml/xml.hpp>
 
 #include <soaplib/soapClient.hpp>
 

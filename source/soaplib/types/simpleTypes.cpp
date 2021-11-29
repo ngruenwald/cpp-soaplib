@@ -1,6 +1,6 @@
 #include "simpleTypes.hpp"
 
-#include <libxmlwrp.hpp>
+#include "xml/xml.hpp"
 
 
 //
@@ -28,7 +28,7 @@ inline bool _strCaseCompare(
 
 template<typename Tvalue>
 Tvalue _valueFromXml(
-    const xml::Node& node)
+    const soaplib::xml::Node& node)
 {
     auto s = node.GetStringVal();
     auto v = std::stoll(s);
@@ -37,7 +37,7 @@ Tvalue _valueFromXml(
 
 template<typename T>
 void _valueToXml(
-    xml::Node& node,
+    soaplib::xml::Node& node,
     T value)
 {
     node.SetVal(std::to_string(value));
@@ -46,13 +46,13 @@ void _valueToXml(
 // ugly but much less typing ;)
 
 #define _FROM_XML_REF(TYPE)                                                    \
-    void TYPE ## FromXml(const xml::Node& node, soaplib::TYPE& obj)            \
+    void TYPE ## FromXml(const soaplib::xml::Node& node, soaplib::TYPE& obj)   \
     {                                                                          \
         obj.Value = _valueFromXml<soaplib::TYPE::ValueType>(node);             \
     }
 
 #define _FROM_XML_RET(TYPE)                                                    \
-    soaplib::TYPE TYPE ## FromXml(const xml::Node& node)                       \
+    soaplib::TYPE TYPE ## FromXml(const soaplib::xml::Node& node)              \
     {                                                                          \
         soaplib::TYPE obj;                                                     \
         TYPE ## FromXml(node, obj);                                            \
@@ -61,7 +61,7 @@ void _valueToXml(
 
 #define _FROM_XML_PTR(TYPE)                                                    \
     std::shared_ptr<soaplib::SoapBaseType> TYPE ## PtrFromXml(                 \
-        const xml::Node& node)                                                 \
+        const soaplib::xml::Node& node)                                        \
     {                                                                          \
         auto obj = std::make_shared<soaplib::TYPE>();                          \
         TYPE ## FromXml(node, *obj.get());                                     \
@@ -69,7 +69,7 @@ void _valueToXml(
     }
 
 #define _TO_XML(TYPE)                                                          \
-    void TYPE ## ToXml(xml::Node& node, const soaplib::TYPE& value)            \
+    void TYPE ## ToXml(soaplib::xml::Node& node, const soaplib::TYPE& value)   \
     {                                                                          \
         _valueToXml(node, value.Value);                                        \
     }
@@ -87,7 +87,7 @@ void _valueToXml(
 //
 
 void VoidFromXml(
-    const xml::Node& node,
+    const soaplib::xml::Node& node,
     soaplib::Void& obj)
 {
 }
@@ -96,7 +96,7 @@ _FROM_XML_RET(Void)
 _FROM_XML_PTR(Void)
 
 void VoidToXml(
-    xml::Node& node,
+    soaplib::xml::Node& node,
     const soaplib::Void& obj)
 {
 }
@@ -126,7 +126,7 @@ _VAL_FROM_TO_XML(UInt64)
 //
 
 void StringFromXml(
-    const xml::Node& node,
+    const soaplib::xml::Node& node,
     soaplib::String& value)
 {
     value.Value = node.GetStringVal();
@@ -136,7 +136,7 @@ _FROM_XML_RET(String)
 _FROM_XML_PTR(String)
 
 void StringToXml(
-    xml::Node& node,
+    soaplib::xml::Node& node,
     const soaplib::String& value)
 {
     node.SetVal(value.Value);
@@ -147,7 +147,7 @@ void StringToXml(
 //
 
 soaplib::Bool BoolFromXml(
-    const xml::Node& node)
+    const soaplib::xml::Node& node)
 {
     auto s = node.GetStringVal();
 
@@ -163,7 +163,7 @@ _FROM_XML_REF(Bool)
 _FROM_XML_PTR(Bool)
 
 void BoolToXml(
-    xml::Node& node,
+    soaplib::xml::Node& node,
     const soaplib::Bool& value)
 {
     node.SetVal(value ? "true" : "false");
@@ -174,7 +174,7 @@ void BoolToXml(
 //
 
 soaplib::Float FloatFromXml(
-    const xml::Node& node)
+    const soaplib::xml::Node& node)
 {
     auto s = node.GetStringVal();
     return std::stof(s);
@@ -184,14 +184,14 @@ _FROM_XML_REF(Float)
 _FROM_XML_PTR(Float)
 
 void FloatToXml(
-    xml::Node& node,
+    soaplib::xml::Node& node,
     const soaplib::Float& value)
 {
     node.SetVal(std::to_string(value.Value));
 }
 
 soaplib::Double DoubleFromXml(
-    const xml::Node& node)
+    const soaplib::xml::Node& node)
 {
     auto s = node.GetStringVal();
     return std::stod(s);
@@ -201,7 +201,7 @@ _FROM_XML_REF(Double)
 _FROM_XML_PTR(Double)
 
 void DoubleToXml(
-    xml::Node& node,
+    soaplib::xml::Node& node,
     const soaplib::Double& value)
 {
     node.SetVal(std::to_string(value.Value));

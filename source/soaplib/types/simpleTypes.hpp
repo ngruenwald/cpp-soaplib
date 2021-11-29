@@ -6,10 +6,9 @@
 
 #include <soaplib/types/soapBaseType.hpp>
 
+namespace soaplib {
 
 namespace xml { class Node; }
-
-namespace soaplib {
 
 /// Empty type
 struct Void
@@ -123,100 +122,100 @@ typedef TSimpleType<double> Double;
 // void
 //
 
-void VoidFromXml(const xml::Node& node, soaplib::Void& obj);
-soaplib::Void VoidFromXml(const xml::Node& node);
-std::shared_ptr<soaplib::SoapBaseType> VoidPtrFomXml(const xml::Node& node);
-void VoidToXml(xml::Node& node, const soaplib::Void& obj);
+void VoidFromXml(const soaplib::xml::Node& node, soaplib::Void& obj);
+soaplib::Void VoidFromXml(const soaplib::xml::Node& node);
+std::shared_ptr<soaplib::SoapBaseType> VoidPtrFomXml(const soaplib::xml::Node& node);
+void VoidToXml(soaplib::xml::Node& node, const soaplib::Void& obj);
 
 // // TODO: quick fix ... solve this properly
-namespace soaplib { inline soaplib::Void VoidFromXml(const xml::Node& node) { return ::VoidFromXml(node); } }
+namespace soaplib { inline soaplib::Void VoidFromXml(const soaplib::xml::Node& node) { return ::VoidFromXml(node); } }
 
 //
 // signed integers
 //
 
-void IntFromXml(const xml::Node& node, soaplib::Int& value);
-soaplib::Int IntFromXml(const xml::Node& node);
-std::shared_ptr<soaplib::SoapBaseType> IntPtrFromXml(const xml::Node& node);
-void IntToXml(xml::Node& node, const soaplib::Int& value);
+void IntFromXml(const soaplib::xml::Node& node, soaplib::Int& value);
+soaplib::Int IntFromXml(const soaplib::xml::Node& node);
+std::shared_ptr<soaplib::SoapBaseType> IntPtrFromXml(const soaplib::xml::Node& node);
+void IntToXml(soaplib::xml::Node& node, const soaplib::Int& value);
 
-void Int8FromXml(const xml::Node& node, soaplib::Int8& value);
-soaplib::Int8 Int8FromXml(const xml::Node& node);
-std::shared_ptr<soaplib::SoapBaseType> Int8PtrFromXml(const xml::Node& node);
-void Int8ToXml(xml::Node& node, const soaplib::Int8& value);
+void Int8FromXml(const soaplib::xml::Node& node, soaplib::Int8& value);
+soaplib::Int8 Int8FromXml(const soaplib::xml::Node& node);
+std::shared_ptr<soaplib::SoapBaseType> Int8PtrFromXml(const soaplib::xml::Node& node);
+void Int8ToXml(soaplib::xml::Node& node, const soaplib::Int8& value);
 
-void Int16FromXml(const xml::Node& node, soaplib::Int16& value);
-soaplib::Int16 Int16FromXml(const xml::Node& node);
-std::shared_ptr<soaplib::SoapBaseType> Int16PtrFromXml(const xml::Node& node);
-void Int16ToXml(xml::Node& node, const soaplib::Int16& value);
+void Int16FromXml(const soaplib::xml::Node& node, soaplib::Int16& value);
+soaplib::Int16 Int16FromXml(const soaplib::xml::Node& node);
+std::shared_ptr<soaplib::SoapBaseType> Int16PtrFromXml(const soaplib::xml::Node& node);
+void Int16ToXml(soaplib::xml::Node& node, const soaplib::Int16& value);
 
-void Int32FromXml(const xml::Node& node, soaplib::Int32& value);
-soaplib::Int32 Int32FromXml(const xml::Node& node);
-std::shared_ptr<soaplib::SoapBaseType> Int32PtrFromXml(const xml::Node& node);
-void Int32ToXml(xml::Node& node, const soaplib::Int32& value);
+void Int32FromXml(const soaplib::xml::Node& node, soaplib::Int32& value);
+soaplib::Int32 Int32FromXml(const soaplib::xml::Node& node);
+std::shared_ptr<soaplib::SoapBaseType> Int32PtrFromXml(const soaplib::xml::Node& node);
+void Int32ToXml(soaplib::xml::Node& node, const soaplib::Int32& value);
 
-void Int64FromXml(const xml::Node& node, soaplib::Int64& value);
-soaplib::Int64 Int64FromXml(const xml::Node& node);
-std::shared_ptr<soaplib::SoapBaseType> Int64PtrFromXml(const xml::Node& node);
-void Int64ToXml(xml::Node& node, const soaplib::Int64& value);
+void Int64FromXml(const soaplib::xml::Node& node, soaplib::Int64& value);
+soaplib::Int64 Int64FromXml(const soaplib::xml::Node& node);
+std::shared_ptr<soaplib::SoapBaseType> Int64PtrFromXml(const soaplib::xml::Node& node);
+void Int64ToXml(soaplib::xml::Node& node, const soaplib::Int64& value);
 
 //
 // unsigned integers
 //
 
-void UIntFromXml(const xml::Node& node, soaplib::UInt& value);
-soaplib::UInt UIntFromXml(const xml::Node& node);
-std::shared_ptr<soaplib::SoapBaseType> UIntPtrFromXml(const xml::Node& node);
-void UIntToXml(xml::Node& node, const soaplib::UInt& value);
+void UIntFromXml(const soaplib::xml::Node& node, soaplib::UInt& value);
+soaplib::UInt UIntFromXml(const soaplib::xml::Node& node);
+std::shared_ptr<soaplib::SoapBaseType> UIntPtrFromXml(const soaplib::xml::Node& node);
+void UIntToXml(soaplib::xml::Node& node, const soaplib::UInt& value);
 
-void UInt8FromXml(const xml::Node& node, soaplib::UInt8& value);
-soaplib::UInt8 UInt8FromXml(const xml::Node& node);
-std::shared_ptr<soaplib::SoapBaseType> UInt8PtrFromXml(const xml::Node& node);
-void UInt8ToXml(xml::Node& node, const soaplib::UInt8& value);
+void UInt8FromXml(const soaplib::xml::Node& node, soaplib::UInt8& value);
+soaplib::UInt8 UInt8FromXml(const soaplib::xml::Node& node);
+std::shared_ptr<soaplib::SoapBaseType> UInt8PtrFromXml(const soaplib::xml::Node& node);
+void UInt8ToXml(soaplib::xml::Node& node, const soaplib::UInt8& value);
 
-void UInt16FromXml(const xml::Node& node, soaplib::UInt16& value);
-soaplib::UInt16 UInt16FromXml(const xml::Node& node);
-std::shared_ptr<soaplib::SoapBaseType> UInt16PtrFromXml(const xml::Node& node);
-void UInt16ToXml(xml::Node& node, const soaplib::UInt16& value);
+void UInt16FromXml(const soaplib::xml::Node& node, soaplib::UInt16& value);
+soaplib::UInt16 UInt16FromXml(const soaplib::xml::Node& node);
+std::shared_ptr<soaplib::SoapBaseType> UInt16PtrFromXml(const soaplib::xml::Node& node);
+void UInt16ToXml(soaplib::xml::Node& node, const soaplib::UInt16& value);
 
-void UInt32FromXml(const xml::Node& node, soaplib::UInt32& value);
-soaplib::UInt32 UInt32FromXml(const xml::Node& node);
-std::shared_ptr<soaplib::SoapBaseType> UInt32PtrFromXml(const xml::Node& node);
-void UInt32ToXml(xml::Node& node, const soaplib::UInt32& value);
+void UInt32FromXml(const soaplib::xml::Node& node, soaplib::UInt32& value);
+soaplib::UInt32 UInt32FromXml(const soaplib::xml::Node& node);
+std::shared_ptr<soaplib::SoapBaseType> UInt32PtrFromXml(const soaplib::xml::Node& node);
+void UInt32ToXml(soaplib::xml::Node& node, const soaplib::UInt32& value);
 
-void UInt64FromXml(const xml::Node& node, soaplib::UInt64& value);
-soaplib::UInt64 UInt64FromXml(const xml::Node& node);
-std::shared_ptr<soaplib::SoapBaseType> UInt64PtrFromXml(const xml::Node& node);
-void UInt64ToXml(xml::Node& node, const soaplib::UInt64& value);
+void UInt64FromXml(const soaplib::xml::Node& node, soaplib::UInt64& value);
+soaplib::UInt64 UInt64FromXml(const soaplib::xml::Node& node);
+std::shared_ptr<soaplib::SoapBaseType> UInt64PtrFromXml(const soaplib::xml::Node& node);
+void UInt64ToXml(soaplib::xml::Node& node, const soaplib::UInt64& value);
 
 //
 // strings
 //
 
-void StringFromXml(const xml::Node& node, soaplib::String& value);
-soaplib::String StringFromXml(const xml::Node& node);
-std::shared_ptr<soaplib::SoapBaseType> StringPtrFromXml(const xml::Node& node);
-void StringToXml(xml::Node& node, const soaplib::String& value);
+void StringFromXml(const soaplib::xml::Node& node, soaplib::String& value);
+soaplib::String StringFromXml(const soaplib::xml::Node& node);
+std::shared_ptr<soaplib::SoapBaseType> StringPtrFromXml(const soaplib::xml::Node& node);
+void StringToXml(soaplib::xml::Node& node, const soaplib::String& value);
 
 //
 // boolean
 //
 
-void BoolFromXml(const xml::Node& node, soaplib::Bool& value);
-soaplib::Bool BoolFromXml(const xml::Node& node);
-std::shared_ptr<soaplib::SoapBaseType> BoolPtrFromXml(const xml::Node& node);
-void BoolToXml(xml::Node& node, const soaplib::Bool& value);
+void BoolFromXml(const soaplib::xml::Node& node, soaplib::Bool& value);
+soaplib::Bool BoolFromXml(const soaplib::xml::Node& node);
+std::shared_ptr<soaplib::SoapBaseType> BoolPtrFromXml(const soaplib::xml::Node& node);
+void BoolToXml(soaplib::xml::Node& node, const soaplib::Bool& value);
 
 //
 // floating
 //
 
-void FloatFromXml(const xml::Node& node, soaplib::Float& value);
-soaplib::Float FloatFromXml(const xml::Node& node);
-std::shared_ptr<soaplib::SoapBaseType> FloatPtrFromXml(const xml::Node& node);
-void FloatToXml(xml::Node& node, const soaplib::Float& value);
+void FloatFromXml(const soaplib::xml::Node& node, soaplib::Float& value);
+soaplib::Float FloatFromXml(const soaplib::xml::Node& node);
+std::shared_ptr<soaplib::SoapBaseType> FloatPtrFromXml(const soaplib::xml::Node& node);
+void FloatToXml(soaplib::xml::Node& node, const soaplib::Float& value);
 
-void DoubleFromXml(const xml::Node& node, soaplib::Double& value);
-soaplib::Double DoubleFromXml(const xml::Node& node);
-std::shared_ptr<soaplib::SoapBaseType> DoublePtrFromXml(const xml::Node& node);
-void DoubleToXml(xml::Node& node, const soaplib::Double& value);
+void DoubleFromXml(const soaplib::xml::Node& node, soaplib::Double& value);
+soaplib::Double DoubleFromXml(const soaplib::xml::Node& node);
+std::shared_ptr<soaplib::SoapBaseType> DoublePtrFromXml(const soaplib::xml::Node& node);
+void DoubleToXml(soaplib::xml::Node& node, const soaplib::Double& value);

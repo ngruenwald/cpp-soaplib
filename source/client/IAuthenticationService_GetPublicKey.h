@@ -1,12 +1,12 @@
 #pragma once
 
-#include <libxmlwrp.hpp>
+#include <soaplib/xml.hpp>
 #include <string>
 
 struct GetPublicKey
 {
 
-	void toXml(xml::Node& parentNode)
+	void toXml(soaplib::xml::Node& parentNode)
 	{
 
 	}
@@ -16,7 +16,7 @@ struct GetPublicKeyResult
 {
 	std::string value;
 
-	static GetPublicKeyResult fromXml(xml::Node& objNode)
+	static GetPublicKeyResult fromXml(soaplib::xml::Node& objNode)
 	{
 		GetPublicKeyResult obj;
 		obj.value = objNode.GetChild("PublicKey").GetStringVal();
@@ -28,7 +28,7 @@ struct GetPublicKeyResponse
 {
 	GetPublicKeyResult result;
 
-	static GetPublicKeyResponse fromXml(xml::Node& objNode)
+	static GetPublicKeyResponse fromXml(soaplib::xml::Node& objNode)
 	{
 		GetPublicKeyResponse obj;
 		auto n = objNode.GetChild("GetPublicKeyResult");

@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-#include <libxmlwrp.hpp>
+#include <soaplib/xml/xml.hpp>
 
 namespace soaplib {
 

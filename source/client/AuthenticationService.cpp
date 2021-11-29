@@ -35,7 +35,7 @@ std::string AuthenticationService::GetPublicKey()
 {
 	const std::string name = "GetPublicKey";
 
-	xml::Document request;
+	soaplib::xml::Document request;
 	auto body = CreateEnvelope(request, name);
 	AddChild(request, body, name, "t");
 

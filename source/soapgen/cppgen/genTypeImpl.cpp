@@ -377,7 +377,7 @@ void GenerateParser(
     }
 
     stream << "void " << typeName << "FromXml(" << '\n';
-    stream << "    " << "const xml::Node& objNode," << '\n';
+    stream << "    " << "const soaplib::xml::Node& objNode," << '\n';
     stream << "    " << parameterType << "& obj)" << '\n';
     stream << "{" << '\n';
 
@@ -419,7 +419,7 @@ void GenerateParser(
     }
 
     stream << parameterType << " " << typeName << "FromXml(" << '\n';
-    stream << "    " << "const xml::Node& objNode)" << '\n';
+    stream << "    " << "const soaplib::xml::Node& objNode)" << '\n';
     stream << "{" << '\n';
     stream << "    " << parameterType << " obj;" << '\n';
     stream << "    " << typeName << "FromXml(objNode, obj);" << '\n';
@@ -428,7 +428,7 @@ void GenerateParser(
     stream << '\n';
 
     stream << "std::shared_ptr<soaplib::SoapBaseType> " << typeName << "PtrFromXml(" << '\n';
-    stream << "    " << "const xml::Node& objNode)" << '\n';
+    stream << "    " << "const soaplib::xml::Node& objNode)" << '\n';
     stream << "{" << '\n';
     stream << "    auto obj = std::make_shared<" << parameterType << ">();" << '\n';
     stream << "    " << typeName << "FromXml(objNode, *obj.get());" << '\n';
@@ -438,8 +438,8 @@ void GenerateParser(
 
     stream << "static void _" << typeName << "ToXml(" << '\n';
     stream << "    " << "const " << parameterType << "& obj," << '\n';
-    stream << "    " << "xml::Document& doc," << '\n';
-    stream << "    " << "xml::Node& objNode)" << '\n';
+    stream << "    " << "soaplib::xml::Document& doc," << '\n';
+    stream << "    " << "soaplib::xml::Node& objNode)" << '\n';
     stream << "{" << '\n';
 
     // TODO
@@ -657,8 +657,8 @@ void GenerateParser(
 
     stream << "void " << typeName << "ToXml(" << '\n';
     stream << "    " << "const " << parameterType << "& obj," << '\n';
-    stream << "    " << "xml::Document& doc," << '\n';
-    stream << "    " << "xml::Node& parentNode, " << '\n';
+    stream << "    " << "soaplib::xml::Document& doc," << '\n';
+    stream << "    " << "soaplib::xml::Node& parentNode, " << '\n';
     stream << "    " << "bool createNode)" << '\n';
     stream << "{" << '\n';
     stream << "    if (createNode)" << '\n';

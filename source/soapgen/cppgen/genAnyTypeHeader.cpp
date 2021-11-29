@@ -27,8 +27,8 @@ void GenerateAnyTypeHeader(
     stream << "#include <soaplib/basicTypes.hpp>" << '\n';
     stream << '\n';
 
-    stream << "namespace xml { class Document; }" << '\n';
-    stream << "namespace xml { class Node; }" << '\n';
+    stream << "namespace soaplib { namespace xml { class Document; } }" << '\n';
+    stream << "namespace soaplib { namespace xml { class Node; } }" << '\n';
     stream << '\n';
 
     for (const auto& ns : options.namespaces)
@@ -46,20 +46,20 @@ void GenerateAnyTypeHeader(
     stream << '\n';
 
     stream << "void " << typeName << "FromXml(" << '\n';
-    stream << "    " << "const xml::Node& objNode," << '\n';
+    stream << "    " << "const soaplib::xml::Node& objNode," << '\n';
     stream << "    " << typeName << "& obj);" << '\n';
 
     stream << '\n';
 
     stream << typeName << " " << typeName << "FromXml(" << '\n';
-    stream << "    " << "const xml::Node& objNode);" << '\n';
+    stream << "    " << "const soaplib::xml::Node& objNode);" << '\n';
 
     stream << '\n';
 
     stream << "void " << typeName << "ToXml(" << '\n';
     stream << "    " << "const " << typeName << "& obj," << '\n';
-    stream << "    " << "xml::Document& doc," << '\n';
-    stream << "    " << "xml::Node& parentNode, " << '\n';
+    stream << "    " << "soaplib::xml::Document& doc," << '\n';
+    stream << "    " << "soaplib::xml::Node& parentNode, " << '\n';
     stream << "    " << "bool createNode);" << '\n';
 
     stream << '\n';

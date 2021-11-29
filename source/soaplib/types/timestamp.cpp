@@ -5,7 +5,7 @@
 #include <iomanip>
 #include <sstream>
 
-#include <libxmlwrp.hpp>
+#include "xml/xml.hpp"
 
 namespace soaplib {
 

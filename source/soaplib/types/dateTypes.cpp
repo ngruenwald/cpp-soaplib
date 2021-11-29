@@ -4,7 +4,7 @@
 #include <sstream>
 #include <vector>
 
-#include <libxmlwrp.hpp>
+#include "xml/xml.hpp"
 
 
 static std::vector<std::string> split(
@@ -327,98 +327,98 @@ void to_string(std::string& s, const soaplib::Duration& du)
 // xml conversion
 //
 
-void DateFromXml(const xml::Node& n, soaplib::Date& d)
+void DateFromXml(const soaplib::xml::Node& n, soaplib::Date& d)
 {
     from_string(n.GetStringVal(), d);
 }
 
-soaplib::Date DateFromXml(const xml::Node& n)
+soaplib::Date DateFromXml(const soaplib::xml::Node& n)
 {
     soaplib::Date d;
     DateFromXml(n, d);
     return d;
 }
 
-std::shared_ptr<soaplib::SoapBaseType> DatePtrFromXml(const xml::Node& n)
+std::shared_ptr<soaplib::SoapBaseType> DatePtrFromXml(const soaplib::xml::Node& n)
 {
     auto ptr = std::make_shared<soaplib::Date>();
     DateFromXml(n, *ptr.get());
     return ptr;
 }
 
-void DateToXml(xml::Node& n, const soaplib::Date& d)
+void DateToXml(soaplib::xml::Node& n, const soaplib::Date& d)
 {
     n.SetVal(to_string(d));
 }
 
-void TimeFromXml(const xml::Node& n, soaplib::Time& t)
+void TimeFromXml(const soaplib::xml::Node& n, soaplib::Time& t)
 {
     from_string(n.GetStringVal(), t);
 }
 
-soaplib::Time TimeFromXml(const xml::Node& n)
+soaplib::Time TimeFromXml(const soaplib::xml::Node& n)
 {
     soaplib::Time t;
     TimeFromXml(n, t);
     return t;
 }
 
-std::shared_ptr<soaplib::SoapBaseType> TimePtrFromXml(const xml::Node& n)
+std::shared_ptr<soaplib::SoapBaseType> TimePtrFromXml(const soaplib::xml::Node& n)
 {
     auto ptr = std::make_shared<soaplib::Time>();
     TimeFromXml(n, *ptr.get());
     return ptr;
 }
 
-void TimeToXml(xml::Node& n, const soaplib::Time& t)
+void TimeToXml(soaplib::xml::Node& n, const soaplib::Time& t)
 {
     n.SetVal(to_string(t));
 }
 
-void DateTimeFromXml(const xml::Node& n, soaplib::DateTime& dt)
+void DateTimeFromXml(const soaplib::xml::Node& n, soaplib::DateTime& dt)
 {
     from_string(n.GetStringVal(), dt);
 }
 
-soaplib::DateTime DateTimeFromXml(const xml::Node& n)
+soaplib::DateTime DateTimeFromXml(const soaplib::xml::Node& n)
 {
     soaplib::DateTime dt;
     DateTimeFromXml(n, dt);
     return dt;
 }
 
-std::shared_ptr<soaplib::SoapBaseType> DateTimePtrFromXml(const xml::Node& n)
+std::shared_ptr<soaplib::SoapBaseType> DateTimePtrFromXml(const soaplib::xml::Node& n)
 {
     auto ptr = std::make_shared<soaplib::DateTime>();
     DateTimeFromXml(n, *ptr.get());
     return ptr;
 }
 
-void DateTimeToXml(xml::Node& n, const soaplib::DateTime& dt)
+void DateTimeToXml(soaplib::xml::Node& n, const soaplib::DateTime& dt)
 {
     n.SetVal(to_string(dt));
 }
 
-void DurationFromXml(const xml::Node& n, soaplib::Duration& du)
+void DurationFromXml(const soaplib::xml::Node& n, soaplib::Duration& du)
 {
     from_string(n.GetStringVal(), du);
 }
 
-soaplib::Duration DurationFromXml(const xml::Node& n)
+soaplib::Duration DurationFromXml(const soaplib::xml::Node& n)
 {
     soaplib::Duration du;
     DurationFromXml(n, du);
     return du;
 }
 
-std::shared_ptr<soaplib::SoapBaseType> DurationPtrFromXml(const xml::Node& n)
+std::shared_ptr<soaplib::SoapBaseType> DurationPtrFromXml(const soaplib::xml::Node& n)
 {
     auto ptr = std::make_shared<soaplib::Duration>();
     DurationFromXml(n, *ptr.get());
     return ptr;
 }
 
-void DurationToXml(xml::Node& n, const soaplib::Duration& du)
+void DurationToXml(soaplib::xml::Node& n, const soaplib::Duration& du)
 {
     n.SetVal(to_string(du));
 }

@@ -5,10 +5,9 @@
 #include <string>
 #include <soaplib/types/soapBaseType.hpp>
 
+namespace soaplib {
 
 namespace xml { class Node; }
-
-namespace soaplib {
 
 class Duration
     : public SoapBaseType

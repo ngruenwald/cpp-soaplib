@@ -73,7 +73,7 @@ endif()
 # Sub folders
 #
 
-#add_subdirectory(common)
+add_subdirectory(xml)
 
 #
 # Target
@@ -115,10 +115,18 @@ add_library(
   ${target}
 )
 
+#set_project_warnings(${target})
+
+# target_link_libraries(
+#   ${target}
+#   PUBLIC
+#   soaplib::xml
+# )
+
 target_link_libraries(
   ${target}
   PUBLIC
-  xmlwrp::xmlwrp
+  soaplib::xml
   LibXml2::LibXml2
   Threads::Threads
 )
@@ -126,6 +134,7 @@ target_link_libraries(
 target_include_directories(
   ${target}
   PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>
   $<INSTALL_INTERFACE:${HEADER_INSTALL_ROOT}>
 )
@@ -167,7 +176,7 @@ endif()
 #
 
 install(
-  TARGETS ${target}
+  TARGETS ${target} soaplib-xml
   EXPORT  soaplibTargets
   RUNTIME DESTINATION ${LIBRARY_INSTALL_PATH}
   LIBRARY DESTINATION ${LIBRARY_INSTALL_PATH}

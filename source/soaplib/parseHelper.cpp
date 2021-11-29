@@ -49,7 +49,7 @@ void addNamespace(
     // search for a matching prefix
     if (!prefix.empty())
     {
-        auto ns = xmlSearchNs(doc.GetDoc(), np, BAD_CAST prefix.c_str());
+        auto ns = xmlSearchNs(doc.GetXmlDoc(), np, BAD_CAST prefix.c_str());
 		if (ns)
 		{
             prefixExists = true;
@@ -66,7 +66,7 @@ void addNamespace(
     // search for a matching href
 	if (!href.empty())
 	{
-		auto ns = xmlSearchNsByHref(doc.GetDoc(), np, BAD_CAST href.c_str());
+		auto ns = xmlSearchNsByHref(doc.GetXmlDoc(), np, BAD_CAST href.c_str());
         if (ns)
         {
             xmlSetNs(np, ns);
@@ -82,7 +82,7 @@ void addNamespace(
     while (prefixExists)
     {
         pre = generateRandomPrefix();
-        auto ns = xmlSearchNs(doc.GetDoc(), np, BAD_CAST pre.c_str());
+        auto ns = xmlSearchNs(doc.GetXmlDoc(), np, BAD_CAST pre.c_str());
 		if (ns)
 		{
             // only apply if the href is equal

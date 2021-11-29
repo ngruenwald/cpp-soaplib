@@ -3,31 +3,47 @@
 #include <iostream>
 #include <limits>
 
-#include <libxmlwrp.hpp>
+#include "soaplib/xml/xml.hpp"
+
+const xmlChar* bad_cast(const char* s)
+{
+    return reinterpret_cast<const xmlChar*>(s);
+}
+
+const char* bad_cast(const xmlChar* s)
+{
+    return reinterpret_cast<const char*>(s);
+}
 
 void LoadComplexType(
     ExtendedType& type,
-    const xml::Node& complexTypeNode,
+    const soaplib::xml::Node& complexTypeNode,
     const std::string& targetNamespace);
 
 
 std::string getNsPrefix(
-    const xml::Node& node,
+    const soaplib::xml::Node& node,
     const std::string& nsFull)
 {
     for (auto ns = node.GetXmlNode()->nsDef; ns; ns = ns->next)
     {
-        if (xmlStrcmp(ns->href, BAD_CAST nsFull.c_str()) == 0)
+        if (xmlStrcmp(ns->href, bad_cast(nsFull.c_str())) == 0)
         {
-            return reinterpret_cast<const char*>(ns->prefix);
+            if (ns->prefix)
+            {
+                return bad_cast(ns->prefix);
+            }
         }
     }
 
     for (auto ns = node.GetXmlNode()->ns; ns; ns = ns->next)
     {
-        if (xmlStrcmp(ns->href, BAD_CAST nsFull.c_str()) == 0)
+        if (xmlStrcmp(ns->href, bad_cast(nsFull.c_str())) == 0)
         {
-            return reinterpret_cast<const char*>(ns->prefix);
+            if (ns->prefix)
+            {
+                return bad_cast(ns->prefix);
+            }
         }
     }
 
@@ -35,22 +51,22 @@ std::string getNsPrefix(
 }
 
 std::string getNsHref(
-    const xml::Node& node,
+    const soaplib::xml::Node& node,
     const std::string& nsShort)
 {
     for (auto ns = node.GetXmlNode()->nsDef; ns; ns = ns->next)
     {
-        if (xmlStrcmp(ns->prefix, BAD_CAST nsShort.c_str()) == 0)
+        if (xmlStrcmp(ns->prefix, bad_cast(nsShort.c_str())) == 0)
         {
-            return reinterpret_cast<const char*>(ns->href);
+            return bad_cast(ns->href);
         }
     }
 
     for (auto ns = node.GetXmlNode()->ns; ns; ns = ns->next)
     {
-        if (xmlStrcmp(ns->prefix, BAD_CAST nsShort.c_str()) == 0)
+        if (xmlStrcmp(ns->prefix, bad_cast(nsShort.c_str())) == 0)
         {
-            return reinterpret_cast<const char*>(ns->href);
+            return bad_cast(ns->href);
         }
     }
 
@@ -58,7 +74,7 @@ std::string getNsHref(
 }
 
 Name getName(
-    const xml::Node& node,
+    const soaplib::xml::Node& node,
     const char* attributeName,
     const std::string& targetNamespace)
 {
@@ -96,7 +112,7 @@ Name getName(
 
 
 Input LoadInput(
-    const xml::Node& inputNode)
+    const soaplib::xml::Node& inputNode)
 {
     Input input;
 
@@ -107,7 +123,7 @@ Input LoadInput(
 }
 
 Output LoadOutput(
-    const xml::Node& outputNode)
+    const soaplib::xml::Node& outputNode)
 {
     Output output;
 
@@ -118,7 +134,7 @@ Output LoadOutput(
 }
 
 Operation LoadOperation(
-    const xml::Node& operationNode)
+    const soaplib::xml::Node& operationNode)
 {
     Operation operation;
 
@@ -141,7 +157,7 @@ Operation LoadOperation(
 }
 
 Port LoadPort(
-    const xml::Node& portNode)
+    const soaplib::xml::Node& portNode)
 {
     Port port;
 
@@ -153,7 +169,7 @@ Port LoadPort(
         auto addressNode = portNode.GetChild("address");
         port.address.location = addressNode.GetStringProp("location");
     }
-    catch (const xml::Exception&)
+    catch (const soaplib::xml::Exception&)
     {
     }
 
@@ -163,7 +179,7 @@ Port LoadPort(
         auto addressNode = endpointReferenceNode.GetChild("Address");
         port.endpointReference.address = addressNode.GetStringVal();
     }
-    catch (const xml::Exception&)
+    catch (const soaplib::xml::Exception&)
     {
     }
 
@@ -171,7 +187,7 @@ Port LoadPort(
 }
 
 Service LoadService(
-    const xml::Node& serviceNode)
+    const soaplib::xml::Node& serviceNode)
 {
     Service service;
 
@@ -187,7 +203,7 @@ Service LoadService(
 }
 
 Binding LoadBinding(
-    const xml::Node& bindingNode)
+    const soaplib::xml::Node& bindingNode)
 {
     Binding binding;
 
@@ -200,7 +216,7 @@ Binding LoadBinding(
 }
 
 PortType LoadPortType(
-    const xml::Node& portTypeNode)
+    const soaplib::xml::Node& portTypeNode)
 {
     PortType portType;
 
@@ -216,7 +232,7 @@ PortType LoadPortType(
 }
 
 Message LoadMessage(
-    const xml::Node& messageNode)
+    const soaplib::xml::Node& messageNode)
 {
     Message message;
 
@@ -238,7 +254,7 @@ Message LoadMessage(
 
 void LoadElement(
     ExtendedType& type,
-    const xml::Node& elementNode,
+    const soaplib::xml::Node& elementNode,
     const std::string& targetNamespace)
 {
     Parameter parameter;
@@ -252,7 +268,7 @@ void LoadElement(
     {
         minOccurs = elementNode.GetIntProp("minOccurs");
     }
-    catch (const xml::Exception&)
+    catch (const soaplib::xml::Exception&)
     {
     }
 
@@ -268,7 +284,7 @@ void LoadElement(
             maxOccurs = std::stoi(s);
         }
     }
-    catch (const xml::Exception&)
+    catch (const soaplib::xml::Exception&)
     {
     }
 
@@ -276,7 +292,7 @@ void LoadElement(
     {
         nillable = elementNode.GetBoolProp("nillable");
     }
-    catch (const xml::Exception&)
+    catch (const soaplib::xml::Exception&)
     {
     }
 
@@ -302,7 +318,7 @@ void LoadElement(
     {
         parameter.type = getName(elementNode, "type", targetNamespace);
     }
-    catch (const xml::Exception&)
+    catch (const soaplib::xml::Exception&)
     {
         const auto childNodes = elementNode.GetChildren(nullptr);
         if (!childNodes.empty())
@@ -332,7 +348,7 @@ void LoadElement(
 
 void LoadSequence(
     ExtendedType& type,
-    const xml::Node& sequenceNode,
+    const soaplib::xml::Node& sequenceNode,
     const std::string& targetNamespace)
 {
     const auto elementNodes = sequenceNode.GetChildren("element");
@@ -344,7 +360,7 @@ void LoadSequence(
 
 void LoadExtension(
     ExtendedType& type,
-    const xml::Node& extensionNode,
+    const soaplib::xml::Node& extensionNode,
     const std::string& targetNamespace)
 {
     type.base = getName(extensionNode, "base", targetNamespace);
@@ -367,7 +383,7 @@ void LoadExtension(
 
 void LoadComplexContent(
     ExtendedType& type,
-    const xml::Node& complexContentNode,
+    const soaplib::xml::Node& complexContentNode,
     const std::string& targetNamespace)
 {
     const auto childNodes = complexContentNode.GetChildren(nullptr);
@@ -388,7 +404,7 @@ void LoadComplexContent(
 
 void LoadComplexType(
     ExtendedType& type,
-    const xml::Node& complexTypeNode,
+    const soaplib::xml::Node& complexTypeNode,
     const std::string& targetNamespace)
 {
     const auto childNodes = complexTypeNode.GetChildren(nullptr);
@@ -413,7 +429,7 @@ void LoadComplexType(
 
 
 TypePtr LoadComplexType(
-    const xml::Node& complexTypeNode,
+    const soaplib::xml::Node& complexTypeNode,
     const Name* name,
     const std::string& targetNamespace)
 {
@@ -433,7 +449,7 @@ TypePtr LoadComplexType(
 }
 
 TypePtr LoadSimpleType(
-    const xml::Node& simpleTypeNode,
+    const soaplib::xml::Node& simpleTypeNode,
     const Name* name_,
     const std::string& targetNamespace)
 {
@@ -456,7 +472,7 @@ TypePtr LoadSimpleType(
         const auto& restrictionNode = simpleTypeNode.GetChild("restriction");
         base = getName(restrictionNode, "base", targetNamespace);
     }
-    catch (const xml::Exception&)
+    catch (const soaplib::xml::Exception&)
     {
     }
 
@@ -481,7 +497,7 @@ TypePtr LoadSimpleType(
                 auto enumerationValueNode = appinfoNode.GetChild("EnumerationValue");
                 enumeration.value = enumerationValueNode.GetIntVal();
             }
-            catch (const xml::Exception&)
+            catch (const soaplib::xml::Exception&)
             {
             }
 
@@ -496,7 +512,7 @@ TypePtr LoadSimpleType(
             return enumType;
         }
     }
-    catch (const xml::Exception& ex)
+    catch (const soaplib::xml::Exception& ex)
     {
         std::cerr << ex.what() << std::endl;
     }
@@ -508,7 +524,7 @@ TypePtr LoadSimpleType(
 }
 
 TypePtr LoadElement(
-    const xml::Node& elementNode,
+    const soaplib::xml::Node& elementNode,
     const std::string& targetNamespace)
 {
     auto typeName = getName(elementNode, "name", targetNamespace);
@@ -536,7 +552,7 @@ TypePtr LoadElement(
 }
 
 std::vector<TypePtr> LoadSchemaTypes(
-    const xml::Node& schemaNode)
+    const soaplib::xml::Node& schemaNode)
 {
     std::vector<TypePtr> types;
 
@@ -564,7 +580,7 @@ std::vector<TypePtr> LoadSchemaTypes(
 }
 
 std::vector<TypePtr> LoadTypes(
-    const xml::Node& typesNode)
+    const soaplib::xml::Node& typesNode)
 {
     std::vector<TypePtr> types;
 
@@ -584,7 +600,7 @@ std::vector<TypePtr> LoadTypes(
 }
 
 std::shared_ptr<Definition> LoadDefinition(
-    const xml::Node& definitionNode)
+    const soaplib::xml::Node& definitionNode)
 {
     auto definition = std::make_shared<Definition>();
 
@@ -615,7 +631,7 @@ std::shared_ptr<Definition> LoadDefinition(
     }
 
     const auto typesNodes = definitionNode.GetChildren("types");//getChildren(definitionNode, "types");
-    for (const auto typesNode : typesNodes)
+    for (const auto& typesNode : typesNodes)
     {
         auto types = LoadTypes(typesNode);
 
@@ -634,7 +650,7 @@ std::shared_ptr<Definition> LoadWsdl(
 {
     try
     {
-        xml::Document doc(fileName.c_str());
+        auto doc = soaplib::xml::Document::ParseFile(fileName.c_str());
         auto root = doc.GetRootNode();
         return LoadDefinition(root);
     }

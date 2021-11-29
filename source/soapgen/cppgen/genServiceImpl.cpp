@@ -108,7 +108,7 @@ void GenerateImplementation(
 
             stream << "{" << '\n';
 
-            stream << "    xml::Document request;" << '\n';
+            stream << "    soaplib::xml::Document request;" << '\n';
             stream << "    auto body = CreateEnvelope(request, \"" << soapAction << "\");" << '\n';
             //stream << "    AddChild(request, body, \"" << ResolveType(inputType) << "\", \"t\");" << '\n';
             stream << "    " << ResolveType(inputType) << "ToXml(input, request, body, true);" << '\n';

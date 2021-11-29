@@ -3,7 +3,7 @@
 #include <memory>
 #include <string>
 
-namespace xml { class Document; }
+#include <soaplib/xml/document.hpp>
 
 namespace soaplib {
 

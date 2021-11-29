@@ -50,7 +50,7 @@ void GenerateParser(
     }
 
     stream << "void " << typeName << "FromXml(" << '\n';
-    stream << "    " << "const xml::Node& objNode," << '\n';
+    stream << "    " << "const soaplib::xml::Node& objNode," << '\n';
     stream << "    " << parameterType << "& obj)" << '\n';
     stream << "{" << '\n';
 
@@ -65,7 +65,7 @@ void GenerateParser(
     }
 
     stream << parameterType << " " << typeName << "FromXml(" << '\n';
-    stream << "    " << "const xml::Node& objNode)" << '\n';
+    stream << "    " << "const soaplib::xml::Node& objNode)" << '\n';
     stream << "{" << '\n';
     stream << "    " << parameterType << " obj;" << '\n';
     stream << "    " << typeName << "FromXml(objNode, obj);" << '\n';
@@ -76,8 +76,8 @@ void GenerateParser(
 
     stream << "static void _" << typeName << "ToXml(" << '\n';
     stream << "    " << "const " << parameterType << "& obj," << '\n';
-    stream << "    " << "xml::Document& doc," << '\n';
-    stream << "    " << "xml::Node& objNode)" << '\n';
+    stream << "    " << "soaplib::xml::Document& doc," << '\n';
+    stream << "    " << "soaplib::xml::Node& objNode)" << '\n';
     stream << "{" << '\n';
 
     GenerateWriteBasic(stream, options, definition);
@@ -92,8 +92,8 @@ void GenerateParser(
 
     stream << "void " << typeName << "ToXml(" << '\n';
     stream << "    " << "const " << parameterType << "& obj," << '\n';
-    stream << "    " << "xml::Document& doc," << '\n';
-    stream << "    " << "xml::Node& parentNode, " << '\n';
+    stream << "    " << "soaplib::xml::Document& doc," << '\n';
+    stream << "    " << "soaplib::xml::Node& parentNode, " << '\n';
     stream << "    " << "bool createNode)" << '\n';
     stream << "{" << '\n';
     stream << "    if (createNode)" << '\n';
@@ -123,7 +123,7 @@ static void GenerateTypeMap(
     const Options& options,
     const Definition& definition)
 {
-    stream << "static std::map<std::string, std::shared_ptr<soaplib::SoapBaseType>(*)(const xml::Node&)> typeMap =" << '\n';
+    stream << "static std::map<std::string, std::shared_ptr<soaplib::SoapBaseType>(*)(const soaplib::xml::Node&)> typeMap =" << '\n';
     stream << "{" << '\n';
 
     for (const auto& type : definition.types)

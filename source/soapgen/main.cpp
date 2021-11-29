@@ -2,7 +2,7 @@
 #include "wsdl.hpp"
 #include "cppgen/cppgen.hpp"
 
-#include <libxmlwrp.hpp>
+#include "soaplib/xml/xml.hpp"
 
 struct Config
 {
@@ -15,7 +15,7 @@ std::shared_ptr<Config> LoadConfig(
 {
     try
     {
-        xml::Document doc(configFile.c_str());
+        auto doc = soaplib::xml::Document::ParseFile(configFile.c_str());
 
         auto config = std::make_shared<Config>();
 

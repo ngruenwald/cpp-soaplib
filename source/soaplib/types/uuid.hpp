@@ -11,10 +11,9 @@
 
 #include <soaplib/types/soapBaseType.hpp>
 
+namespace soaplib {
 
 namespace xml { class Node; }
-
-namespace soaplib {
 
 class uuid
     : public SoapBaseType
@@ -94,7 +93,7 @@ inline std::istream& operator>>(
 } // namespace soaplib
 
 
-void uuidFromXml(const xml::Node& node, soaplib::uuid& obj);
-soaplib::uuid uuidFromXml(const xml::Node& node);
-std::shared_ptr<soaplib::SoapBaseType> uuidPtrFromXml(const xml::Node& node);
-void uuidToXml(xml::Node& node, const soaplib::uuid& value);
+void uuidFromXml(const soaplib::xml::Node& node, soaplib::uuid& obj);
+soaplib::uuid uuidFromXml(const soaplib::xml::Node& node);
+std::shared_ptr<soaplib::SoapBaseType> uuidPtrFromXml(const soaplib::xml::Node& node);
+void uuidToXml(soaplib::xml::Node& node, const soaplib::uuid& value);

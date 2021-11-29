@@ -18,7 +18,7 @@ target_link_libraries(
 target_link_libraries(
   soapgen
   PUBLIC
-  xmlwrp::xmlwrp
+  soaplib::xml
   LibXml2::LibXml2
 )
 

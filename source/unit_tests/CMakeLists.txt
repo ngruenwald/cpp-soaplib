@@ -14,6 +14,7 @@ add_executable(
   unit_tests.cpp
   pointer_tests.cpp
   type_tests.cpp
+  xml_tests.cpp
 )
 
 if(PARSER_TESTS)
@@ -40,7 +41,6 @@ target_link_libraries(
   ${target}
   PUBLIC
   LibXml2::LibXml2
-  xmlwrp::xmlwrp
 )
 
 if(PARSER_TESTS)

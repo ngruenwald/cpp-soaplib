@@ -8,7 +8,7 @@ admin::dws::FileMetadata_GetListResponse GetList()
 {
     const std::string fixture{FIXTURES_PATH "/FileMetadata_GetListResponse.xml"};
 
-    auto response = xml::Document{fixture.c_str()};
+    auto response = soaplib::xml::Document::ParseFile(fixture.c_str());
     auto envelope = response.GetRootNode();
     auto operation = envelope.GetChild("Body").GetChild("FileMetadata_GetListResponse");
     return admin::dws::FileMetadata_GetListResponseFromXml(operation);

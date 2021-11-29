@@ -29,7 +29,7 @@ The library itself uses [cpp-httplib][1] for the basic HTTP handling.
 - [ ]  abort if unknown type is detected
 - [ ]  use templates for code generation ([inja][3])
 - [ ]  use command line parameters for configuration ([cxxopts][4])
-- [ ]  use libxml2 directly, remove xmlwrp dependency
+- [x]  use libxml2 directly, remove xmlwrp dependency
 - [ ]  replace shared_ptr with unique_ptr where possible
 - [ ]  add unit tests (remove client project)
 - [ ]  support for split definition files

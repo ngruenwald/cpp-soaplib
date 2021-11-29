@@ -35,7 +35,7 @@ IAuthenticationService::~IAuthenticationService()
 
 GetPublicKeyResponse IAuthenticationService::GetPublicKey(const ::GetPublicKey& input)
 {
-	xml::Document rq;
+	soaplib::xml::Document rq;
 	auto bd = CreateEnvelope(rq, "GetPublicKey");
 	AddChild(rq, bd, "GetPublicKey", "t");
 	auto rs = Call(rq);
