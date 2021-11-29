@@ -74,6 +74,11 @@ void GenerateImplementation(
         {
             const auto& soapAction = operation.input.action.name;
 
+            if (operation.input.message.name.empty())
+            {
+                continue;
+            }
+
             auto inputType = getMessagePartNames(operation.input.message, definition)[0];
 
             Name outputType;

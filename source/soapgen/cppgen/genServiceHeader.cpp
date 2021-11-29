@@ -107,8 +107,13 @@ void GenerateHeader(
             continue;
         }
 
-        for (const auto operation : portType->operations)
+        for (const auto& operation : portType->operations)
         {
+            if (operation.input.message.name.empty())
+            {
+                continue;
+            }
+
             auto inputType = getMessagePartNames(operation.input.message, definition)[0];
             Name outputType;
             if (!operation.output.message.name.empty())
