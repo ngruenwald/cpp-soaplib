@@ -1,6 +1,7 @@
 #include "unit_tests.hpp"
 
 #include <iostream>
+#include <optional>
 
 
 template<typename T>
