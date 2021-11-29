@@ -69,7 +69,7 @@ std::shared_ptr<xml::Document> SoapClient::Send(
 
     if (response->status != 200)
     {
-        throw SoapException("request was not successful: " + response->status);
+        throw SoapException("request was not successful: " + std::to_string(response->status));
     }
 
     if (logging_)

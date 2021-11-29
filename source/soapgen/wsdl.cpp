@@ -331,7 +331,6 @@ void LoadElement(
                 {
                     auto innerType = std::make_shared<ExtendedType>();
                     innerType->name = parameter.name;
-                    innerType->name.name;
                     LoadComplexType(*innerType, childNode, targetNamespace);
                     type.innerTypes.push_back(innerType);
                     if (parameter.type.name.empty())
