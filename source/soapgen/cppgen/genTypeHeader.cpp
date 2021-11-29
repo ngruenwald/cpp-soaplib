@@ -266,15 +266,15 @@ static void GenerateTypeHeaderE(
     stream << indent << "struct " << typePrefix << ResolveType(type.name, true) << typeSuffix << '\n';
     stream << indent << "    : " << typePrefix << "soaplib::SoapBaseType" << typeSuffix << '\n';
     stream << indent << "{" << '\n';
-    stream << indent << indent << "enum Values" << '\n';
-    stream << indent << indent << "{" << '\n';
+    stream << indent << "    " << "enum Values" << '\n';
+    stream << indent << "    " << "{" << '\n';
     for (const auto& enumeration : type.enumerations)
     {
-        stream << indent << indent << "    " << enumeration.text << ',' << '\n';
+        stream << indent << "    " << "    " << enumeration.text << ',' << '\n';
     }
-    stream << indent << indent << "};" << '\n';
-    stream << indent << indent << '\n';
-    stream << indent << indent << "Values Value;" << '\n';
+    stream << indent << "    " << "};" << '\n';
+    stream << indent << "    " << '\n';
+    stream << indent << "    " << "Values Value;" << '\n';
     stream << indent << "};" << '\n';
 }
 
