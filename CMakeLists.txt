@@ -38,6 +38,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 include(buildinfo)
 include(digsysfn)
 include(package)
+include(warnings)
 
 print_build_info()
 

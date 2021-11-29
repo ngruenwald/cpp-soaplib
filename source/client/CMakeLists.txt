@@ -13,6 +13,8 @@ add_executable(
   encrypt.hpp
 )
 
+set_project_warnings(${target})
+
 target_link_libraries(
   ${target}
   PUBLIC

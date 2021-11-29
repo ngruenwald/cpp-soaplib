@@ -32,6 +32,7 @@ struct Type
     Name name;
 
     Type(Type::Kind k): kind(k) {}
+    virtual ~Type() = default;
 
     virtual std::shared_ptr<Type> Clone() = 0;
 };
