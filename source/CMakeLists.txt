@@ -16,7 +16,3 @@ add_subdirectory(soapgen)
 if(UNIT_TESTS)
   add_subdirectory(unit_tests)
 endif()
-
-#add_subdirectory(admin)
-#add_subdirectory(client)
-
