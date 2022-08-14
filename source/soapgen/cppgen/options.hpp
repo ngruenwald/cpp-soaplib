@@ -7,6 +7,8 @@ namespace cppgen {
 
 struct Options
 {
+    std::string name = "service";
+
     std::string outputPath = "_output";
     bool appendNamespacesToPath = true;
     std::string typesSubfolder = "types";

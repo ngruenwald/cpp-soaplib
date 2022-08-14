@@ -21,6 +21,7 @@ std::unique_ptr<Config> LoadConfig(
 
         XML_MANDATORY(config->wsdlFile = doc.GetNode("/config/wsdl").GetStringProp("path"));
 
+        XML_OPTIONAL(config->cpp.name = doc.GetNode("/config").GetStringProp("name"));
         XML_OPTIONAL(config->cpp.outputPath = doc.GetNode("/config/cpp/output").GetStringProp("path"));
         XML_OPTIONAL(config->cpp.appendNamespacesToPath = doc.GetNode("/config/cpp/output").GetBoolProp("append-ns"));
         XML_OPTIONAL(config->cpp.typesSubfolder = doc.GetNode("/config/cpp/output").GetStringProp("types-subfolder"));

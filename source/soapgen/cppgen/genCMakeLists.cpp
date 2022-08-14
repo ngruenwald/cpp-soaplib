@@ -15,6 +15,11 @@ void GenerateCMakeLists(
 {
     std::string target = definition.name.name;
 
+    if (target.empty())
+    {
+        target = options.name;
+    }
+
     stream << "find_package(soaplib REQUIRED)" << '\n';
     stream << '\n';
 
