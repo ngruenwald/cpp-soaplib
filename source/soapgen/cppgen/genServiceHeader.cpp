@@ -30,6 +30,11 @@ void GenerateHeader(
 
     for (const auto& port : service.ports)
     {
+        if (!isPortAllowed(options, port))
+        {
+            continue;
+        }
+
         const auto binding = getBinding(port.binding, definition);
         if (!binding)
         {
@@ -54,7 +59,7 @@ void GenerateHeader(
                     << '\n';
             }
 
-            if (!operation.output.action.name.empty())
+            if (!operation.output.message.name.empty())
             {
                 const auto outputTypes = getMessagePartNames(operation.output.message, definition);
                 for (const auto& outputType : outputTypes)
@@ -97,6 +102,11 @@ void GenerateHeader(
 
     for (const auto& port : service.ports)
     {
+        if (!isPortAllowed(options, port))
+        {
+            continue;
+        }
+
         const auto binding = getBinding(port.binding, definition);
         if (!binding)
         {

@@ -5,6 +5,9 @@
 #include <iomanip>
 #include <sstream>
 
+#include "options.hpp"
+#include "wsdl.hpp"
+
 namespace cppgen {
 
 std::string now()
@@ -33,6 +36,23 @@ std::string safe_name(
     }
 
     return output;
+}
+
+bool isPortAllowed(
+    const Options& options,
+    const Port& port)
+{
+    if (options.portFilter.empty())
+    {
+        return true;
+    }
+
+    return
+        std::find(
+            std::begin(options.portFilter),
+            std::end(options.portFilter),
+            port.name.name
+        ) != std::end(options.portFilter);
 }
 
 } // namespace cppgen

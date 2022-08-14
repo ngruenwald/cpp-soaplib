@@ -14,6 +14,8 @@ struct Options
     std::string typesSubfolder = "types";
     std::vector<std::string> namespaces;
 
+    std::vector<std::string> portFilter;
+
     std::string cmakeNamespace;
     std::string cmakeExport;
 

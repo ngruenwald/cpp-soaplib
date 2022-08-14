@@ -57,6 +57,18 @@ std::unique_ptr<Config> LoadConfig(
 
         XML_OPTIONAL(config->cpp.writeTimestamp = doc.GetNode("/config/cpp/timestamp").GetBoolProp("enable"));
 
+        try
+        {
+            auto pfNodes = doc.GetNodes("/config/cpp/portFilter/port");
+            for (const auto& pfNode : pfNodes)
+            {
+                config->cpp.portFilter.push_back(pfNode.GetStringProp("name"));
+            }
+        }
+        catch(const std::exception& e)
+        {
+        }
+
         XML_OPTIONAL(config->cpp.enableHacks = doc.GetNode("/config/cpp/hacks").GetBoolProp("enable"));
         try
         {

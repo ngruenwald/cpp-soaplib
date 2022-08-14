@@ -60,6 +60,11 @@ void GenerateImplementation(
 
     for (const auto& port : service.ports)
     {
+        if (!isPortAllowed(options, port))
+        {
+            continue;
+        }
+
         const auto binding = getBinding(port.binding, definition);
         if (!binding)
         {
