@@ -14,7 +14,9 @@ void GenerateHeader(
     const Options& options,
     const Definition& definition)
 {
-    stream << "// " << service.name.name << '\n';
+    const std::string serviceName = safe_name(service.name.name);
+
+    stream << "// " << serviceName << '\n';
     if (options.writeTimestamp)
     {
         stream << "// " << now() << '\n';
@@ -76,14 +78,14 @@ void GenerateHeader(
 
     stream << '\n';
 
-    stream << "class " << service.name.name << '\n';
+    stream << "class " << serviceName << '\n';
     stream << "    : public soaplib::SoapService" << '\n';
     stream << "{" << '\n';
     stream << "public:" << '\n';
-    stream << "    " << service.name.name << "(" << '\n';
+    stream << "    " << serviceName << "(" << '\n';
     stream << "        const std::string& serviceAddress);" << '\n';
     stream << '\n';
-    stream << "    ~" << service.name.name << "();" << '\n';
+    stream << "    ~" << serviceName << "();" << '\n';
     stream << '\n';
     stream << "public:" << '\n';
 

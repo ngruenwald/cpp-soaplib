@@ -14,13 +14,15 @@ void GenerateImplementation(
     const Options& options,
     const Definition& definition)
 {
-    stream << "// " << service.name.name << '\n';
+    const std::string serviceName = safe_name(service.name.name);
+
+    stream << "// " << serviceName << '\n';
     if (options.writeTimestamp)
     {
         stream << "// " << now() << '\n';
     }
     stream << '\n';
-    stream << "#include \"" << service.name.name << ".hpp\"" << '\n';
+    stream << "#include \"" << serviceName << ".hpp\"" << '\n';
     stream << '\n';
     stream << "#include <soaplib/parseHelper.hpp>" << '\n';
     stream << '\n';
@@ -38,14 +40,14 @@ void GenerateImplementation(
 
     std::string contract = "";
 
-    stream << service.name.name << "::" << service.name.name << "(" << '\n';
+    stream << serviceName << "::" << serviceName << "(" << '\n';
     stream << "    const std::string& serviceAddress)" << '\n';
     stream << "    : soaplib::SoapService(serviceAddress, \"" << contract << "\")" << '\n';
     stream << "{" << '\n';
     stream << "}" << '\n';
     stream << '\n';
 
-    stream << service.name.name << "::~" << service.name.name << "()" << '\n';
+    stream << serviceName << "::~" << serviceName << "()" << '\n';
     stream << "{" << '\n';
     stream << "}" << '\n';
     stream << '\n';
@@ -98,7 +100,7 @@ void GenerateImplementation(
                 << _nspref
                 << ResolveType(outputType)
                 << " "
-                << service.name.name
+                << serviceName
                 << "::"
                 << operation.name.name
                 << "("

@@ -13,6 +13,7 @@
 #include "genServiceHeader.hpp"
 #include "genServiceImpl.hpp"
 #include "genCMakeLists.hpp"
+#include "utils.hpp"
 
 namespace cppgen {
 
@@ -69,10 +70,12 @@ void GenerateServices(
 {
     for (const auto& service : definition.services)
     {
-        std::cout << "service: " << service.name.name << '\n';
+        const std::string serviceName = safe_name(service.name.name);
 
-        const auto headerPath = GetFilePath(service.name.name + ".hpp", options, false);
-        const auto implPath = GetFilePath(service.name.name + ".cpp", options, false);
+        std::cout << "service: " << serviceName << '\n';
+
+        const auto headerPath = GetFilePath(serviceName + ".hpp", options, false);
+        const auto implPath = GetFilePath(serviceName + ".cpp", options, false);
 
         std::ofstream hdrFile(headerPath);
         if (!hdrFile.is_open())
