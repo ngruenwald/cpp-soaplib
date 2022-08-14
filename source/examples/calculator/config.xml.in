@@ -1,0 +1,14 @@
+<config name="calculator-service">
+    <wsdl path="@CMAKE_CURRENT_SOURCE_DIR@/calculator.wsdl" />
+    <cpp>
+        <output path="@CMAKE_CURRENT_BINARY_DIR@/calc" append-ns="false" types-subfolder="types" />
+        <namespaces>
+            <namespace>calc</namespace>
+        </namespaces>
+        <cmake namespace="calc" />
+
+        <portFilter>
+            <port name="CalculatorSoap" />
+        </portFilter>
+    </cpp>
+</config>

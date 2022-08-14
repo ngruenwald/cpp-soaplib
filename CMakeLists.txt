@@ -7,6 +7,7 @@ list(APPEND CMAKE_PREFIX_PATH ${CMAKE_CURRENT_SOURCE_DIR}/contrib/libs)
 
 option(USE_OPENSSL "Enable SSL support" ON)
 option(UNIT_TESTS "Build the unit tests." ON)
+option(EXAMPLES "Build the examples. (requires generated code!)" OFF)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)

@@ -1,0 +1,14 @@
+<config name="CountryInfo">
+    <wsdl path="@CMAKE_CURRENT_SOURCE_DIR@/CountryInfoService.wsdl" />
+    <cpp>
+        <output path="@CMAKE_CURRENT_BINARY_DIR@/country-info" append-ns="false" types-subfolder="types" />
+        <namespaces>
+            <namespace>country</namespace>
+        </namespaces>
+        <cmake namespace="country" />
+
+        <portFilter>
+            <port name="CountryInfoServiceSoap12" />
+        </portFilter>
+    </cpp>
+</config>
