@@ -1,35 +1,36 @@
-cmake_minimum_required(VERSION 3.0)
 
 add_subdirectory(cppgen)
 
+set(target soapgen)
+
 add_executable(
-  soapgen
+  ${target}
   main.cpp
   wsdl.cpp
   wsdl.hpp
 )
 
 target_link_libraries(
-  soapgen
+  ${target}
   PUBLIC
   cppgen
 )
 
 target_link_libraries(
-  soapgen
+  ${target}
   PUBLIC
   soaplib::xml
   LibXml2::LibXml2
 )
 
 target_link_libraries(
-  soapgen
+  ${target}
   PUBLIC
   stdc++fs
 )
 
 set_target_properties(
-  soapgen
+  ${target}
   PROPERTIES
   RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
 )

@@ -99,10 +99,6 @@ add_library(
   types/simpleTypes.cpp
   types/simpleTypes.hpp
   types/soapBaseType.hpp
-#  types/timestamp.cpp
-#  types/timestamp.hpp
-#  types/duration.cpp
-#  types/duration.hpp
   basicTypes.cpp
   basicTypes.hpp
   parseHelper.cpp
@@ -116,12 +112,6 @@ add_library(
 )
 
 #set_project_warnings(${target})
-
-# target_link_libraries(
-#   ${target}
-#   PUBLIC
-#   soaplib::xml
-# )
 
 target_link_libraries(
   ${target}
@@ -238,4 +228,3 @@ install(
   DESTINATION
     ${CONFIG_INSTALL_PATH}
 )
-

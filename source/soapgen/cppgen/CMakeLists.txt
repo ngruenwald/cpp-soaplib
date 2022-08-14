@@ -1,6 +1,5 @@
-cmake_minimum_required(VERSION 3.0)
 
-set(TARGET cppgen)
+set(target cppgen)
 
 set(
   SOURCES
@@ -29,18 +28,18 @@ set(
   genCMakeLists.hpp
 )
 
-add_library(${TARGET} STATIC ${SOURCES})
-set_project_warnings(${TARGET})
+add_library(${target} STATIC ${SOURCES})
+set_project_warnings(${target})
 
 if(WIN32)
-  set_target_properties(${TARGET} PROPERTIES COMPILE_FLAGS "/DLIBXML_STATIC")
+  set_target_properties(${target} PROPERTIES COMPILE_FLAGS "/DLIBXML_STATIC")
 endif()
 
-target_include_directories(${TARGET} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_include_directories(${TARGET} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../)
-target_include_directories(${TARGET} PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
-target_include_directories(${TARGET} PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/../)
+target_include_directories(${target} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(${target} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../)
+target_include_directories(${target} PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
+target_include_directories(${target} PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/../)
 # external
-target_include_directories(${TARGET} PUBLIC ${DIGCOM_LIB_INCLUDES})
+target_include_directories(${target} PUBLIC ${DIGCOM_LIB_INCLUDES})
 
 set(CONFIG_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE STRING "cppgen include directory")
