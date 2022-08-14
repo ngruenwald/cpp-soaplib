@@ -20,6 +20,12 @@ SoapService::SoapService(
     ParseServiceAddress(serviceAddress);
 }
 
+void SoapService::EnableHeader(
+    bool enable)
+{
+    enableHeader_ = enable;
+}
+
 void SoapService::EnableLogging(
     bool enable)
 {
@@ -67,10 +73,16 @@ xml::Node SoapService::CreateEnvelope(
     // header
     //
 
+    if (enableHeader_)
+    {
     auto header = AddChild(doc, envelope, "Header", "s");
+
+        if (!soapAction.empty())
+        {
     auto headerAction = AddChild(doc, header, "Action", "a");
     headerAction.SetProp("s:mustUnderstand", 1);
     headerAction.SetVal(soapAction);
+        }
 
     auto urn = "urn:uuid:" + uuid::generate_string();
     auto messageID = AddChild(doc, header, "MessageID", "a");
@@ -83,6 +95,7 @@ xml::Node SoapService::CreateEnvelope(
     auto to = AddChild(doc, header, "To", "a");
     to.SetProp("s:mustUnderstand", 1);
     to.SetVal(address_);
+    }
 
     //
     // body

@@ -22,6 +22,9 @@ public:
 		const std::string& serviceAddress,
 		const std::string& serviceNamespace);
 
+    void EnableHeader(
+        bool enable);
+
     void EnableLogging(
         bool enable);
 
@@ -76,6 +79,8 @@ protected:
 	std::string host_;
 	std::string path_;
 	std::string service_;
+
+    bool enableHeader_{true};
 };
 
 } // namespace soaplib
