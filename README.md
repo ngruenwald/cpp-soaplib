@@ -9,6 +9,11 @@ into C++ code. Currently it only supports single file definitions.
 The library itself uses [cpp-httplib][1] for the basic HTTP handling.
 [LibXml2][2] is used for the XML processing.
 
+__WARNING__:
+_This project was written to access some custom WCF SOAP services.
+I have never read any spec, nor have I tested this against other services.
+Do not expect this to work!_ ¯\\_(ツ)_/¯
+
 
 [[_TOC_]]
 
@@ -31,7 +36,7 @@ The library itself uses [cpp-httplib][1] for the basic HTTP handling.
 - [ ]  use command line parameters for configuration ([cxxopts][4])
 - [x]  use libxml2 directly, remove xmlwrp dependency
 - [x]  replace shared_ptr with unique_ptr where possible (soaplib and generated code)
-- [ ]  add unit tests (remove client project)
+- [ ]  add unit tests
 - [ ]  support for split definition files
 - [ ]  support file download in generator
 - [ ]  auto detect and resolve cyclic references
