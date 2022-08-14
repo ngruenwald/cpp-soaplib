@@ -116,7 +116,15 @@ Input LoadInput(
 {
     Input input;
 
-    input.action = getName(inputNode, "Action", {});
+    try
+    {
+        input.action = getName(inputNode, "Action", {});
+    }
+    catch (const std::exception& ex)
+    {
+        // std::cerr << ex.what() << '\n';
+    }
+
     input.message = getName(inputNode, "message", {});
 
     return input;
@@ -127,7 +135,15 @@ Output LoadOutput(
 {
     Output output;
 
-    output.action = getName(outputNode, "Action", {});
+    try
+    {
+        output.action = getName(outputNode, "Action", {});
+    }
+    catch (const std::exception& ex)
+    {
+        // std::cerr << ex.what() << '\n';
+    }
+
     output.message = getName(outputNode, "message", {});
 
     return output;
@@ -375,7 +391,7 @@ void LoadExtension(
         }
         else
         {
-            std::cout << "extension::" << name << " not implemented" << '\n';
+            std::cerr << "extension::" << name << " not implemented" << '\n';
         }
     }
 }
@@ -603,7 +619,14 @@ std::shared_ptr<Definition> LoadDefinition(
 {
     auto definition = std::make_shared<Definition>();
 
-    definition->name = getName(definitionNode, "name", {});
+    try
+    {
+        definition->name = getName(definitionNode, "name", {});
+    }
+    catch (const std::exception& ex)
+    {
+        std::cerr << "LoadDefinition: " << ex.what() << '\n';
+    }
 
     const auto serviceNodes = definitionNode.GetChildren("service");//getChildren(definitionNode, "service");
     for (const auto& serviceNode : serviceNodes)
