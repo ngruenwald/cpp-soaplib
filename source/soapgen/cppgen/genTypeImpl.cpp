@@ -142,6 +142,7 @@ static void GenerateParseExtended(
     for (const auto parameter : type.parameters)
     {
         std::string parameterName = FormatParameterName(parameter.name.name);
+        std::string parameterNameXml = parameter.name.name;
 
         stream
             << "    "
@@ -214,7 +215,7 @@ static void GenerateParseExtended(
             << "<"
             << typePrefix << ResolveType(parameter.type, false) << typeSuffix
             << ">(objNode, \""
-            << parameterName
+            << parameterNameXml
             << "\", "
             << ResolveType(parameter.type, true)
             << "FromXml);"
