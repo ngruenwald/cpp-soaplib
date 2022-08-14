@@ -20,7 +20,9 @@ void GenerateCMakeLists(
         target = options.name;
     }
 
-    stream << "find_package(soaplib REQUIRED)" << '\n';
+    stream << "if(NOT TARGET soaplib::soaplib)" << '\n';
+    stream << "  find_package(soaplib REQUIRED)" << '\n';
+    stream << "endif()" << '\n';
     stream << '\n';
 
     stream << "file(GLOB_RECURSE SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cpp)" << '\n';
