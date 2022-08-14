@@ -141,12 +141,12 @@ soaplib::Base64 Base64FromXml(
     return obj;
 }
 
-std::shared_ptr<soaplib::SoapBaseType> Base64PtrFomXml(
+std::unique_ptr<soaplib::SoapBaseType> Base64PtrFomXml(
     const soaplib::xml::Node& node)
 {
-    auto obj = std::make_shared<soaplib::Base64>();
-    Base64FromXml(node, *obj.get());
-    return std::static_pointer_cast<soaplib::SoapBaseType>(obj);
+    auto ptr = std::make_unique<soaplib::Base64>();
+    Base64FromXml(node, *ptr.get());
+    return ptr;
 }
 
 void Base64ToXml(

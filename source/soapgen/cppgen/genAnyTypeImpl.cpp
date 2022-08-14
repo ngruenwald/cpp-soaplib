@@ -123,7 +123,7 @@ static void GenerateTypeMap(
     const Options& options,
     const Definition& definition)
 {
-    stream << "static std::map<std::string, std::shared_ptr<soaplib::SoapBaseType>(*)(const soaplib::xml::Node&)> typeMap =" << '\n';
+    stream << "static std::map<std::string, std::unique_ptr<soaplib::SoapBaseType>(*)(const soaplib::xml::Node&)> typeMap =" << '\n';
     stream << "{" << '\n';
 
     for (const auto& type : definition.types)

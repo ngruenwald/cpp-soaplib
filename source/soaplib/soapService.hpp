@@ -29,7 +29,7 @@ public:
         int timeoutSeconds);
 
 protected:
-	std::string SopaNS() const { return "s"; }
+	std::string SoapNS() const { return "s"; }
 	std::string TempNS() const { return "t"; }
 	std::string AddrNS() const { return "a"; }
 	std::string InstNS() const { return "i"; }
@@ -40,10 +40,10 @@ protected:
 		const std::string& name);
 
 protected:
-	std::shared_ptr<xml::Document> Call(
+	std::unique_ptr<xml::Document> Call(
 		const xml::Document& request);
 
-    std::shared_ptr<xml::Document> Call(
+    std::unique_ptr<xml::Document> Call(
 		const xml::Document& request,
         int timeoutSeconds);
 

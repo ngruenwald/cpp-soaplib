@@ -22,10 +22,10 @@ public:
     void SetReadTimeout(
         int timeoutSeconds);
 
-	std::shared_ptr<xml::Document> Send(
+	std::unique_ptr<xml::Document> Send(
 		const xml::Document& request);
 
-    std::shared_ptr<xml::Document> Send(
+    std::unique_ptr<xml::Document> Send(
         const xml::Document& request,
         int timeoutSeconds);
 

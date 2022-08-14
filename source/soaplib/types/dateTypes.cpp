@@ -339,9 +339,9 @@ soaplib::Date DateFromXml(const soaplib::xml::Node& n)
     return d;
 }
 
-std::shared_ptr<soaplib::SoapBaseType> DatePtrFromXml(const soaplib::xml::Node& n)
+std::unique_ptr<soaplib::SoapBaseType> DatePtrFromXml(const soaplib::xml::Node& n)
 {
-    auto ptr = std::make_shared<soaplib::Date>();
+    auto ptr = std::make_unique<soaplib::Date>();
     DateFromXml(n, *ptr.get());
     return ptr;
 }
@@ -363,9 +363,9 @@ soaplib::Time TimeFromXml(const soaplib::xml::Node& n)
     return t;
 }
 
-std::shared_ptr<soaplib::SoapBaseType> TimePtrFromXml(const soaplib::xml::Node& n)
+std::unique_ptr<soaplib::SoapBaseType> TimePtrFromXml(const soaplib::xml::Node& n)
 {
-    auto ptr = std::make_shared<soaplib::Time>();
+    auto ptr = std::make_unique<soaplib::Time>();
     TimeFromXml(n, *ptr.get());
     return ptr;
 }
@@ -387,9 +387,9 @@ soaplib::DateTime DateTimeFromXml(const soaplib::xml::Node& n)
     return dt;
 }
 
-std::shared_ptr<soaplib::SoapBaseType> DateTimePtrFromXml(const soaplib::xml::Node& n)
+std::unique_ptr<soaplib::SoapBaseType> DateTimePtrFromXml(const soaplib::xml::Node& n)
 {
-    auto ptr = std::make_shared<soaplib::DateTime>();
+    auto ptr = std::make_unique<soaplib::DateTime>();
     DateTimeFromXml(n, *ptr.get());
     return ptr;
 }
@@ -411,9 +411,9 @@ soaplib::Duration DurationFromXml(const soaplib::xml::Node& n)
     return du;
 }
 
-std::shared_ptr<soaplib::SoapBaseType> DurationPtrFromXml(const soaplib::xml::Node& n)
+std::unique_ptr<soaplib::SoapBaseType> DurationPtrFromXml(const soaplib::xml::Node& n)
 {
-    auto ptr = std::make_shared<soaplib::Duration>();
+    auto ptr = std::make_unique<soaplib::Duration>();
     DurationFromXml(n, *ptr.get());
     return ptr;
 }

@@ -10,14 +10,14 @@ struct Config
     cppgen::Options cpp;
 };
 
-std::shared_ptr<Config> LoadConfig(
+std::unique_ptr<Config> LoadConfig(
     const std::string& configFile)
 {
     try
     {
         auto doc = soaplib::xml::Document::ParseFile(configFile.c_str());
 
-        auto config = std::make_shared<Config>();
+        auto config = std::make_unique<Config>();
 
         XML_MANDATORY(config->wsdlFile = doc.GetNode("/config/wsdl").GetStringProp("path"));
 

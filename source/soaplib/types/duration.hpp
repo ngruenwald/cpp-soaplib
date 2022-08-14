@@ -61,5 +61,5 @@ inline soaplib::Duration from_string(const std::string& s)
 
 void DurationFromXml(const xml::Node& node, soaplib::Duration& obj);
 soaplib::Duration DurationFromXml(const xml::Node& node);
-std::shared_ptr<soaplib::SoapBaseType> DurationPtrFromXml(const xml::Node& node);
+std::unique_ptr<soaplib::SoapBaseType> DurationPtrFromXml(const xml::Node& node);
 void DurationToXml(xml::Node& node, const soaplib::Duration& value);

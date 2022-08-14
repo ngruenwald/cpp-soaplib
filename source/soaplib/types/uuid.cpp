@@ -183,12 +183,12 @@ soaplib::uuid uuidFromXml(
     return obj;
 }
 
-std::shared_ptr<soaplib::SoapBaseType> uuidPtrFromXml(
+std::unique_ptr<soaplib::SoapBaseType> uuidPtrFromXml(
     const soaplib::xml::Node& node)
 {
-    auto obj = std::make_shared<soaplib::uuid>();
+    auto obj = std::make_unique<soaplib::uuid>();
     uuidFromXml(node, *obj.get());
-    return std::static_pointer_cast<soaplib::SoapBaseType>(obj);
+    return obj;
 }
 
 void uuidToXml(

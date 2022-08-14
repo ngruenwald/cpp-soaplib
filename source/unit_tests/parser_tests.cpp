@@ -27,7 +27,7 @@ TEST_CASE("FileMetadata_GetListResponse", "[.all][fixtures]")
         REQUIRE(entry.Value);
         REQUIRE(entry.Value->Value);
 
-        auto fmd = std::dynamic_pointer_cast<admin::dws::FileMetadataGetListDCResponseItem>(entry.Value->Value);
+        auto fmd = entry.Value->ValueCast<admin::dws::FileMetadataGetListDCResponseItem>();
         REQUIRE(fmd);
         REQUIRE(fmd->FileMetadataDetails);
 

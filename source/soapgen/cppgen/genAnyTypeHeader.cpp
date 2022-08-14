@@ -40,7 +40,19 @@ void GenerateAnyTypeHeader(
 
     stream << "struct " << typeName << '\n';
     stream << "{" << '\n';
-    stream << "    std::shared_ptr<soaplib::SoapBaseType> Value;" << '\n';
+    stream << "    std::unique_ptr<soaplib::SoapBaseType> Value;" << '\n';
+    stream << '\n';
+    stream << "    template<typename T>" << '\n';
+    stream << "    T* ValueCast()" << '\n';
+    stream << "    {" << '\n';
+    stream << "        return static_cast<T*>(Value.get());" << '\n';
+    stream << "    }" << '\n';
+    stream << '\n';
+    stream << "    template<typename T>" << '\n';
+    stream << "    const T* ValueCast() const" << '\n';
+    stream << "    {" << '\n';
+    stream << "        return static_cast<const T*>(Value.get());" << '\n';
+    stream << "    }" << '\n';
     stream << "};" << '\n';
 
     stream << '\n';

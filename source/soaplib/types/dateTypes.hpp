@@ -116,20 +116,20 @@ void to_string(std::string& s, const soaplib::Duration& tz);
 
 void DateFromXml(const soaplib::xml::Node& n, soaplib::Date& d);
 soaplib::Date DateFromXml(const soaplib::xml::Node& n);
-std::shared_ptr<soaplib::SoapBaseType> DatePtrFromXml(const soaplib::xml::Node& n);
+std::unique_ptr<soaplib::SoapBaseType> DatePtrFromXml(const soaplib::xml::Node& n);
 void DateToXml(soaplib::xml::Node& n, const soaplib::Date& d);
 
 void TimeFromXml(const soaplib::xml::Node& n, soaplib::Time& d);
 soaplib::Time TimeFromXml(const soaplib::xml::Node& n);
-std::shared_ptr<soaplib::SoapBaseType> TimePtrFromXml(const soaplib::xml::Node& n);
+std::unique_ptr<soaplib::SoapBaseType> TimePtrFromXml(const soaplib::xml::Node& n);
 void TimeToXml(soaplib::xml::Node& n, const soaplib::Time& d);
 
 void DateTimeFromXml(const soaplib::xml::Node& n, soaplib::DateTime& d);
 soaplib::DateTime DateTimeFromXml(const soaplib::xml::Node& n);
-std::shared_ptr<soaplib::SoapBaseType> DateTimePtrFromXml(const soaplib::xml::Node& n);
+std::unique_ptr<soaplib::SoapBaseType> DateTimePtrFromXml(const soaplib::xml::Node& n);
 void DateTimeToXml(soaplib::xml::Node& n, const soaplib::DateTime& d);
 
 void DurationFromXml(const soaplib::xml::Node& n, soaplib::Duration& d);
 soaplib::Duration DurationFromXml(const soaplib::xml::Node& n);
-std::shared_ptr<soaplib::SoapBaseType> DurationPtrFromXml(const soaplib::xml::Node& n);
+std::unique_ptr<soaplib::SoapBaseType> DurationPtrFromXml(const soaplib::xml::Node& n);
 void DurationToXml(soaplib::xml::Node& n, const soaplib::Duration& d);

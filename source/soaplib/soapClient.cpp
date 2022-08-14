@@ -34,13 +34,13 @@ void SoapClient::SetReadTimeout(
     timeout_ = timeoutSeconds;
 }
 
-std::shared_ptr<xml::Document> SoapClient::Send(
+std::unique_ptr<xml::Document> SoapClient::Send(
     const xml::Document& request)
 {
     return Send(request, timeout_);
 }
 
-std::shared_ptr<xml::Document> SoapClient::Send(
+std::unique_ptr<xml::Document> SoapClient::Send(
     const xml::Document& request,
     int timeoutSeconds)
 {
@@ -77,7 +77,7 @@ std::shared_ptr<xml::Document> SoapClient::Send(
         std::cout << response->body << std::endl << std::flush;
     }
 
-    return std::make_shared<xml::Document>(
+    return std::make_unique<xml::Document>(
         response->body.c_str(),
         response->body.length()
     );

@@ -95,5 +95,5 @@ inline std::istream& operator>>(
 
 void uuidFromXml(const soaplib::xml::Node& node, soaplib::uuid& obj);
 soaplib::uuid uuidFromXml(const soaplib::xml::Node& node);
-std::shared_ptr<soaplib::SoapBaseType> uuidPtrFromXml(const soaplib::xml::Node& node);
+std::unique_ptr<soaplib::SoapBaseType> uuidPtrFromXml(const soaplib::xml::Node& node);
 void uuidToXml(soaplib::xml::Node& node, const soaplib::uuid& value);

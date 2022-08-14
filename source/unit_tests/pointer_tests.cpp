@@ -15,6 +15,13 @@ std::optional<T> GetOptional(T (*create)())
 struct BaseType
 {
     virtual ~BaseType() {};
+
+    template<typename T>
+    static T* ptr_cast_to(
+        std::unique_ptr<BaseType>& base)
+    {
+        return static_cast<T*>(base.get());
+    }
 };
 
 // Concrete Type
@@ -25,19 +32,25 @@ struct ConcreteType : BaseType
     int B;
 };
 
-std::shared_ptr<BaseType> ConcreteType_Create()
+std::unique_ptr<BaseType> ConcreteType_Create()
 {
-    auto obj = std::make_shared<ConcreteType>();
-    obj->A = 23;
-    obj->B = 42;
-    return std::static_pointer_cast<BaseType>(obj);
+    auto ptr = std::make_unique<ConcreteType>();
+    ptr->A = 23;
+    ptr->B = 42;
+    return ptr;
 }
 
 // Any Type
 
 struct AnyType
 {
-    std::shared_ptr<BaseType> Value;
+    std::unique_ptr<BaseType> Value;
+
+    template<typename T>
+    T* ValueCast()
+    {
+        return BaseType::ptr_cast_to<T>(Value);
+    }
 };
 
 void AnyType_Create(
@@ -70,7 +83,7 @@ void Container_Create(Container& container)
 }
 
 
-TEST_CASE("Shared pointer conversion", "[all][pointer]")
+TEST_CASE("Pointer conversion", "[all][pointer]")
 {
     Container container;
     Container_Create(container);
@@ -78,7 +91,8 @@ TEST_CASE("Shared pointer conversion", "[all][pointer]")
     REQUIRE(container.Content.has_value());
     REQUIRE(container.Content.value().Value);
 
-    auto ptr = std::dynamic_pointer_cast<ConcreteType>(container.Content.value().Value);
+    auto ptr = container.Content->ValueCast<ConcreteType>();
+
     REQUIRE(ptr);
     REQUIRE(ptr->A == 23);
     REQUIRE(ptr->B == 42);

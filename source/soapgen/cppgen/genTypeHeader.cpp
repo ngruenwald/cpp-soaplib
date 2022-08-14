@@ -132,7 +132,7 @@ static void GenerateTypeHeaderET(
                 stream
                     << indent
                     << "    "
-                    << "std::shared_ptr<";
+                    << "std::unique_ptr<";
 
                 if (!IsNativeType(parameter.type) &&
                     !IsInnerType(parameter.type, type.innerTypes))
@@ -156,7 +156,7 @@ static void GenerateTypeHeaderET(
 
                 if (usePointer)
                 {
-                    stream << "std::shared_ptr<";
+                    stream << "std::unique_ptr<";
                 }
                 else
                 {
@@ -185,7 +185,7 @@ static void GenerateTypeHeaderET(
 
                 if (usePointer)
                 {
-                    stream << "std::vector<std::shared_ptr<";
+                    stream << "std::vector<std::unique_ptr<";
                 }
                 else
                 {
@@ -517,7 +517,7 @@ void GenerateHeader(
 
     stream << '\n';
 
-    stream << "std::shared_ptr<soaplib::SoapBaseType> " << typeName << "PtrFromXml(" << '\n';
+    stream << "std::unique_ptr<soaplib::SoapBaseType> " << typeName << "PtrFromXml(" << '\n';
     stream << "    " << "const soaplib::xml::Node& objNode);" << '\n';
 
     stream << '\n';

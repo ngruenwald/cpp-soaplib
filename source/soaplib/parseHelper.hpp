@@ -25,7 +25,7 @@ T getMandatory(
 }
 
 template<typename T>
-std::shared_ptr<T> getPointer(
+std::unique_ptr<T> getPointer(
     const xml::Node& parentNode,
     const std::string& childName,
     T (*fromXml)(const xml::Node&))
@@ -44,7 +44,7 @@ std::shared_ptr<T> getPointer(
             return {};
         }
 
-        return std::make_shared<T>(fromXml(node));
+        return std::make_unique<T>(fromXml(node));
     }
     catch (const std::exception&)
     {
@@ -100,28 +100,28 @@ std::vector<T> getMultiple(
 }
 
 template<typename T>
-std::vector<std::shared_ptr<T>> getMultiplePtrs(
+std::vector<std::unique_ptr<T>> getMultiplePtrs(
     const xml::Node& parentNode,
     const std::string& childName,
     T (*fromXml)(const xml::Node&))
 {
-    std::vector<std::shared_ptr<T>> result;
+    std::vector<std::unique_ptr<T>> result;
 
     const auto& childNodes = parentNode.GetChildren(childName.c_str());
 
     for (const auto& childNode : childNodes)
     {
-        result.push_back(std::make_shared<T>(fromXml(childNode)));
+        result.push_back(std::make_unique<T>(fromXml(childNode)));
     }
 
     return result;
 }
 
 template<typename T>
-std::shared_ptr<T> set(
+std::unique_ptr<T> set(
     const T& value)
 {
-    return std::make_shared<T>(value);
+    return std::make_unique<T>(value);
 }
 
 void addNamespace(

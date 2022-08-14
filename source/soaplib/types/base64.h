@@ -44,7 +44,7 @@ std::string base64_decode(std::string const& s);
 
 void Base64FromXml(const soaplib::xml::Node& node, soaplib::Base64& obj);
 soaplib::Base64 Base64FromXml(const soaplib::xml::Node& node);
-std::shared_ptr<soaplib::SoapBaseType> Base64PtrFomXml(const soaplib::xml::Node& node);
+std::unique_ptr<soaplib::SoapBaseType> Base64PtrFomXml(const soaplib::xml::Node& node);
 void Base64ToXml(soaplib::xml::Node& node, const soaplib::Base64& value);
 
 #endif /* BASE64_H_C0CE2A47_D10E_42C9_A27C_C883944E704A */

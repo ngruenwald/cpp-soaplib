@@ -60,12 +60,12 @@ void _valueToXml(
     }
 
 #define _FROM_XML_PTR(TYPE)                                                    \
-    std::shared_ptr<soaplib::SoapBaseType> TYPE ## PtrFromXml(                 \
+    std::unique_ptr<soaplib::SoapBaseType> TYPE ## PtrFromXml(                 \
         const soaplib::xml::Node& node)                                        \
     {                                                                          \
-        auto obj = std::make_shared<soaplib::TYPE>();                          \
-        TYPE ## FromXml(node, *obj.get());                                     \
-        return std::static_pointer_cast<soaplib::SoapBaseType>(obj);           \
+        auto ptr = std::make_unique<soaplib::TYPE>();                          \
+        TYPE ## FromXml(node, *ptr.get());                                     \
+        return ptr;                                                            \
     }
 
 #define _TO_XML(TYPE)                                                          \

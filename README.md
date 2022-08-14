@@ -30,7 +30,7 @@ The library itself uses [cpp-httplib][1] for the basic HTTP handling.
 - [ ]  use templates for code generation ([inja][3])
 - [ ]  use command line parameters for configuration ([cxxopts][4])
 - [x]  use libxml2 directly, remove xmlwrp dependency
-- [ ]  replace shared_ptr with unique_ptr where possible
+- [x]  replace shared_ptr with unique_ptr where possible (soaplib and generated code)
 - [ ]  add unit tests (remove client project)
 - [ ]  support for split definition files
 - [ ]  support file download in generator

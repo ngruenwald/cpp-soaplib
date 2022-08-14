@@ -39,13 +39,13 @@ std::string SoapService::ns(
     return ns + ":" + name;
 }
 
-std::shared_ptr<xml::Document> SoapService::Call(
+std::unique_ptr<xml::Document> SoapService::Call(
     const xml::Document& request)
 {
     return client_.Send(request);
 }
 
-std::shared_ptr<xml::Document> SoapService::Call(
+std::unique_ptr<xml::Document> SoapService::Call(
     const xml::Document& request,
     int timeoutSeconds)
 {

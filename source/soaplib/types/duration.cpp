@@ -75,12 +75,12 @@ soaplib::Duration DurationFromXml(
     return obj;
 }
 
-std::shared_ptr<soaplib::SoapBaseType> DurationPtrFromXml(
+std::unique_ptr<soaplib::SoapBaseType> DurationPtrFromXml(
     const xml::Node& node)
 {
-    auto obj = std::make_shared<soaplib::Duration>();
-    DurationFromXml(node, *obj.get());
-    return std::static_pointer_cast<soaplib::SoapBaseType>(obj);
+    auto ptr = std::make_unique<soaplib::Duration>();
+    DurationFromXml(node, *ptr.get());
+    return ptr;
 }
 
 void DurationToXml(

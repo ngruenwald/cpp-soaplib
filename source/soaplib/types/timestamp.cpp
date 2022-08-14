@@ -130,10 +130,10 @@ soaplib::Timestamp TimestampFromXml(
     return obj;
 }
 
-std::shared_ptr<soaplib::SoapBaseType> TimestampPtrFomXml(
+std::unique_ptr<soaplib::SoapBaseType> TimestampPtrFomXml(
     const xml::Node& node)
 {
-    auto obj = std::make_shared<soaplib::Timestamp>();
+    auto obj = std::make_unique<soaplib::Timestamp>();
     TimestampFromXml(node, *obj.get());
     return std::static_pointer_cast<soaplib::SoapBaseType>(obj);
 }

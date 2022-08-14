@@ -427,12 +427,12 @@ void GenerateParser(
     stream << "}" << '\n';
     stream << '\n';
 
-    stream << "std::shared_ptr<soaplib::SoapBaseType> " << typeName << "PtrFromXml(" << '\n';
+    stream << "std::unique_ptr<soaplib::SoapBaseType> " << typeName << "PtrFromXml(" << '\n';
     stream << "    " << "const soaplib::xml::Node& objNode)" << '\n';
     stream << "{" << '\n';
-    stream << "    auto obj = std::make_shared<" << parameterType << ">();" << '\n';
-    stream << "    " << typeName << "FromXml(objNode, *obj.get());" << '\n';
-    stream << "    " << "return std::static_pointer_cast<soaplib::SoapBaseType>(obj);" << '\n';
+    stream << "    auto ptr = std::make_unique<" << parameterType << ">();" << '\n';
+    stream << "    " << typeName << "FromXml(objNode, *ptr.get());" << '\n';
+    stream << "    " << "return ptr;" << '\n';
     stream << "}" << '\n';
     stream << '\n';
 
