@@ -75,26 +75,26 @@ xml::Node SoapService::CreateEnvelope(
 
     if (enableHeader_)
     {
-    auto header = AddChild(doc, envelope, "Header", "s");
+        auto header = AddChild(doc, envelope, "Header", "s");
 
         if (!soapAction.empty())
         {
-    auto headerAction = AddChild(doc, header, "Action", "a");
-    headerAction.SetProp("s:mustUnderstand", 1);
-    headerAction.SetVal(soapAction);
+            auto headerAction = AddChild(doc, header, "Action", "a");
+            headerAction.SetProp("s:mustUnderstand", 1);
+            headerAction.SetVal(soapAction);
         }
 
-    auto urn = "urn:uuid:" + uuid::generate_string();
-    auto messageID = AddChild(doc, header, "MessageID", "a");
-    messageID.SetVal(urn);
+        auto urn = "urn:uuid:" + uuid::generate_string();
+        auto messageID = AddChild(doc, header, "MessageID", "a");
+        messageID.SetVal(urn);
 
-    auto replyTo = AddChild(doc, header, "ReplyTo", "a");
-    auto replyToAddress = AddChild(doc, replyTo, "Address", "a");
-    replyToAddress.SetVal(AddrNamespace + "/anonymous");
+        auto replyTo = AddChild(doc, header, "ReplyTo", "a");
+        auto replyToAddress = AddChild(doc, replyTo, "Address", "a");
+        replyToAddress.SetVal(AddrNamespace + "/anonymous");
 
-    auto to = AddChild(doc, header, "To", "a");
-    to.SetProp("s:mustUnderstand", 1);
-    to.SetVal(address_);
+        auto to = AddChild(doc, header, "To", "a");
+        to.SetProp("s:mustUnderstand", 1);
+        to.SetVal(address_);
     }
 
     //
@@ -155,16 +155,27 @@ void SoapService::ParseServiceAddress(
     }
 
     auto idxService = serviceAddress.rfind('/');
-    if (idxService == idxPath)
-    {
-        throw soaplib::SoapException("invalid service address");
-    }
+//    if (idxService == idxPath)
+//    {
+//        throw soaplib::SoapException("invalid service address");
+//    }
     idxService += 1;
 
-    auto idxExt = serviceAddress.find(".svc", idxService);
+    auto idxExt = std::string::size_type{};
+    for (const auto& ext : {".svc", ".asmx", ".wso"})
+    {
+        idxExt = serviceAddress.find(ext, idxService);
+
+        if (idxExt != std::string::npos)
+        {
+            break;
+        }
+    }
     if (idxExt == std::string::npos)
     {
-        throw soaplib::SoapException("invalid service address");
+        idxExt = serviceAddress.length();
+
+        //throw soaplib::SoapException("invalid service address");
     }
 
     host_ = serviceAddress.substr(idxHost, idxPath - idxHost);
