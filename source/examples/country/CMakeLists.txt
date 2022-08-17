@@ -4,12 +4,19 @@
 #
 
 configure_file(config.xml.in ${CMAKE_CURRENT_BINARY_DIR}/config.xml @ONLY)
+set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS CountryInfoService.wsdl)
 
-#set(soapgen_binary "$<TARGET_FILE:soapgen>")
-set(soapgen_binary ${CMAKE_BINARY_DIR}/soapgen)
+get_property(soapgen_dir TARGET soapgen PROPERTY RUNTIME_OUTPUT_DIRECTORY)
+find_program(soapgen_binary soapgen HINTS ${soapgen_dir})
+
+if(NOT soapgen_binary)
+  mesaage(FATAL_ERROR "sopagen binary not found")
+endif()
 
 execute_process(
   COMMAND ${soapgen_binary} ${CMAKE_CURRENT_BINARY_DIR}/config.xml
+  OUTPUT_FILE ${CMAKE_CURRENT_BINARY_DIR}/soapgen.log
+  ERROR_FILE ${CMAKE_CURRENT_BINARY_DIR}/soapgen.error.log
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 )
 
