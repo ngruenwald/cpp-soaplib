@@ -19,22 +19,22 @@ class Base64
     : public SoapBaseType
 {
 public:
-	Base64()
-	{
-	}
+    Base64()
+    {
+    }
 
-	Base64(const std::string& data)
-		: data_(data)
-	{
-	}
+    Base64(const std::string& data)
+        : data_(data)
+    {
+    }
 
-	const std::string& Data() const
-	{
-		return data_;
-	}
+    const std::string& Data() const
+    {
+        return data_;
+    }
 
 private:
-	std::string data_;
+    std::string data_;
 };
 
 } // namespace soaplib

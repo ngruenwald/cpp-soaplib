@@ -49,13 +49,13 @@ private:
 /*
 inline std::string to_string(const soaplib::Duration& t)
 {
-	return soaplib::Duration::ToString(t);
+    return soaplib::Duration::ToString(t);
 }
 
 template<typename soaplib::Duration>
 inline soaplib::Duration from_string(const std::string& s)
 {
-	return Timestamp::FromString(s);
+    return Timestamp::FromString(s);
 }
 */
 

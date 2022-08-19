@@ -125,15 +125,15 @@ std::unique_ptr<T> set(
 }
 
 void addNamespace(
-	xml::Document& doc,
-	xml::Node& node,
-	const std::string& href,
-	const std::string& prefix);
+    xml::Document& doc,
+    xml::Node& node,
+    const std::string& href,
+    const std::string& prefix);
 
 xml::Node addChild(
-	xml::Document& doc,
-	xml::Node& parentNode,
-	const std::string& name,
+    xml::Document& doc,
+    xml::Node& parentNode,
+    const std::string& name,
     const std::string& href,
     const std::string& prefix);
 

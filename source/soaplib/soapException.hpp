@@ -5,11 +5,11 @@
 namespace soaplib {
 
 class SoapException
-	: public std::runtime_error
+    : public std::runtime_error
 {
 public:
-	SoapException(
-		const std::string& message);
+    SoapException(
+        const std::string& message);
 
 };
 

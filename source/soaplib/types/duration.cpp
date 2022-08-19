@@ -5,7 +5,6 @@
 
 namespace soaplib {
 
-
 std::string Duration::ToString(const Duration& t)
 {
     std::ostringstream oss;
@@ -53,7 +52,7 @@ Duration Duration::FromString(const std::string& s)
         }
     }
 
-	return d;
+    return d;
 }
 
 } // namespace soaplib

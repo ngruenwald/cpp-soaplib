@@ -36,12 +36,12 @@ std::string generateRandomPrefix()
 }
 
 void addNamespace(
-	xml::Document& doc,
-	xml::Node& node,
-	const std::string& href,
-	const std::string& prefix)
+    xml::Document& doc,
+    xml::Node& node,
+    const std::string& href,
+    const std::string& prefix)
 {
-	auto np = node.GetXmlNode();
+    auto np = node.GetXmlNode();
 
     std::string pre = prefix;
     bool prefixExists = false;
@@ -50,29 +50,29 @@ void addNamespace(
     if (!prefix.empty())
     {
         auto ns = xmlSearchNs(doc.GetXmlDoc(), np, BAD_CAST prefix.c_str());
-		if (ns)
-		{
+        if (ns)
+        {
             prefixExists = true;
 
             // only apply if the href is equal
             if (href.compare((const char*)ns->href) == 0)
             {
-			    xmlSetNs(np, ns);
+                xmlSetNs(np, ns);
                 return;
             }
-		}
+        }
     }
 
     // search for a matching href
-	if (!href.empty())
-	{
-		auto ns = xmlSearchNsByHref(doc.GetXmlDoc(), np, BAD_CAST href.c_str());
+    if (!href.empty())
+    {
+        auto ns = xmlSearchNsByHref(doc.GetXmlDoc(), np, BAD_CAST href.c_str());
         if (ns)
         {
             xmlSetNs(np, ns);
             return;
         }
-	}
+    }
 
     if (href.empty() || prefix.empty())
     {
@@ -83,37 +83,37 @@ void addNamespace(
     {
         pre = generateRandomPrefix();
         auto ns = xmlSearchNs(doc.GetXmlDoc(), np, BAD_CAST pre.c_str());
-		if (ns)
-		{
+        if (ns)
+        {
             // only apply if the href is equal
             if (href.compare((const char*)ns->href) == 0)
             {
-			    xmlSetNs(np, ns);
+                xmlSetNs(np, ns);
                 return;
             }
-		}
+        }
         else
         {
             prefixExists = false;
         }
     }
 
-	xmlSetNs(np, xmlNewNs(np, BAD_CAST href.c_str(), BAD_CAST pre.c_str()));
+    xmlSetNs(np, xmlNewNs(np, BAD_CAST href.c_str(), BAD_CAST pre.c_str()));
 }
 
 xml::Node addChild(
-	xml::Document& doc,
-	xml::Node& parentNode,
-	const std::string& name,
+    xml::Document& doc,
+    xml::Node& parentNode,
+    const std::string& name,
     const std::string& href,
     const std::string& prefix)
 {
-	auto node = parentNode.AddChild(name.c_str());
+    auto node = parentNode.AddChild(name.c_str());
     if (!href.empty() || !prefix.empty())
     {
-	    addNamespace(doc, node, href, prefix);
+        addNamespace(doc, node, href, prefix);
     }
-	return node;
+    return node;
 }
 
 } // namespace soaplib

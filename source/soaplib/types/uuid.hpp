@@ -76,18 +76,18 @@ inline bool operator< (const uuid& a, const uuid& b) { return a.compare(b) <  0;
 inline std::ostream& operator<<(
     std::ostream& os, const uuid& value)
 {
-	os << value.to_string();
-	return os;
+    os << value.to_string();
+    return os;
 }
 
 // Reads the UUID from the input stream.
 inline std::istream& operator>>(
     std::istream& is, uuid& value)
 {
-	std::string uri_str;
-	is >> uri_str;
-	value = uuid::from_string(uri_str);
-	return is;
+    std::string uri_str;
+    is >> uri_str;
+    value = uuid::from_string(uri_str);
+    return is;
 }
 
 } // namespace soaplib

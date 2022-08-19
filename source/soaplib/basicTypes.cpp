@@ -44,7 +44,7 @@ void _valueToXml(
 std::int8_t int8_tFromXml(
     const soaplib::xml::Node& node)
 {
-	return _valueFromXml<std::int8_t>(node);
+    return _valueFromXml<std::int8_t>(node);
 }
 
 void int8_tToXml(
@@ -214,8 +214,8 @@ void doubleToXml(
 soaplib::Base64 Base64FromXml(
     const soaplib::xml::Node& node)
 {
-	auto s = node.GetStringVal();
-	return soaplib::Base64(base64_decode(s));
+    auto s = node.GetStringVal();
+    return soaplib::Base64(base64_decode(s));
 }
 
 void Base64ToXml(
@@ -261,8 +261,8 @@ soaplib::uuid uuidFromXml(
     const soaplib::xml::Node& node)
 {
     auto s = node.GetStringVal();
-	soaplib::uuid u;
-	u.from_string(s);
+    soaplib::uuid u;
+    u.from_string(s);
     return u;
 }
 

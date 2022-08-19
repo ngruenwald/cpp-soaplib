@@ -112,7 +112,7 @@ void doubleToXml(
 
 
 soaplib::Base64 Base64FromXml(
-	const soaplib::xml::Node& node);
+    const soaplib::xml::Node& node);
 
 void Base64ToXml(
     soaplib::xml::Node& node,
