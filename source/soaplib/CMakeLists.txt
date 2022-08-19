@@ -41,6 +41,12 @@ add_library(
   ${target}
 )
 
+set_target_properties(
+  ${target}
+  PROPERTIES
+  OUTPUT_NAME cpp-soaplib
+)
+
 #set_project_warnings(${target})
 
 target_link_libraries(

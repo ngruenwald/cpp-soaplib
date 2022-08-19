@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 
 project(
-  soaplib
+  cpp-soaplib
   VERSION 0.1.0
   DESCRIPTION "C++ SOAP library"
   HOMEPAGE_URL "https://github.com/ngruenwald/cpp-soaplib"
