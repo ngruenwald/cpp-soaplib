@@ -41,6 +41,5 @@ set_target_properties(
 
 install(
   TARGETS ${target}
-  EXPORT  soaplibTargets
-  RUNTIME DESTINATION bin
+  RUNTIME DESTINATION ${BINARY_INSTALL_PATH}
 )

@@ -3,7 +3,7 @@ set(target soaplib-xml)
 
 add_library(
   ${target}
-  STATIC
+  OBJECT
   document.cpp
   document.hpp
   exception.hpp

@@ -1,75 +1,5 @@
 
 #
-# Setup install paths
-#
-
-if(WIN32)
-  set(
-    ORIGINAL_INSTALL_PREFIX
-    binaries
-  )
-
-  mark_as_advanced(
-    ORIGINAL_INSTALL_PREFIX
-  )
-
-  set(
-    CMAKE_INSTALL_PREFIX
-    "${ORIGINAL_INSTALL_PREFIX}"
-    CACHE STRING "Install path"
-    FORCE
-  )
-
-  set(
-    LIBRARY_INSTALL_PATH
-    ${PROJECT_NAME}/V_${PROJECT_VERSION}/lib
-  )
-
-  set(
-    HEADER_INSTALL_ROOT
-    ${PROJECT_NAME}/V_${PROJECT_VERSION}/include
-  )
-
-  set(
-    HEADER_INSTALL_PATH
-    ${HEADER_INSTALL_ROOT}/${PROJECT_NAME_PREFIX}${PROJECT_NAME}
-  )
-
-  set(
-    CONFIG_INSTALL_PATH
-    cmake/${PROJECT_NAME}-${PROJECT_VERSION}
-  )
-
-  message(STATUS "Install prefix: ${CMAKE_INSTALL_PREFIX}")
-else()
-  if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
-    set(LIBSUFFIX 64)
-  else()
-    set(LIBSUFFIX "")
-  endif()
-
-  set(
-    LIBRARY_INSTALL_PATH
-    lib${LIBSUFFIX}/${PROJECT_NAME}-${PROJECT_VERSION}
-  )
-
-  set(
-    HEADER_INSTALL_ROOT
-    include/${PROJECT_NAME}-${PROJECT_VERSION}
-  )
-
-  set(
-    HEADER_INSTALL_PATH
-    ${HEADER_INSTALL_ROOT}/${PROJECT_NAME_PREFIX}${PROJECT_NAME}
-  )
-
-  set(
-    CONFIG_INSTALL_PATH
-    ${LIBRARY_INSTALL_PATH}/cmake
-  )
-endif()
-
-#
 # Sub folders
 #
 
@@ -142,23 +72,10 @@ target_compile_definitions(
   $<TARGET_PROPERTY:contrib-cpp-httplib,INTERFACE_COMPILE_DEFINITIONS>
 )
 
-
-if(WIN32)
-  set_target_properties(
-    ${target}
-    PROPERTIES
-      RELEASE_POSTFIX "_static_${COMPILER_POSTFIX}"
-      RELWITHDEBINFO_POSTFIX "_static_${COMPILER_POSTFIX}"
-      DEBUG_POSTFIX "_static_${COMPILER_POSTFIX}d"
-  )
+if(INSTALL_VERSIONED)
+  add_library_suffix(${target} VERSIONED)
 else()
-  set_target_properties(
-    ${target}
-    PROPERTIES
-      RELEASE_POSTFIX "-${PROJECT_VERSION}"
-      RELWITHDEBINFO_POSTFIX "-${PROJECT_VERSION}"
-      DEBUG_POSTFIX "-${PROJECT_VERSION}d"
-  )
+  add_library_suffix(${target})
 endif()
 
 #

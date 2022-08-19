@@ -1,0 +1,8 @@
+macro(debug var)
+  if(${ARGC} GREATER 1)
+    set(type ${ARGV1})
+  else()
+    set(type DEBUG)
+  endif()
+  message(${type} "${var}: ${${var}}")
+endmacro()
