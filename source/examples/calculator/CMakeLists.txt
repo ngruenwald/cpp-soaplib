@@ -10,7 +10,7 @@ get_property(soapgen_dir TARGET soapgen PROPERTY RUNTIME_OUTPUT_DIRECTORY)
 find_program(soapgen_binary soapgen HINTS ${soapgen_dir})
 
 if(NOT soapgen_binary)
-  mesaage(FATAL_ERROR "sopagen binary not found")
+  message(FATAL_ERROR "soapgen binary not found")
 endif()
 
 execute_process(
