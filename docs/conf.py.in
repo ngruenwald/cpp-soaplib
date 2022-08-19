@@ -1,0 +1,64 @@
+# Configuration file for the Sphinx documentation builder.
+#
+# For the full list of built-in configuration values, see the documentation:
+# https://www.sphinx-doc.org/en/master/usage/configuration.html
+
+# -- Project information -----------------------------------------------------
+# https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
+
+project = '@PROJECT_NAME@'
+release = '@PROJECT_VERSION@'
+copyright = '2022'
+author = ''
+
+# -- General configuration ---------------------------------------------------
+# https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
+
+extensions = ['breathe', 'exhale', 'myst_parser']
+
+templates_path = ['_templates']
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+
+# -- Options for HTML output -------------------------------------------------
+# https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
+
+html_logo = '@CMAKE_CURRENT_SOURCE_DIR@/images/logo_55.png'
+#html_additional_pages = {
+#  'index': '@CMAKE_SOURCE_DIR@/README.md'
+#}
+
+html_theme = 'furo'
+#html_theme = 'sphinx_rtd_theme'
+html_static_path = ['_static']
+
+# -- Breathe configuration ---------------------------------------------------
+# https://breathe.readthedocs.io/en/latest/
+
+breathe_projects = {'@PROJECT_NAME@': '@DOXYGEN_OUTPUT_DIRECTORY@/xml'}
+breathe_default_project = '@PROJECT_NAME@'
+
+# -- Exhale configuration ----------------------------------------------------
+
+# Setup the exhale extension
+exhale_args = {
+    # These arguments are required
+    "containmentFolder":     "./api",
+    "rootFileName":          "library_root.rst",
+    "doxygenStripFromPath":  "..",
+    # Heavily encouraged optional argument (see docs)
+    "rootFileTitle":         "Library API",
+    # Suggested optional arguments
+    "createTreeView":        True,
+    # TIP: if using the sphinx-bootstrap-theme, you need
+    # "treeViewIsBootstrap": True,
+    "exhaleExecutesDoxygen": False,
+    "exhaleDoxygenStdin":    "INPUT = ../include",
+    # Disable 'Contents' when using 'furo' theme
+    "contentsDirectives": False
+}
+
+# Tell sphinx what the primary language being documented is.
+primary_domain = 'cpp'
+
+# Tell sphinx what the pygments highlight language should be.
+highlight_language = 'cpp'

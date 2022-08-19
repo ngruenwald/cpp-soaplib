@@ -17,6 +17,7 @@ option(USE_OPENSSL "Enable SSL support" ON)
 option(UNIT_TESTS "Build the unit tests." ON)
 option(EXAMPLES "Build the examples. (requires generated code!)" OFF)
 option(INSTALL_VERSIONED "Create versioned installation." ON)
+option(USE_SPHINX "Create documentation with Sphinx." OFF)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
