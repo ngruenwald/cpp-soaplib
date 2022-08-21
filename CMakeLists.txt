@@ -33,9 +33,9 @@ include(scm_info)
 include(packaging)
 
 if(INSTALL_VERSIONED)
-  setup_install_paths(VERSIONED)
+  setup_install_paths(HEADER_NAME soaplib VERSIONED)
 else()
-  setup_install_paths(QUIET)
+  setup_install_paths(HEADER_NAME soaplib QUIET)
 endif()
 
 print_os_info(COMPACT)
