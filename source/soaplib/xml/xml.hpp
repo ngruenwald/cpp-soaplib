@@ -11,17 +11,21 @@
 namespace soaplib {
 namespace xml {
 
-// Sets the logger callback
+/// Sets the logger callback
+/// @param[in] logHandler The log handler function
+/// @param[in] logContext User data passed to the handler
 void SetErrorLogger(
     void(*logHandler)(void*, const char*, ...),
     void* logContext);
 
-// Initializes the XML parser
+/// Initializes the XML parser
+/// @param[in] logHandler The log handler function
+/// @param[in] logContext User data passed to the handler
 void Init(
     void(*logHandler)(void*, const char*, ...) = NULL,
     void* logContext = NULL);
 
-// Cleans up the allocated memory
+/// Cleans up the allocated memory
 void Cleanup();
 
 } // namespace xml

@@ -9,7 +9,8 @@
 namespace soaplib {
 namespace xml {
 
-inline const char* ascii_cast(const xmlChar* pxc)
+inline const char* ascii_cast(
+    const xmlChar* pxc)
 {
     // This "kills" UTF-8 and can produce garbage
     return reinterpret_cast<const char*>(pxc);
@@ -68,7 +69,8 @@ Node Document::GetRootNode()
     return Node{rootNode};
 }
 
-Node Document::CreateRootNode(const char* name)
+Node Document::CreateRootNode(
+    const char* name)
 {
     if (xmlDocGetRootElement(doc_) != nullptr)
     {

@@ -15,49 +15,53 @@ namespace soaplib {
 
 namespace xml { class Node; }
 
+/// Universial Unique Identifier
 class uuid
     : public SoapBaseType
 {
 public:
-    uuid(void);
-    uuid(const uuid& src);
+    /// Default constructor
+    uuid();
 
-    std::string to_string(void) const;
+    /// Copy constructor
+    /// @param[in] src The object to copy
+    uuid(
+        const uuid& src);
 
-#ifdef HAVE_BASE64
-    std::string to_base64(void) const;
-#endif // HAVE_BASE64
+    /// Serialize as string
+    /// @returns String containing the formatted UUID
+    std::string to_string() const;
 
-#ifdef HAVE_Z85
-    std::string to_z85(void) const;
-#endif // HAVE_Z85
+    /// Assigns another UUID value
+    /// @param[in] src The new UUID
+    uuid& operator=(
+        const uuid& src);
 
-    uuid& operator=(const uuid& src);
-
+    /// Compare against given value
+    /// @param[in] other The UUID to compare against
+    /// @returns An integer less than, equal to, or greater than zero.
+    ///          Depending if this value is lexigraphically less than,
+    ///          equal or greather than the other one.
     int compare(const uuid& other) const;
 
 public:
-    static std::string generate_string(void);
+    /// Generate a new UUID string
+    static std::string generate_string();
 
-#ifdef HAVE_BASE64
-    static std::string generate_base64(void);
-#endif // HAVE_BASE64
-
-#ifdef HAVE_Z85
-    static std::string generate_z85(void);
-#endif // HAVE_Z85
-
+    /// Parse UUID object from string
+    /// @param[in] str String containing an UUID
+    /// @returns An UUID object
     static uuid from_string(
         const std::string& str);
-/*
-    static uuid from_base64(
-        const std::string& b64);
-*/
+
+    /// Check if the given UUID string is valid
+    /// @param[in] uuid String containing an UUID
+    /// @returns True if the UUID string is valid, otherwise false
     static bool validate_uuid_str(
         const std::string& uuid);
 
 private:
-    void generate(void);
+    void generate();
 
 private:
 #ifdef WIN32
@@ -72,17 +76,25 @@ inline bool operator==(const uuid& a, const uuid& b) { return a.compare(b) == 0;
 inline bool operator!=(const uuid& a, const uuid& b) { return a.compare(b) != 0; }
 inline bool operator< (const uuid& a, const uuid& b) { return a.compare(b) <  0; }
 
-// Writes the UUID to the output stream.
+/// Writes the UUID to the output stream.
+/// @param[in] os The output stream
+/// @param[in] value The UUID object
+/// @returns Reference to output stream
 inline std::ostream& operator<<(
-    std::ostream& os, const uuid& value)
+    std::ostream& os,
+    const uuid& value)
 {
     os << value.to_string();
     return os;
 }
 
-// Reads the UUID from the input stream.
+/// Reads the UUID from the input stream.
+/// @param[in] is The input stream
+/// @param[out] value The UUID object
+/// @returns Reference to input stream
 inline std::istream& operator>>(
-    std::istream& is, uuid& value)
+    std::istream& is,
+    uuid& value)
 {
     std::string uri_str;
     is >> uri_str;
@@ -93,7 +105,22 @@ inline std::istream& operator>>(
 } // namespace soaplib
 
 
+/// Extracts UUID from XML
+/// @param[in] node XML node
+/// @param[out] obj UUID object
 void uuidFromXml(const soaplib::xml::Node& node, soaplib::uuid& obj);
+
+/// Extracts UUID from XML
+/// @param[in] node XML node
+/// @returns UUID object
 soaplib::uuid uuidFromXml(const soaplib::xml::Node& node);
+
+/// Extracts UUID from XML, as pointer type
+/// @param[in] node XML node
+/// @returns Pointer holding the UUID object
 std::unique_ptr<soaplib::SoapBaseType> uuidPtrFromXml(const soaplib::xml::Node& node);
+
+/// Writes UUID to XML
+/// @param[in] node XML node
+/// @param[in] value UUID object
 void uuidToXml(soaplib::xml::Node& node, const soaplib::uuid& value);

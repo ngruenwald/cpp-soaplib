@@ -21,7 +21,7 @@ set(
   DOXYGEN_HTML_EXTRA_STYLESHEET
   "${CMAKE_CURRENT_SOURCE_DIR}/doxygen/doxygen-awesome.css \\
   ${CMAKE_CURRENT_SOURCE_DIR}/doxygen/doxygen-awesome-sidebar-only.css \\
-  ${CMAKE_CURRENT_SORUCE_DIR}/doxygen/custom.css"
+  ${CMAKE_CURRENT_SOURCE_DIR}/doxygen/custom.css"
 )
 set(DOXYGEN_VERBATIM_VARS DOXYGEN_HTML_EXTRA_STYLESHEET)
 set(DOXYGEN_GENERATE_TREEVIEW YES)

@@ -3,17 +3,9 @@
 #include "xml/xml.hpp"
 
 
-#ifdef HAVE_BASE64
-#include "b64.h"
-#endif // HAVE_BASE64
-
-#ifdef HAVE_Z85
-#include "z85.h"
-#endif // HAVE_Z85
-
 namespace soaplib {
 
-uuid::uuid(void)
+uuid::uuid()
 {
 #ifdef WIN32
     UuidCreate(&uuid_);
@@ -32,7 +24,7 @@ uuid::uuid(
 #endif
 }
 
-std::string uuid::to_string(void) const
+std::string uuid::to_string() const
 {
     std::string str;
 
@@ -49,24 +41,6 @@ std::string uuid::to_string(void) const
 
     return str;
 }
-
-#ifdef HAVE_BASE64
-std::string uuid::to_base64(void) const
-{
-    char buffer[64];
-    base64_encode_buffer((const uint8_t*)&uuid_, buffer, sizeof(uuid_), sizeof(buffer));
-    return std::string(buffer);
-}
-#endif // HAVE_BASE64
-
-#ifdef HAVE_Z85
-std::string uuid::to_z85(void) const
-{
-    char buffer[64];
-    size_t length = Z85_encode_with_padding((const char*)&uuid_, buffer, sizeof(uuid_));
-    return std::string(buffer, length);
-}
-#endif // HAVE_Z85
 
 uuid& uuid::operator=(
     const uuid& src)
@@ -90,24 +64,10 @@ int uuid::compare(
 #endif
 }
 
-std::string uuid::generate_string(void)
+std::string uuid::generate_string()
 {
     return uuid().to_string();
 }
-
-#ifdef HAVE_BASE64
-std::string uuid::generate_base64(void)
-{
-    return uuid().to_base64();
-}
-#endif // HAVE_BASE64
-
-#ifdef HAVE_Z85
-std::string uuid::generate_z85(void)
-{
-    return uuid().to_z85();
-}
-#endif // HAVE_Z85
 
 uuid uuid::from_string(
     const std::string& str)
@@ -122,13 +82,6 @@ uuid uuid::from_string(
 
     return uuid;
 }
-
-/*
-uuid from_base64(
-    const std::string& b64)
-{
-}
-*/
 
 bool uuid::validate_uuid_str(
     const std::string& uuid)

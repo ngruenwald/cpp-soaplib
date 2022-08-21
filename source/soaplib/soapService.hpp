@@ -13,10 +13,11 @@ namespace soaplib {
 class SoapService
 {
 protected:
-    const std::string SoapNamespace = "http://www.w3.org/2003/05/soap-envelope";
-    const std::string TempNamespace = "http://tempuri.org/";
-    const std::string AddrNamespace = "http://www.w3.org/2005/08/addressing";
-    const std::string InstNamespace = "http://www.w3.org/2001/XMLSchema-instance";
+    // TODO: check it these are still used
+    const std::string SoapNamespace = "http://www.w3.org/2003/05/soap-envelope";    ///< SOAP namespace
+    const std::string TempNamespace = "http://tempuri.org/";                        ///< TempUri namespace
+    const std::string AddrNamespace = "http://www.w3.org/2005/08/addressing";       ///< Addressing namespace
+    const std::string InstNamespace = "http://www.w3.org/2001/XMLSchema-instance";  ///< Instance namespace
 
 public:
     /// Creates a SoapService instance
@@ -43,11 +44,12 @@ public:
         int timeoutSeconds);
 
 protected:
-    std::string SoapNS() const { return "s"; }
-    std::string TempNS() const { return "t"; }
-    std::string AddrNS() const { return "a"; }
-    std::string InstNS() const { return "i"; }
-    std::string NS()     const { return "e"; }
+    // TODO: check if these are still used
+    std::string SoapNS() const { return "s"; }  ///< Default SOAP namespace prefix
+    std::string TempNS() const { return "t"; }  ///< Default TempUri namespace prefix
+    std::string AddrNS() const { return "a"; }  ///< Default Addressing namespace prefix
+    std::string InstNS() const { return "i"; }  ///< Default Instance namespace prefix
+    std::string NS()     const { return "e"; }  ///< Default namespace prefix
 
     /// Formats a XML namespace.
     /// @param[in] ns XML namespace

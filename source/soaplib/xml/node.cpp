@@ -11,7 +11,8 @@ Node::Node()
 {
 }
 
-Node::Node(xmlNodePtr node)
+Node::Node(
+    xmlNodePtr node)
     : node_{node}
 {
 }
