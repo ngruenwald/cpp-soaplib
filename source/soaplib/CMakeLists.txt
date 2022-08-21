@@ -115,8 +115,6 @@ install(
     types/soapBaseType.hpp
     types/uuid.hpp
     types/base64.h
-    types/timestamp.hpp
-    types/duration.hpp
   DESTINATION
     ${HEADER_INSTALL_PATH}/types
 )
@@ -129,8 +127,8 @@ install(
   EXPORT
     soaplibTargets
   FILE
-    soaplibTargets.cmake
-NAMESPACE
+    cpp-soaplibTargets.cmake
+  NAMESPACE
     soaplib::
   DESTINATION
     ${CONFIG_INSTALL_PATH}
@@ -139,15 +137,15 @@ NAMESPACE
 include(CMakePackageConfigHelpers)
 
 write_basic_package_version_file(
-  "soaplibConfigVersion.cmake"
+  "cpp-soaplibConfigVersion.cmake"
   VERSION ${PROJECT_VERSION}
   COMPATIBILITY SameMajorVersion
 )
 
 install(
   FILES
-    "${CMAKE_CURRENT_SOURCE_DIR}/soaplibConfig.cmake"
-    "${CMAKE_CURRENT_BINARY_DIR}/soaplibConfigVersion.cmake"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cpp-soaplibConfig.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/cpp-soaplibConfigVersion.cmake"
   DESTINATION
     ${CONFIG_INSTALL_PATH}
 )

@@ -21,7 +21,7 @@ void GenerateCMakeLists(
     }
 
     stream << "if(NOT TARGET soaplib::soaplib)" << '\n';
-    stream << "  find_package(soaplib REQUIRED)" << '\n';
+    stream << "  find_package(cpp-soaplib REQUIRED)" << '\n';
     stream << "endif()" << '\n';
     stream << '\n';
 
