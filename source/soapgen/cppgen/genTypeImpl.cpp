@@ -71,7 +71,7 @@ static void GenerateWriteEnum(
     const Options& options,
     const Definition& definition)
 {
-    stream << "    std::string s;" << '\n';
+    stream << "    soaplib::String s;" << '\n';
     stream << "    switch (obj.Value)" << '\n';
     stream << "    {" << '\n';
 
