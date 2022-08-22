@@ -118,7 +118,18 @@ struct String
     /// Assigns a value
     /// @param[in] value The value
     /// @returns Reference to the object
-    String& operator=(const char* value)
+    String& operator=(
+        const std::string& value)
+    {
+        Value = value;
+        return *this;
+    }
+
+    /// Assigns a value
+    /// @param[in] value The value
+    /// @returns Reference to the object
+    String& operator=(
+        const char* value)
     {
         Value = value;
         return *this;
