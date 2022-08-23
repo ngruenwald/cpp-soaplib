@@ -44,6 +44,11 @@ public:
     ///          equal or greather than the other one.
     int compare(const uuid& other) const;
 
+    /// UUID to XML
+    void ToAnyXml(
+        soaplib::xml::Document& doc,
+        soaplib::xml::Node& anyNode) const override;
+
 public:
     /// Generate a new UUID string
     static std::string generate_string();

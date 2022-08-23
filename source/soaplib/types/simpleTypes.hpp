@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cassert>
 #include <cstdint>
 #include <memory>
 #include <string>
@@ -8,12 +9,19 @@
 
 namespace soaplib {
 
+namespace xml { class Document; }
 namespace xml { class Node; }
 
 /// Empty type
 struct Void
     : SoapBaseType
 {
+    /// Void to XML
+    void ToAnyXml(
+        soaplib::xml::Document& doc,
+        soaplib::xml::Node& node) const override
+    {
+    }
 };
 
 /// Container for simple types
@@ -66,6 +74,11 @@ struct TSimpleType
     {
         return Value == other;
     }
+
+    /// Type to XML
+    void ToAnyXml(
+        soaplib::xml::Document& doc,
+        soaplib::xml::Node& node) const override;
 };
 
 //
@@ -210,6 +223,12 @@ std::unique_ptr<soaplib::SoapBaseType> IntPtrFromXml(const soaplib::xml::Node& n
 /// @param[in] value Value object
 void IntToXml(soaplib::xml::Node& node, const soaplib::Int& value);
 
+/// Writes a signed integer to XML
+/// @param[in] doc XML document
+/// @param[in] anyNode XML node
+/// @param[in] value Value object
+void IntToAnyXml(soaplib::xml::Document& doc, soaplib::xml::Node& anyNode, const soaplib::Int& value);
+
 /// Extracts an 8-bit signed integer from XML
 /// @param[in] node XML node
 /// @param[out] value Value object
@@ -229,6 +248,12 @@ std::unique_ptr<soaplib::SoapBaseType> Int8PtrFromXml(const soaplib::xml::Node& 
 /// @param[in] node XML node
 /// @param[in] value Value object
 void Int8ToXml(soaplib::xml::Node& node, const soaplib::Int8& value);
+
+/// Writes an 8-bit signed integer to XML
+/// @param[in] doc XML document
+/// @param[in] anyNode XML node
+/// @param[in] value Value object
+void Int8ToAnyXml(soaplib::xml::Document& doc, soaplib::xml::Node& anyNode, const soaplib::Int8& value);
 
 /// Extracts a 16-bit signed integer from XML
 /// @param[in] node XML node
@@ -250,6 +275,12 @@ std::unique_ptr<soaplib::SoapBaseType> Int16PtrFromXml(const soaplib::xml::Node&
 /// @param[in] value Value object
 void Int16ToXml(soaplib::xml::Node& node, const soaplib::Int16& value);
 
+/// Writes a 16-bit signed integer to XML
+/// @param[in] doc XML document
+/// @param[in] anyNode XML node
+/// @param[in] value Value object
+void Int16ToAnyXml(soaplib::xml::Document& doc, soaplib::xml::Node& anyNode, const soaplib::Int16& value);
+
 /// Extracts a 32-bit signed integer from XML
 /// @param[in] node XML node
 /// @param[out] value Value object
@@ -270,6 +301,12 @@ std::unique_ptr<soaplib::SoapBaseType> Int32PtrFromXml(const soaplib::xml::Node&
 /// @param[in] value Value object
 void Int32ToXml(soaplib::xml::Node& node, const soaplib::Int32& value);
 
+/// Writes a 32-bit signed integer to XML
+/// @param[in] doc XML document
+/// @param[in] anyNode XML node
+/// @param[in] value Value object
+void Int32ToAnyXml(soaplib::xml::Document& doc, soaplib::xml::Node& anyNode, const soaplib::Int32& value);
+
 /// Extracts a 64-bit signed integer from XML
 /// @param[in] node XML node
 /// @param[out] value Value object
@@ -289,6 +326,12 @@ std::unique_ptr<soaplib::SoapBaseType> Int64PtrFromXml(const soaplib::xml::Node&
 /// @param[in] node XML node
 /// @param[in] value Value object
 void Int64ToXml(soaplib::xml::Node& node, const soaplib::Int64& value);
+
+/// Writes an 64-bit signed integer to XML
+/// @param[in] doc XML document
+/// @param[in] anyNode XML node
+/// @param[in] value Value object
+void Int64ToAnyXml(soaplib::xml::Document& doc, soaplib::xml::Node& anyNode, const soaplib::Int64& value);
 
 //
 // unsigned integers
@@ -314,6 +357,12 @@ std::unique_ptr<soaplib::SoapBaseType> UIntPtrFromXml(const soaplib::xml::Node& 
 /// @param[in] value Value object
 void UIntToXml(soaplib::xml::Node& node, const soaplib::UInt& value);
 
+/// Writes an unsigned signed integer to XML
+/// @param[in] doc XML document
+/// @param[in] anyNode XML node
+/// @param[in] value Value object
+void UIntToAnyXml(soaplib::xml::Document& doc, soaplib::xml::Node& anyNode, const soaplib::UInt& value);
+
 /// Extracts an 8-bit unsigned integer from XML
 /// @param[in] node XML node
 /// @param[out] value Value object
@@ -333,6 +382,12 @@ std::unique_ptr<soaplib::SoapBaseType> UInt8PtrFromXml(const soaplib::xml::Node&
 /// @param[in] node XML node
 /// @param[in] value Value object
 void UInt8ToXml(soaplib::xml::Node& node, const soaplib::UInt8& value);
+
+/// Writes an 8-bit unsigned signed integer to XML
+/// @param[in] doc XML document
+/// @param[in] anyNode XML node
+/// @param[in] value Value object
+void UInt8ToAnyXml(soaplib::xml::Document& doc, soaplib::xml::Node& anyNode, const soaplib::UInt8& value);
 
 /// Extracts a 16-bit unsigned integer from XML
 /// @param[in] node XML node
@@ -354,6 +409,12 @@ std::unique_ptr<soaplib::SoapBaseType> UInt16PtrFromXml(const soaplib::xml::Node
 /// @param[in] value Value object
 void UInt16ToXml(soaplib::xml::Node& node, const soaplib::UInt16& value);
 
+/// Writes an 16-bit unsigned signed integer to XML
+/// @param[in] doc XML document
+/// @param[in] anyNode XML node
+/// @param[in] value Value object
+void UInt16ToAnyXml(soaplib::xml::Document& doc, soaplib::xml::Node& anyNode, const soaplib::UInt16& value);
+
 /// Extracts a 32-bit unsigned integer from XML
 /// @param[in] node XML node
 /// @param[out] value Value object
@@ -374,6 +435,12 @@ std::unique_ptr<soaplib::SoapBaseType> UInt32PtrFromXml(const soaplib::xml::Node
 /// @param[in] value Value object
 void UInt32ToXml(soaplib::xml::Node& node, const soaplib::UInt32& value);
 
+/// Writes an 32-bit unsigned signed integer to XML
+/// @param[in] doc XML document
+/// @param[in] anyNode XML node
+/// @param[in] value Value object
+void UInt32ToAnyXml(soaplib::xml::Document& doc, soaplib::xml::Node& anyNode, const soaplib::UInt32& value);
+
 /// Extracts a 64-bit unsigned integer from XML
 /// @param[in] node XML node
 /// @param[out] value Value object
@@ -393,6 +460,12 @@ std::unique_ptr<soaplib::SoapBaseType> UInt64PtrFromXml(const soaplib::xml::Node
 /// @param[in] node XML node
 /// @param[in] value Value object
 void UInt64ToXml(soaplib::xml::Node& node, const soaplib::UInt64& value);
+
+/// Writes an 64-bit unsigned signed integer to XML
+/// @param[in] doc XML document
+/// @param[in] anyNode XML node
+/// @param[in] value Value object
+void UInt64ToAnyXml(soaplib::xml::Document& doc, soaplib::xml::Node& anyNode, const soaplib::UInt64& value);
 
 //
 // strings
@@ -418,6 +491,12 @@ std::unique_ptr<soaplib::SoapBaseType> StringPtrFromXml(const soaplib::xml::Node
 /// @param[in] value Value object
 void StringToXml(soaplib::xml::Node& node, const soaplib::String& value);
 
+/// Writes a string to XML
+/// @param[in] doc XML document
+/// @param[in] anyNode XML node
+/// @param[in] value Value object
+void StringToAnyXml(soaplib::xml::Document& doc, soaplib::xml::Node& anyNode, const soaplib::String& value);
+
 //
 // boolean
 //
@@ -441,6 +520,12 @@ std::unique_ptr<soaplib::SoapBaseType> BoolPtrFromXml(const soaplib::xml::Node& 
 /// @param[in] node XML node
 /// @param[in] value Value object
 void BoolToXml(soaplib::xml::Node& node, const soaplib::Bool& value);
+
+/// Writes a boolean to XML
+/// @param[in] doc XML document
+/// @param[in] anyNode XML node
+/// @param[in] value Value object
+void BoolToAnyXml(soaplib::xml::Document& doc, soaplib::xml::Node& anyNode, const soaplib::Bool& value);
 
 //
 // floating
@@ -466,6 +551,12 @@ std::unique_ptr<soaplib::SoapBaseType> FloatPtrFromXml(const soaplib::xml::Node&
 /// @param[in] value Value object
 void FloatToXml(soaplib::xml::Node& node, const soaplib::Float& value);
 
+/// Writes a float value to XML
+/// @param[in] doc XML document
+/// @param[in] anyNode XML node
+/// @param[in] value Value object
+void FloatToAnyXml(soaplib::xml::Document& doc, soaplib::xml::Node& anyNode, const soaplib::Float& value);
+
 /// Extracts a double value from XML
 /// @param[in] node XML node
 /// @param[out] value Value object
@@ -485,3 +576,37 @@ std::unique_ptr<soaplib::SoapBaseType> DoublePtrFromXml(const soaplib::xml::Node
 /// @param[in] node XML node
 /// @param[in] value Value object
 void DoubleToXml(soaplib::xml::Node& node, const soaplib::Double& value);
+
+/// Writes a double value to XML
+/// @param[in] doc XML document
+/// @param[in] anyNode XML node
+/// @param[in] value Value object
+void DoubleToAnyXml(soaplib::xml::Document& doc, soaplib::xml::Node& anyNode, const soaplib::Double& value);
+
+namespace soaplib {
+
+//template<typename T> void TSimpleType<T>::ToAnyXml(xml::Document& d, xml::Node& n) const { }
+
+template<> inline void TSimpleType<std::string>::ToAnyXml(xml::Document& d, xml::Node& n) const
+{
+    auto ptr = dynamic_cast<const String*>(this);
+    assert(ptr);
+    StringToAnyXml(d, n, *ptr);
+}
+
+template<> inline void TSimpleType<std::int8_t>::ToAnyXml(xml::Document& d, xml::Node& n) const { Int8ToAnyXml(d, n, *this); }
+template<> inline void TSimpleType<std::int16_t>::ToAnyXml(xml::Document& d, xml::Node& n) const { Int16ToAnyXml(d, n, *this); }
+template<> inline void TSimpleType<std::int32_t>::ToAnyXml(xml::Document& d, xml::Node& n) const { Int32ToAnyXml(d, n, *this); }
+template<> inline void TSimpleType<std::int64_t>::ToAnyXml(xml::Document& d, xml::Node& n) const { Int64ToAnyXml(d, n, *this); }
+
+template<> inline void TSimpleType<std::uint8_t>::ToAnyXml(xml::Document& d, xml::Node& n) const { UInt8ToAnyXml(d, n, *this); }
+template<> inline void TSimpleType<std::uint16_t>::ToAnyXml(xml::Document& d, xml::Node& n) const { UInt16ToAnyXml(d, n, *this); }
+template<> inline void TSimpleType<std::uint32_t>::ToAnyXml(xml::Document& d, xml::Node& n) const { UInt32ToAnyXml(d, n, *this); }
+template<> inline void TSimpleType<std::uint64_t>::ToAnyXml(xml::Document& d, xml::Node& n) const { UInt64ToAnyXml(d, n, *this); }
+
+template<> inline void TSimpleType<bool>::ToAnyXml(xml::Document& d, xml::Node& n) const { BoolToAnyXml(d, n, *this); }
+
+template<> inline void TSimpleType<float>::ToAnyXml(xml::Document& d, xml::Node& n) const { FloatToAnyXml(d, n, *this); }
+template<> inline void TSimpleType<double>::ToAnyXml(xml::Document& d, xml::Node& n) const { DoubleToAnyXml(d, n, *this); }
+
+}

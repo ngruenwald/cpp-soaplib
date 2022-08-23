@@ -116,4 +116,19 @@ xml::Node addChild(
     return node;
 }
 
+void setAnyTypeAttribute(
+    xml::Document& doc,
+    xml::Node& anyNode,
+    const std::string& type,
+    const std::string& href,
+    const std::string& prefix)
+{
+
+    const auto xmlnsName = std::string{"xmlns:"} + prefix;
+    const auto fullType = prefix + ":" + type;
+    //addNamespace(doc, anyNode, href, prefix);
+    anyNode.SetProp("i:type", fullType.c_str());
+    anyNode.SetProp(xmlnsName.c_str(), href.c_str());
+}
+
 } // namespace soaplib

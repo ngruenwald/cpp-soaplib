@@ -195,4 +195,17 @@ xml::Node addChild(
     const std::string& href,
     const std::string& prefix);
 
+/// Helper method to set the namespace and type attribute on an "any" node
+/// @param[in] doc XML document
+/// @param[in] anyNode The XML node
+/// @param[in] type The type name
+/// @param[in] href Namespace URL of the type
+/// @param[in] prefix Namespace prefix
+void setAnyTypeAttribute(
+    xml::Document& doc,
+    xml::Node& anyNode,
+    const std::string& type,
+    const std::string& href,
+    const std::string& prefix);
+
 } // namespace soaplib

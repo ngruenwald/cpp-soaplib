@@ -68,6 +68,11 @@ void GenerateAnyTypeHeader(
 
     stream << '\n';
 
+    stream << "std::unique_ptr<soaplib::SoapBaseType> " << typeName << "PtrFromXml(" << '\n';
+    stream << "    " << "const soaplib::xml::Node& node);" << '\n';
+
+    stream << '\n';
+
     stream << "void " << typeName << "ToXml(" << '\n';
     stream << "    " << "const " << typeName << "& obj," << '\n';
     stream << "    " << "soaplib::xml::Document& doc," << '\n';

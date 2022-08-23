@@ -1,7 +1,7 @@
 #include "uuid.hpp"
 
 #include "xml/xml.hpp"
-
+#include "parseHelper.hpp"
 
 namespace soaplib {
 
@@ -62,6 +62,14 @@ int uuid::compare(
 #else
     return uuid_compare(uuid_, other.uuid_);
 #endif
+}
+
+void uuid::ToAnyXml(
+    soaplib::xml::Document& doc,
+    soaplib::xml::Node& anyNode) const
+{
+    setAnyTypeAttribute(doc, anyNode, "guid", "http://schemas.microsoft.com/2003/10/Serialization/", "zer");
+    uuidToXml(anyNode, *this);
 }
 
 std::string uuid::generate_string()

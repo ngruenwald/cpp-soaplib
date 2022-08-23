@@ -33,12 +33,39 @@
 
 #include "xml/xml.hpp"
 
+#include "parseHelper.hpp"
+
+namespace soaplib {
+
+Base64::Base64()
+{
+}
+
+Base64::Base64(const std::string& data)
+    : data_(data)
+{
+}
+
+const std::string& Base64::Data() const
+{
+    return data_;
+}
+
+void Base64::ToAnyXml(
+    soaplib::xml::Document& doc,
+    soaplib::xml::Node& anyNode) const
+{
+    setAnyTypeAttribute(doc, anyNode, "base64Binary", "http://www.w3.org/2001/XMLSchema", "xs");
+    Base64ToXml(anyNode, *this);
+}
+
+} // namespace soaplib
+
 
 static const std::string base64_chars =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     "abcdefghijklmnopqrstuvwxyz"
     "0123456789+/";
-
 
 static inline bool is_base64(unsigned char c) {
     return (isalnum(c) || (c == '+') || (c == '/'));
@@ -139,7 +166,7 @@ soaplib::Base64 Base64FromXml(
     return obj;
 }
 
-std::unique_ptr<soaplib::SoapBaseType> Base64PtrFomXml(
+std::unique_ptr<soaplib::SoapBaseType> Base64PtrFromXml(
     const soaplib::xml::Node& node)
 {
     auto ptr = std::make_unique<soaplib::Base64>();

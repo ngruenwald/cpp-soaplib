@@ -1,6 +1,14 @@
 #include "simpleTypes.hpp"
 
 #include "xml/xml.hpp"
+#include "parseHelper.hpp"
+
+
+#define XS_HREF "http://www.w3.org/2001/XMLSchema"
+#define XS_PREFIX "xxs"
+
+#define TNS_HREF "http://schemas.microsoft.com/2003/10/Serialization/"
+#define TNS_PREFIX "tns"
 
 
 //
@@ -74,12 +82,23 @@ void _valueToXml(
         _valueToXml(node, value.Value);                                        \
     }
 
-#define _VAL_FROM_TO_XML(TYPE)  \
-    _FROM_XML_REF(TYPE)         \
-    _FROM_XML_RET(TYPE)         \
-    _FROM_XML_PTR(TYPE)         \
-    _TO_XML(TYPE)
+#define _TO_ANY_XML(TYPE, TYPE_NAM, TYPE_HRF, TYPE_PFX)                        \
+    void TYPE ## ToAnyXml(                                                     \
+        soaplib::xml::Document& doc,                                           \
+        soaplib::xml::Node& node,                                              \
+        const soaplib::TYPE& value)                                            \
+    {                                                                          \
+        soaplib::setAnyTypeAttribute(doc, node, TYPE_NAM, TYPE_HRF, TYPE_PFX); \
+        TYPE ## ToXml(node, value);                                            \
+    }
 
+
+#define _VAL_FROM_TO_XML(TYPE, TYPE_NAME, TYPE_HREF, TYPE_PREFIX)   \
+    _FROM_XML_REF(TYPE)                                             \
+    _FROM_XML_RET(TYPE)                                             \
+    _FROM_XML_PTR(TYPE)                                             \
+    _TO_XML(TYPE)                                                   \
+    _TO_ANY_XML(TYPE, TYPE_NAME, TYPE_HREF, TYPE_PREFIX)
 
 
 //
@@ -105,21 +124,21 @@ void VoidToXml(
 // signed integers
 //
 
-_VAL_FROM_TO_XML(Int)
-_VAL_FROM_TO_XML(Int8)
-_VAL_FROM_TO_XML(Int16)
-_VAL_FROM_TO_XML(Int32)
-_VAL_FROM_TO_XML(Int64)
+_VAL_FROM_TO_XML(Int,   "int",   XS_HREF,  XS_PREFIX)
+_VAL_FROM_TO_XML(Int8,  "char",  TNS_HREF, TNS_PREFIX)
+_VAL_FROM_TO_XML(Int16, "short", XS_HREF,  XS_PREFIX)
+_VAL_FROM_TO_XML(Int32, "int",   XS_HREF,  XS_PREFIX)
+_VAL_FROM_TO_XML(Int64, "long",  XS_HREF,  XS_PREFIX)
 
 //
 // unsigned integers
 //
 
-_VAL_FROM_TO_XML(UInt)
-_VAL_FROM_TO_XML(UInt8)
-_VAL_FROM_TO_XML(UInt16)
-_VAL_FROM_TO_XML(UInt32)
-_VAL_FROM_TO_XML(UInt64)
+_VAL_FROM_TO_XML(UInt,   "unsignedInt",   XS_HREF, XS_PREFIX)
+_VAL_FROM_TO_XML(UInt8,  "unsignedByte",  XS_HREF, XS_PREFIX)
+_VAL_FROM_TO_XML(UInt16, "unsignedShort", XS_HREF, XS_PREFIX)
+_VAL_FROM_TO_XML(UInt32, "unsignedInt",   XS_HREF, XS_PREFIX)
+_VAL_FROM_TO_XML(UInt64, "unsignedLong",  XS_HREF, XS_PREFIX)
 
 //
 // strings
@@ -140,6 +159,15 @@ void StringToXml(
     const soaplib::String& value)
 {
     node.SetVal(value.Value);
+}
+
+void StringToAnyXml(
+    soaplib::xml::Document& doc,
+    soaplib::xml::Node& anyNode,
+    const soaplib::String& value)
+{
+    soaplib::setAnyTypeAttribute(doc, anyNode, "string", XS_HREF, XS_PREFIX);
+    StringToXml(anyNode, value);
 }
 
 //
@@ -169,6 +197,15 @@ void BoolToXml(
     node.SetVal(value ? "true" : "false");
 }
 
+void BoolToAnyXml(
+    soaplib::xml::Document& doc,
+    soaplib::xml::Node& anyNode,
+    const soaplib::Bool& value)
+{
+    soaplib::setAnyTypeAttribute(doc, anyNode, "boolean", XS_HREF, XS_PREFIX);
+    BoolToXml(anyNode, value);
+}
+
 //
 // floating
 //
@@ -190,6 +227,15 @@ void FloatToXml(
     node.SetVal(std::to_string(value.Value));
 }
 
+void FloatToAnyXml(
+    soaplib::xml::Document& doc,
+    soaplib::xml::Node& anyNode,
+    const soaplib::Float& value)
+{
+    soaplib::setAnyTypeAttribute(doc, anyNode, "float", XS_HREF, XS_PREFIX);
+    FloatToXml(anyNode, value);
+}
+
 soaplib::Double DoubleFromXml(
     const soaplib::xml::Node& node)
 {
@@ -205,4 +251,13 @@ void DoubleToXml(
     const soaplib::Double& value)
 {
     node.SetVal(std::to_string(value.Value));
+}
+
+void DoubleToAnyXml(
+    soaplib::xml::Document& doc,
+    soaplib::xml::Node& anyNode,
+    const soaplib::Double& value)
+{
+    soaplib::setAnyTypeAttribute(doc, anyNode, "double", XS_HREF, XS_PREFIX);
+    DoubleToXml(anyNode, value);
 }

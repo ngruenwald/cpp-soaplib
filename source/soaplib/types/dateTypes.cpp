@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "xml/xml.hpp"
+#include "parseHelper.hpp"
 
 
 static std::vector<std::string> split(
@@ -39,6 +40,42 @@ static std::vector<std::string> split(
     }
 
     return res;
+}
+
+//
+// string conversion
+//
+
+void soaplib::Date::ToAnyXml(
+    soaplib::xml::Document& doc,
+    soaplib::xml::Node& anyNode) const
+{
+    setAnyTypeAttribute(doc, anyNode, "date", "http://www.w3.org/2001/XMLSchema", "zrk");
+    DateToXml(anyNode, *this);
+}
+
+void soaplib::Time::ToAnyXml(
+    soaplib::xml::Document& doc,
+    soaplib::xml::Node& anyNode) const
+{
+    setAnyTypeAttribute(doc, anyNode, "time", "http://www.w3.org/2001/XMLSchema", "zrk");
+    TimeToXml(anyNode, *this);
+}
+
+void soaplib::DateTime::ToAnyXml(
+    soaplib::xml::Document& doc,
+    soaplib::xml::Node& anyNode) const
+{
+    setAnyTypeAttribute(doc, anyNode, "dateTime", "http://www.w3.org/2001/XMLSchema", "zrk");
+    DateTimeToXml(anyNode, *this);
+}
+
+void soaplib::Duration::ToAnyXml(
+    soaplib::xml::Document& doc,
+    soaplib::xml::Node& anyNode) const
+{
+    setAnyTypeAttribute(doc, anyNode, "duration", "http://schemas.microsoft.com/2003/10/Serialization/", "zrs");
+    DurationToXml(anyNode, *this);
 }
 
 //

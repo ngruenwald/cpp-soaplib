@@ -39,6 +39,11 @@ struct Date
     Date(int yyyy, int mm, int dd, const Timezone& tz)
         : Year{yyyy}, Month{mm}, Day{dd}, Timezone{tz} {}
 
+    /// Date to XML
+    void ToAnyXml(
+        soaplib::xml::Document& doc,
+        soaplib::xml::Node& anyNode) const override;
+
     int Year = 0;   ///< Year
     int Month = 0;  ///< Month of year
     int Day = 0;    ///< Day of month
@@ -70,6 +75,11 @@ struct Time
     Time(int hh, int mm, int ss, int ff, const Timezone& tz)
         : Hour{hh}, Minute{mm}, Second{ss}, Fraction{ff}, Timezone{tz} {}
 
+    /// Time to XML
+    void ToAnyXml(
+        soaplib::xml::Document& doc,
+        soaplib::xml::Node& anyNode) const override;
+
     int Hour = 0;       ///< Hour of day
     int Minute = 0;     ///< Minute in hour
     int Second = 0;     ///< Second in minute
@@ -98,6 +108,11 @@ struct DateTime
     DateTime(const Date& d, const Time& t, const Timezone& tz)
         : Date{d}, Time{t}, Timezone{tz} {}
 
+    /// Date and Time to XML
+    void ToAnyXml(
+        soaplib::xml::Document& doc,
+        soaplib::xml::Node& anyNode) const override;
+
     struct Date Date;   ///< Holds the date information
     struct Time Time;   ///< Holds the time information
 
@@ -123,6 +138,11 @@ struct Duration
         : Years{yyyy}, Months{mm}, Days{dd}
         , Hours{hh}, Minutes{mi}, Seconds{ss}
         , IsNegative{neg} {}
+
+    /// Duration to XML
+    void ToAnyXml(
+        soaplib::xml::Document& doc,
+        soaplib::xml::Node& anyNode) const override;
 
     int Years = 0;      ///< Number of years
     int Months = 0;     ///< Number of months

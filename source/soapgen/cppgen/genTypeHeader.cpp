@@ -216,6 +216,12 @@ static void GenerateTypeHeaderET(
             }
         }
     }
+
+    stream << '\n';
+    stream << indent << "    void ToAnyXml(" << '\n';
+    stream << indent << "        soaplib::xml::Document& doc," << '\n';
+    stream << indent << "        soaplib::xml::Node& node) const override;" << '\n';
+
     stream << indent << "};" << '\n';
 }
 
@@ -249,6 +255,11 @@ static void GenerateTypeHeaderB(
     }
 
     stream << indent << "{" << '\n';
+
+    stream << indent << "    void ToAnyXml(" << '\n';
+    stream << indent << "        soaplib::xml::Document& doc," << '\n';
+    stream << indent << "        soaplib::xml::Node& node) const override;" << '\n';
+
     stream << indent << "};" << '\n';
 }
 
@@ -275,6 +286,12 @@ static void GenerateTypeHeaderE(
     stream << indent << "    " << "};" << '\n';
     stream << indent << "    " << '\n';
     stream << indent << "    " << "Values Value;" << '\n';
+
+    stream << '\n';
+    stream << indent << "    void ToAnyXml(" << '\n';
+    stream << indent << "        soaplib::xml::Document& doc," << '\n';
+    stream << indent << "        soaplib::xml::Node& node) const override;" << '\n';
+
     stream << indent << "};" << '\n';
 }
 

@@ -31,6 +31,10 @@ static void GenerateWriteBasic(
     const Options& options,
     const Definition& definition)
 {
+    stream << "    if (obj.Value)" << '\n';
+    stream << "    {" << '\n';
+    stream << "        obj.Value->ToAnyXml(doc, objNode);" << '\n';
+    stream << "    }" << '\n';
 }
 
 void GenerateParser(
@@ -43,6 +47,16 @@ void GenerateParser(
 {
     auto typeName = "SoapLibAnyType";
     auto parameterType = typePrefix + typeName + typeSuffix;
+
+    stream << "static void addNamespace(" << '\n';
+    stream << "    soaplib::xml::Node& node," << '\n';
+    stream << "    const char* prefix," << '\n';
+    stream << "    const char* href)" << '\n';
+    stream << "{" << '\n';
+    stream << "    auto np = node.GetXmlNode();" << '\n';
+    stream << "    xmlSetNs(np, xmlNewNs(np, BAD_CAST href, BAD_CAST prefix));" << '\n';
+    stream << "}" << '\n';
+    stream << '\n';
 
     if (isStatic)
     {
@@ -73,6 +87,17 @@ void GenerateParser(
     stream << "}" << '\n';
     stream << '\n';
 
+    if (isStatic)
+    {
+        stream << "static ";
+    }
+
+    stream << "std::unique_ptr<soaplib::SoapBaseType> " << typeName << "PtrFromXml(" << '\n';
+    stream << "    " << "const soaplib::xml::Node& node)" << '\n';
+    stream << "{" << '\n';
+    stream << "    return {}; // TODO" << '\n';
+    stream << "}" << '\n';
+    stream << '\n';
 
     stream << "static void _" << typeName << "ToXml(" << '\n';
     stream << "    " << "const " << parameterType << "& obj," << '\n';

@@ -21,23 +21,20 @@ class Base64
 {
 public:
     /// Creates empty instance
-    Base64()
-    {
-    }
+    Base64();
 
     /// Creates instance with data
     /// @param[in] data The data to hold
-    Base64(const std::string& data)
-        : data_(data)
-    {
-    }
+    Base64(const std::string& data);
 
     /// Retrieves the contained data
     /// @returns The data
-    const std::string& Data() const
-    {
-        return data_;
-    }
+    const std::string& Data() const;
+
+    /// Write the encoded data to "any" node
+    void ToAnyXml(
+        soaplib::xml::Document& doc,
+        soaplib::xml::Node& anyNode) const override;
 
 private:
     std::string data_;  ///< The data
@@ -70,7 +67,7 @@ soaplib::Base64 Base64FromXml(const soaplib::xml::Node& node);
 /// @param[in] node The XML node
 /// @returns Pointer holding the Base64 data.
 /// @throws std::bad_alloc, ...
-std::unique_ptr<soaplib::SoapBaseType> Base64PtrFomXml(const soaplib::xml::Node& node);
+std::unique_ptr<soaplib::SoapBaseType> Base64PtrFromXml(const soaplib::xml::Node& node);
 
 /// Encodes and writes data to XML.
 /// @param[in] node The XML node

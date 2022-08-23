@@ -682,6 +682,18 @@ void GenerateParser(
     stream << "    }" << '\n';
     stream << "}" << '\n';
     stream << '\n';
+
+    stream << "void " << parameterType << "::ToAnyXml(" << '\n';
+    stream << "    soaplib::xml::Document& doc," << '\n';
+    stream << "    soaplib::xml::Node& node) const" << '\n';
+    stream << "{" << '\n';
+    stream << "    soaplib::setAnyTypeAttribute(doc, node, "
+           << "\"" << type.name.name << "\","
+           << "\"" << type.name.nsHref << "\","
+           << "\"" << type.name.nsPrefix << "\");" << '\n';
+    stream << "    _" << typeName << "ToXml(*this, doc, node);" << '\n';
+    stream << "}" << '\n';
+    stream << '\n';
 }
 
 void GenerateImplementation(
