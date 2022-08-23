@@ -21,18 +21,40 @@ bool isNil(
     }
 }
 
-std::string generateRandomPrefix()
+static char prefix[] = { 'a', 'a', 'a', '\0' };
+
+void resetPrefix()
 {
-    const int length = 3;
+    prefix[0] = 'a';
+    prefix[1] = 'a';
+    prefix[2] = 'a';
+}
 
-    std::string prefix;
+std::string generatePrefix()
+{
+    std::string cur{prefix};
 
-    for (int idx = 0; idx < length; ++idx)
+    prefix[2] += 1;
+
+    if (prefix[2] > 'z')
     {
-        prefix += 'a' + (char)(rand() % ('z' - 'a'));
+        prefix[2] = 'a';
+        prefix[1] += 1;
+
+        if (prefix[1] > 'z')
+        {
+            prefix[1] = 'a';
+            prefix[0] += 1;
+
+            if (prefix[0] > 'z')
+            {
+                // oh, oh!
+                resetPrefix();
+            }
+        }
     }
 
-    return prefix;
+    return cur;
 }
 
 void addNamespace(
@@ -81,7 +103,7 @@ void addNamespace(
 
     while (prefixExists)
     {
-        pre = generateRandomPrefix();
+        pre = generatePrefix();
         auto ns = xmlSearchNs(doc.GetXmlDoc(), np, BAD_CAST pre.c_str());
         if (ns)
         {

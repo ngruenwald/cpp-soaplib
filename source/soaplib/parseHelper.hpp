@@ -21,6 +21,9 @@ bool isValidNode(
 bool isNil(
     const xml::Node& node);
 
+/// Reset global prefix
+void resetPrefix();
+
 /// Retrieves the date of a child element, or throws if not possible.
 /// @tparam T The type of the element data.
 /// @param[in] parentNode The XML parent element

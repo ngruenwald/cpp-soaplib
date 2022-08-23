@@ -1,6 +1,7 @@
 #include "soapService.hpp"
 #include "soapClient.hpp"
 #include "soapException.hpp"
+#include "parseHelper.hpp"
 
 #include <sstream>
 
@@ -62,6 +63,8 @@ xml::Node SoapService::CreateEnvelope(
     xml::Document& doc,
     const std::string& soapAction)
 {
+    resetPrefix();
+
     auto envelope = doc.CreateRootNode("Envelope");
 
     AddNamespace(doc, envelope, "http://tempuri.org/", "t");
