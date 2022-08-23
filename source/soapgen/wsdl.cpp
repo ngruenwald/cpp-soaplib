@@ -563,6 +563,17 @@ TypePtr LoadElement(
         }
     }
 
+    try
+    {
+        auto basicType = std::make_shared<BasicType>();
+        basicType->name = typeName;
+        basicType->base = getName(elementNode, "type", targetNamespace);
+        return basicType;
+    }
+    catch (...)
+    {
+    }
+
     return {};
 }
 
@@ -573,19 +584,19 @@ std::vector<TypePtr> LoadSchemaTypes(
 
     const auto targetNamespace = schemaNode.GetStringProp("targetNamespace");
 
-    const auto elementNodes = schemaNode.GetChildren("element"); // getChildren(schemaNode, "element");
+    const auto elementNodes = schemaNode.GetChildren("element");
     for (const auto& elementNode : elementNodes)
     {
         types.push_back(LoadElement(elementNode, targetNamespace));
     }
 
-    const auto complexTypeNodes = schemaNode.GetChildren("complexType");//getChildren(schemaNode, "complexType");
+    const auto complexTypeNodes = schemaNode.GetChildren("complexType");
     for (const auto& complexTypeNode : complexTypeNodes)
     {
         types.push_back(LoadComplexType(complexTypeNode, nullptr, targetNamespace));
     }
 
-    const auto simpleTypeNodes = schemaNode.GetChildren("simpleType");//getChildren(schemaNode, "simpleType");
+    const auto simpleTypeNodes = schemaNode.GetChildren("simpleType");
     for (const auto& simpleTypeNode : simpleTypeNodes)
     {
         types.push_back(LoadSimpleType(simpleTypeNode, nullptr, targetNamespace));
