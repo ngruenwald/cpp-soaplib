@@ -1,8 +1,11 @@
 #include <iostream>
+
 #include "wsdl.hpp"
 #include "cppgen/cppgen.hpp"
 
 #include "soaplib/xml/xml.hpp"
+
+#include <argparse/argparse.hpp>
 
 struct Config
 {
@@ -115,23 +118,53 @@ std::unique_ptr<Config> LoadConfig(
     return {};
 }
 
-
-int main(int argc, const char** argv)
+static void UpdateConfig(
+    Config& config,
+    argparse::ArgumentParser& program)
 {
-    const char* configFile = "config.xml";
-
-    if (argc > 1)
+    auto outPath = program.get<std::string>("--out");
+    if (!outPath.empty())
     {
-        configFile = argv[1];
+        config.cpp.outputPath = outPath;
+    }
+}
+
+
+int main(
+    int argc,
+    const char** argv)
+{
+    argparse::ArgumentParser program{"soapgen"};
+
+    program.add_argument("config")
+        .help("location of the config file")
+        .default_value(std::string{"config.xml"})
+        .required();
+
+    program.add_argument("--out")
+        .help("output path")
+        .default_value(std::string{""});
+
+    try
+    {
+        program.parse_args(argc, argv);
+    }
+    catch (const std::runtime_error& err)
+    {
+        std::cerr << err.what() << std::endl;
+        std::cerr << program;
+        return -1;
     }
 
-    auto config = LoadConfig(configFile);
+    auto config = LoadConfig(program.get<std::string>("config"));
 
     if (!config)
     {
         std::cerr << "could not load config" << '\n';
         return -1;
     }
+
+    UpdateConfig(*config, program);
 
     auto definition = LoadWsdl(config->wsdlFile);
 

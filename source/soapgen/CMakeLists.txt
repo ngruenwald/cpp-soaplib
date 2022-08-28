@@ -21,6 +21,7 @@ target_link_libraries(
   PUBLIC
   soaplib::xml
   LibXml2::LibXml2
+  contrib-argparse
 )
 
 target_link_libraries(
@@ -41,5 +42,6 @@ set_target_properties(
 
 install(
   TARGETS ${target}
+  EXPORT soaplibTargets
   RUNTIME DESTINATION ${BINARY_INSTALL_PATH}
 )
