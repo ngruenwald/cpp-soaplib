@@ -4,9 +4,10 @@ find_package(LibXml2 REQUIRED)
 
 if(USE_OPENSSL)
   if(WIN32)
-    set(OPENSSL_PATH_VERSION "01.00.02k")
+    set(OPENSSL_PATH_VERSION "3.1.0")
     set(OPENSSL_ROOT_DIR ${CMAKE_SOURCE_DIR}/contrib/openssl/V_${OPENSSL_PATH_VERSION})
   endif()
+
   find_package(OpenSSL REQUIRED)
 endif()
 
