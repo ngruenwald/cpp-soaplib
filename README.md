@@ -20,6 +20,7 @@ Do not expect this to work!_ ¯\\_(ツ)_/¯
 
 ## Dependencies
 
+* [argparse][4] (soapgen, _included_)
 * [cpp-httplib][1] (soaplib, _included_)
 * [Catch2][5] (unit tests, _included_)
 * [LibXml2][2] (soapgen, soaplib)
@@ -33,7 +34,7 @@ Do not expect this to work!_ ¯\\_(ツ)_/¯
 - [ ]  implement missing data types
 - [ ]  abort if unknown type is detected
 - [ ]  use templates for code generation ([inja][3])
-- [ ]  use command line parameters for configuration ([cxxopts][4])
+- [ ]  use command line parameters for configuration ([argparse][4])
 - [x]  use libxml2 directly, remove xmlwrp dependency
 - [x]  replace shared_ptr with unique_ptr where possible (soaplib and generated code)
 - [ ]  add unit tests
@@ -95,6 +96,6 @@ Run with:
 [1]: https://github.com/yhirose/cpp-httplib
 [2]: http://www.xmlsoft.org/
 [3]: https://github.com/pantor/inja
-[4]: https://github.com/jarro2783/cxxopts
+[4]: https://github.com/p-ranav/argparse
 [5]: https://github.com/catchorg/Catch2
 [6]: https://www.openssl.org/
