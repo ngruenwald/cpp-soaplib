@@ -14,9 +14,11 @@ public:
     /// Initializes a SoapClient instance.
     /// @param[in] serviceAddress URL of the SOAP service
     /// @param[in] timeoutSeconds Request timeout in seconds
+    /// @param[in] sslVerify Disable verification of SSL certificates
     SoapClient(
         const std::string& serviceAddress,
-        int timeoutSeconds = 5);
+        int timeoutSeconds = 5,
+        bool sslVerify = true);
 
     /// Destructs the instance.
     ~SoapClient();
@@ -30,6 +32,11 @@ public:
     /// @param[in] timeoutSeconds Read timeout in seconds
     void SetReadTimeout(
         int timeoutSeconds);
+
+    /// Enables or disables SSL certificate verification.
+    /// @param[in] sslVerify If true, SSL certificate verification is enabled.
+    void SetSslVerify(
+        bool sslVerify);
 
     /// Sends the request data and waits for the response.
     /// @param[in] request The request data
@@ -53,11 +60,10 @@ private:
 
 private:
     std::string host_;
-    int port_;
     std::string path_;
     int timeout_;   // seconds
     bool logging_ = false;
-
+    bool sslVerify_ = true;
 };
 
 } // namespace soaplib

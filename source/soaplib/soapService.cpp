@@ -39,6 +39,12 @@ void SoapService::SetRequestTimeout(
     client_.SetReadTimeout(timeoutSeconds);
 }
 
+void SoapService::SetSslVerify(
+    bool sslVerify)
+{
+    client_.SetSslVerify(sslVerify);
+}
+
 std::string SoapService::ns(
     const std::string& ns,
     const std::string& name)

@@ -43,6 +43,11 @@ public:
     void SetRequestTimeout(
         int timeoutSeconds);
 
+    /// Enables or disables SSL certificate verification.
+    /// @param[in] sslVerify If true, SSL certificate verification is enabled.
+    void SetSslVerify(
+        bool sslVerify);
+
 protected:
     // TODO: check if these are still used
     std::string SoapNS() const { return "s"; }  ///< Default SOAP namespace prefix

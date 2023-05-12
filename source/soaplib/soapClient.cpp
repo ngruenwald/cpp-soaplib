@@ -12,8 +12,10 @@ namespace soaplib {
 
 SoapClient::SoapClient(
     const std::string& serviceAddress,
-    int timeoutSeconds)
-    : timeout_(timeoutSeconds)
+    int timeoutSeconds,
+    bool sslVerify)
+    : timeout_{timeoutSeconds}
+    , sslVerify_{sslVerify}
 {
     extractAddressParts(serviceAddress);
 }
@@ -32,6 +34,12 @@ void SoapClient::SetReadTimeout(
     int timeoutSeconds)
 {
     timeout_ = timeoutSeconds;
+}
+
+void SoapClient::SetSslVerify(
+    bool sslVerify)
+{
+    sslVerify_ = sslVerify;
 }
 
 std::unique_ptr<xml::Document> SoapClient::Send(
@@ -54,11 +62,16 @@ std::unique_ptr<xml::Document> SoapClient::Send(
         std::cout << content << std::endl << std::flush;
     }
 
-    httplib::Client cli(host_.c_str(), port_);
+    httplib::Client cli{host_.c_str()};
+
     cli.set_read_timeout(timeoutSeconds, 0);
     cli.set_compress(true);
     cli.set_decompress(true);
     cli.set_keep_alive(true);
+
+#ifdef CPPHTTPLIB_OPENSSL_SUPPORT
+    cli.enable_server_certificate_verification(sslVerify_);
+#endif
 
     auto response = cli.Post(path_.c_str(), content, contentType.c_str());
 
@@ -89,23 +102,17 @@ void SoapClient::extractAddressParts(
     auto idxHost = serviceAddress.find("://");
     idxHost = idxHost == std::string::npos ? 0 : idxHost + 3;
 
-    auto idxPort = serviceAddress.find(":", idxHost);
     auto idxPath = serviceAddress.find("/", idxHost);
 
-    if (idxPort != std::string::npos)
+    if (idxPath != std::string::npos)
     {
-        host_ = serviceAddress.substr(idxHost, idxPort - idxHost);
-        idxPort = idxPort + 1;
-        auto p = serviceAddress.substr(idxPort, idxPath - idxPort);
-        port_ = std::stoi(p);
+        host_ = serviceAddress.substr(0, idxPath);
+        path_ = serviceAddress.substr(idxPath);
     }
     else
     {
-        host_ = serviceAddress.substr(idxHost, idxPath - idxHost);
-        port_ = 80;
+        host_ = serviceAddress;
     }
-
-    path_ = serviceAddress.substr(idxPath);
 }
 
 } // namespace soaplib
