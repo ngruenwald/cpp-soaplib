@@ -12,6 +12,7 @@ struct Options
     std::string outputPath = "_output";
     bool appendNamespacesToPath = true;
     std::string typesSubfolder = "types";
+    std::string templatePath = "templates";
     std::vector<std::string> namespaces;
 
     std::vector<std::string> portFilter;

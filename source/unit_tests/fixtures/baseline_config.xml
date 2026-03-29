@@ -1,0 +1,14 @@
+<config name="country-info">
+    <wsdl path="/home/norbert/Projects/cppsoap/cpp-soaplib/source/examples/country/CountryInfoService.wsdl" />
+    <cpp>
+        <output path="/home/norbert/Projects/cppsoap/cpp-soaplib/source/unit_tests/fixtures/golden/country" append-ns="false" types-subfolder="types" />
+        <namespaces>
+            <namespace>country</namespace>
+        </namespaces>
+        <cmake namespace="country" />
+        <timestamp enable="false" />
+        <portFilter>
+            <port name="CountryInfoServiceSoap12" />
+        </portFilter>
+    </cpp>
+</config>

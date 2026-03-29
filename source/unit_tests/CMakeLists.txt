@@ -35,7 +35,13 @@ endif()
 
 target_link_libraries(${target} PUBLIC ${LIBUUID})
 
-target_compile_definitions(${target} PUBLIC FIXTURES_PATH="${CMAKE_CURRENT_SOURCE_DIR}/fixtures")
+target_compile_definitions(
+  ${target}
+  PUBLIC
+  FIXTURES_PATH="${CMAKE_CURRENT_SOURCE_DIR}/fixtures"
+  TEMPLATES_PATH="${CMAKE_CURRENT_SOURCE_DIR}/../soapgen/templates"
+  OUTPUT_BASE_PATH="${CMAKE_CURRENT_BINARY_DIR}/soapgen-output"
+)
 
 set_target_properties(${target} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 

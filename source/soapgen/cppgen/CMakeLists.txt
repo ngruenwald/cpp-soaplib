@@ -26,11 +26,15 @@ set(
   genAnyTypeImpl.hpp
   genCMakeLists.cpp
   genCMakeLists.hpp
+  Renderer.cpp
+  Renderer.hpp
+  toJson.cpp
+  toJson.hpp
   ../wsdl.cpp
 )
 
 add_library(${target} STATIC ${SOURCES})
-target_link_libraries(${target} PUBLIC soaplib::xml)
+target_link_libraries(${target} PUBLIC soaplib::xml inja nlohmann_json)
 target_compiler_warnings(${target})
 
 if(WIN32)

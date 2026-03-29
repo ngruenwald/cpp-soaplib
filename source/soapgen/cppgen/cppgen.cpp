@@ -14,6 +14,7 @@
 #include "genServiceImpl.hpp"
 #include "genCMakeLists.hpp"
 #include "utils.hpp"
+#include "Renderer.hpp"
 
 namespace cppgen {
 
@@ -450,6 +451,8 @@ void Generate(
     const Options& options,
     /*const*/ Definition& definition)
 {
+    Renderer renderer(options.templatePath, options.outputPath);
+
     if (options.enableHacks)
     {
         // remove stuff that doesn't work
