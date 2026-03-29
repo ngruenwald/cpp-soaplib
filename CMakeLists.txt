@@ -1,17 +1,8 @@
-cmake_minimum_required(VERSION 3.20)
-
-project(
-  cpp-soaplib
-  VERSION 0.1.0
-  DESCRIPTION "C++ SOAP library"
-  HOMEPAGE_URL "https://github.com/ngruenwald/cpp-soaplib"
-  LANGUAGES C CXX
-)
+cmake_minimum_required(VERSION 3.30)
+include(cmake/cmpi.cmake)
+project(${CM_PROJECT_PARAMS})
 
 set(PROJECT_LICENSE MIT)
-
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-list(APPEND CMAKE_PREFIX_PATH ${CMAKE_CURRENT_SOURCE_DIR}/contrib/libs)
 
 option(USE_OPENSSL "Enable SSL support" ON)
 option(UNIT_TESTS "Build the unit tests." ON)
@@ -23,6 +14,9 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+get_target_property(cmp_cmake_modules_dir cmake_modules MODULES_PATH)
+list(APPEND CMAKE_MODULE_PATH "${cmp_cmake_modules_dir}")
 
 include(sanitizers)
 include(compiler_warnings)
@@ -41,7 +35,6 @@ endif()
 print_os_info(COMPACT)
 print_scm_info(COMPACT)
 
-add_subdirectory(contrib)
 add_subdirectory(source)
 add_subdirectory(docs)
 add_subdirectory(package)

@@ -11,7 +11,6 @@ set(target unit_test)
 
 add_executable(
   ${target}
-  unit_tests.cpp
   pointer_tests.cpp
   type_tests.cpp
   xml_tests.cpp
@@ -25,47 +24,18 @@ if(PARSER_TESTS)
   )
 endif()
 
-target_link_libraries(
-  ${target}
-  PUBLIC
-  soaplib::soaplib
-)
-
-target_link_libraries(
-  ${target}
-  PUBLIC
-  contrib-catch2
-)
-
-target_link_libraries(
-  ${target}
-  PUBLIC
-  LibXml2::LibXml2
-)
+target_link_libraries(${target} PUBLIC soaplib::soaplib)
+target_link_libraries(${target} PUBLIC Catch2::Catch2WithMain)
+target_link_libraries(${target} PUBLIC LibXml2::LibXml2)
 
 if(PARSER_TESTS)
-  target_link_libraries(
-    ${target}
-    PUBLIC
-    admin::DispatcherService
-  )
+  target_link_libraries(${target} PUBLIC admin::DispatcherService)
 endif()
 
+target_link_libraries(${target} PUBLIC ${LIBUUID})
 
-target_link_libraries(
-  ${target}
-  PUBLIC
-  ${LIBUUID}
-)
+target_compile_definitions(${target} PUBLIC FIXTURES_PATH="${CMAKE_CURRENT_SOURCE_DIR}/fixtures")
 
-target_compile_definitions(
-  ${target}
-  PUBLIC
-  FIXTURES_PATH="${CMAKE_CURRENT_SOURCE_DIR}/fixtures"
-)
+set_target_properties(${target} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
-set_target_properties(
-  ${target}
-  PROPERTIES
-  RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
-)
+add_test(NAME unit_tests COMMAND ${target})

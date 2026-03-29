@@ -83,13 +83,17 @@ void GenerateHeader(
 
     stream << '\n';
 
+    stream << "The \"" << serviceName << "\" SOAP service" << '\n';
     stream << "class " << serviceName << '\n';
     stream << "    : public soaplib::SoapService" << '\n';
     stream << "{" << '\n';
     stream << "public:" << '\n';
+    stream << "    /// Constructs a new instance of the \"" << serviceName << "\" service." << '\n';
+    stream << "    /// @param[in]  serviceAddress  URL of the SOAP service." << '\n';
     stream << "    " << serviceName << "(" << '\n';
     stream << "        const std::string& serviceAddress);" << '\n';
     stream << '\n';
+    stream << "    /// Destructs the service instance." << '\n';
     stream << "    ~" << serviceName << "();" << '\n';
     stream << '\n';
     stream << "public:" << '\n';

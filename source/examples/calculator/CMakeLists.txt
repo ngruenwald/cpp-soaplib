@@ -36,7 +36,7 @@ add_executable(
   main.cpp
 )
 
-set_project_warnings(${target})
+target_compiler_warnings(${target})
 
 target_link_libraries(
   ${target}

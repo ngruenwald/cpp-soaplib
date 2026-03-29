@@ -164,7 +164,7 @@ Operation LoadOperation(
         auto outputNode = operationNode.GetChild("output");
         operation.output = LoadOutput(outputNode);
     }
-    catch(const std::exception& e)
+    catch (const std::exception& e)
     {
         std::cerr << "operation " << operation.name.name << " has no output" << '\n';
     }
@@ -318,7 +318,7 @@ void LoadElement(
     }
     else if (nillable)
     {
-        //parameter.kind = Parameter::Pointer;
+        // parameter.kind = Parameter::Pointer;
         parameter.kind = Parameter::Optional;
     }
     else if (minOccurs == 0 && maxOccurs == 1)
@@ -610,7 +610,7 @@ std::vector<TypePtr> LoadTypes(
 {
     std::vector<TypePtr> types;
 
-    const auto schemaNodes = typesNode.GetChildren("schema");//getChildren(typesNode, "schema");
+    const auto schemaNodes = typesNode.GetChildren("schema");  // getChildren(typesNode, "schema");
     for (const auto& schemaNode : schemaNodes)
     {
         auto schemaTypes = LoadSchemaTypes(schemaNode);
@@ -618,8 +618,7 @@ std::vector<TypePtr> LoadTypes(
         types.insert(
             std::end(types),
             std::begin(schemaTypes),
-            std::end(schemaTypes)
-        );
+            std::end(schemaTypes));
     }
 
     return types;
@@ -639,31 +638,31 @@ std::shared_ptr<Definition> LoadDefinition(
         std::cerr << "LoadDefinition: " << ex.what() << '\n';
     }
 
-    const auto serviceNodes = definitionNode.GetChildren("service");//getChildren(definitionNode, "service");
+    const auto serviceNodes = definitionNode.GetChildren("service");  // getChildren(definitionNode, "service");
     for (const auto& serviceNode : serviceNodes)
     {
         definition->services.push_back(LoadService(serviceNode));
     }
 
-    const auto bindingNodes = definitionNode.GetChildren("binding");//getChildren(definitionNode, "binding");
+    const auto bindingNodes = definitionNode.GetChildren("binding");  // getChildren(definitionNode, "binding");
     for (const auto& bindingNode : bindingNodes)
     {
         definition->bindings.push_back(LoadBinding(bindingNode));
     }
 
-    const auto portTypeNodes = definitionNode.GetChildren("portType");//getChildren(definitionNode, "portType");
+    const auto portTypeNodes = definitionNode.GetChildren("portType");  // getChildren(definitionNode, "portType");
     for (const auto& portTypeNode : portTypeNodes)
     {
         definition->portTypes.push_back(LoadPortType(portTypeNode));
     }
 
-    const auto messageNodes = definitionNode.GetChildren("message");//getChildren(definitionNode, "message");
+    const auto messageNodes = definitionNode.GetChildren("message");  // getChildren(definitionNode, "message");
     for (const auto& messageNode : messageNodes)
     {
         definition->messages.push_back(LoadMessage(messageNode));
     }
 
-    const auto typesNodes = definitionNode.GetChildren("types");//getChildren(definitionNode, "types");
+    const auto typesNodes = definitionNode.GetChildren("types");  // getChildren(definitionNode, "types");
     for (const auto& typesNode : typesNodes)
     {
         auto types = LoadTypes(typesNode);
@@ -671,8 +670,7 @@ std::shared_ptr<Definition> LoadDefinition(
         definition->types.insert(
             std::end(definition->types),
             std::begin(types),
-            std::end(types)
-        );
+            std::end(types));
     }
 
     return definition;
@@ -795,8 +793,7 @@ void GetTypeHistory(
         GetBaseType(type, definition, checkNamespaces),
         definition,
         checkNamespaces,
-        history
-    );
+        history);
 }
 
 void RedundancyCheck(

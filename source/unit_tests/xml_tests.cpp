@@ -32,7 +32,7 @@ TEST_CASE("xml load document", "[all][xml]")
     REQUIRE(buffer == s2);
 }
 
-TEST_CASE("xml nodes", "[all][xml")
+TEST_CASE("xml nodes", "[all][xml]")
 {
     const std::string fixture{FIXTURES_PATH "/simple.xml"};
     auto buffer = loadFile(fixture);

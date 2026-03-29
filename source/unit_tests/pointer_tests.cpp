@@ -1,5 +1,6 @@
 #include "unit_tests.hpp"
 
+#include <memory>
 #include <iostream>
 #include <optional>
 

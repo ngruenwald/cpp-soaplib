@@ -1,0 +1,36 @@
+{
+  "project": {
+    "name": "cpp-soaplib",
+    "version": "0.2.0",
+    "description": "C++ SOAP Library",
+    "documentation": "https://github.com/ngruenwald/cpp-soaplib",
+    "repository": "https://github.com/ngruenwald/cpp-soaplib",
+    "readme": "README.md",
+    "license": "MIT",
+    "license-file": "LICENSE.txt",
+    "dependency-defaults": {
+      "remote-recipes": true
+    }
+  },
+  "dependencies": {
+    "cpp-httplib": "0.40.0",
+    "OpenSSL": {
+      "method": "find_package",
+      "version": "3",
+      "when": "USE_OPENSSL"
+    },
+    "LibXml2": {
+      "method": "find_package"
+    },
+    "Threads": {}
+  },
+  "build-dependencies": {
+    "cmake-modules": "main"
+  },
+  "dev-dependencies": {
+    "catch2": {
+      "version": "3.13.0",
+      "when": "UNIT_TESTS"
+    }
+  }
+}

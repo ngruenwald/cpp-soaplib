@@ -29,7 +29,7 @@ set(
 )
 
 add_library(${target} STATIC ${SOURCES})
-set_project_warnings(${target})
+target_compiler_warnings(${target})
 
 if(WIN32)
   set_target_properties(${target} PROPERTIES COMPILE_FLAGS "/DLIBXML_STATIC")

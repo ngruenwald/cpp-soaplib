@@ -16,6 +16,24 @@ inline const char* ascii_cast(
     return reinterpret_cast<const char*>(pxc);
 }
 
+inline const char* get_content(_xmlBuffer* buffer)
+{
+#if 0
+    return ascii_cast(buffer->content);
+#else
+    return ascii_cast(xmlBufferContent(buffer));
+#endif
+}
+
+inline size_t get_content_length(_xmlBuffer* buffer)
+{
+#if 0
+    return buffer->use;
+#else
+    return xmlBufferLength(buffer);
+#endif
+}
+
 auto evaluateXPath(
     xmlXPathContextPtr xpathContext,
     const char* xpath)
@@ -104,7 +122,7 @@ std::string Document::Serialize(
         throw xml::Exception{"Could not save to buffer"};
     }
 
-    std::string result(ascii_cast(buffer->content), buffer->use);
+    std::string result(get_content(buffer), get_content_length(buffer));
 
     xmlBufferFree(buffer);
 

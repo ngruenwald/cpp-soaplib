@@ -1,6 +1,6 @@
 #include <iostream>
-#include "wsdl.hpp"
 #include "cppgen/cppgen.hpp"
+#include "wsdl.hpp"
 
 #include "soaplib/xml/xml.hpp"
 
@@ -34,7 +34,7 @@ std::unique_ptr<Config> LoadConfig(
                 config->cpp.namespaces.push_back(nsNode.GetStringVal());
             }
         }
-        catch(const std::exception& e)
+        catch (const std::exception& e)
         {
         }
 
@@ -46,7 +46,7 @@ std::unique_ptr<Config> LoadConfig(
                 config->cpp.pointerTypes.push_back(ptrNode.GetStringVal());
             }
         }
-        catch(const std::exception& e)
+        catch (const std::exception& e)
         {
             std::cerr << e.what() << '\n';
         }
@@ -65,7 +65,7 @@ std::unique_ptr<Config> LoadConfig(
                 config->cpp.portFilter.push_back(pfNode.GetStringProp("name"));
             }
         }
-        catch(const std::exception& e)
+        catch (const std::exception& e)
         {
         }
 
@@ -78,7 +78,7 @@ std::unique_ptr<Config> LoadConfig(
                 config->cpp.ignoredOperations.push_back(tpNode.GetStringProp("name"));
             }
         }
-        catch(const std::exception& e)
+        catch (const std::exception& e)
         {
         }
         try
@@ -89,7 +89,7 @@ std::unique_ptr<Config> LoadConfig(
                 config->cpp.ignoredMessages.push_back(tpNode.GetStringProp("name"));
             }
         }
-        catch(const std::exception& e)
+        catch (const std::exception& e)
         {
         }
         try
@@ -100,14 +100,14 @@ std::unique_ptr<Config> LoadConfig(
                 config->cpp.ignoredTypes.push_back(tpNode.GetStringProp("name"));
             }
         }
-        catch(const std::exception& e)
+        catch (const std::exception& e)
         {
         }
 
 
         return config;
     }
-    catch(const std::exception& e)
+    catch (const std::exception& e)
     {
         std::cerr << e.what() << '\n';
     }

@@ -6,7 +6,7 @@
 #include <mutex>
 #include <sstream>
 
-#include <cpp-httplib/httplib.h>
+#include <httplib.h>
 
 namespace soaplib {
 

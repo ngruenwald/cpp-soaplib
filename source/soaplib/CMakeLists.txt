@@ -47,12 +47,13 @@ set_target_properties(
   OUTPUT_NAME cpp-soaplib
 )
 
-#set_project_warnings(${target})
+#target_compiler_warnings(${target})
 
 target_link_libraries(
   ${target}
   PUBLIC
   soaplib::xml
+  httplib::httplib
   LibXml2::LibXml2
   Threads::Threads
 )
@@ -63,19 +64,6 @@ target_include_directories(
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>
   $<INSTALL_INTERFACE:${HEADER_INSTALL_ROOT}>
-)
-
-# https://gitlab.kitware.com/cmake/cmake/-/issues/15415
-target_include_directories(
-  ${target}
-  PRIVATE
-  $<TARGET_PROPERTY:contrib-cpp-httplib,INTERFACE_INCLUDE_DIRECTORIES>
-)
-
-target_compile_definitions(
-  ${target}
-  PRIVATE
-  $<TARGET_PROPERTY:contrib-cpp-httplib,INTERFACE_COMPILE_DEFINITIONS>
 )
 
 if(INSTALL_VERSIONED)
