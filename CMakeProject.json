@@ -13,7 +13,15 @@
     }
   },
   "dependencies": {
-    "cpp-httplib": "0.40.0",
+    "cpp-httplib": {
+      "version": "0.40.0",
+      "url_hash": ""
+    },
+    "inja": {
+      "version": "3.5.0",
+      "requires": ["nlohmann_json"]
+    },
+    "nlohmann_json": "3.12.0",
     "OpenSSL": {
       "method": "find_package",
       "version": "3",
