@@ -26,9 +26,11 @@ set(
   genAnyTypeImpl.hpp
   genCMakeLists.cpp
   genCMakeLists.hpp
+  ../wsdl.cpp
 )
 
 add_library(${target} STATIC ${SOURCES})
+target_link_libraries(${target} PUBLIC soaplib::xml)
 target_compiler_warnings(${target})
 
 if(WIN32)

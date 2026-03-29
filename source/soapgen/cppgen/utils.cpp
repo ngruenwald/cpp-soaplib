@@ -5,6 +5,7 @@
 #include <functional>
 #include <iomanip>
 #include <sstream>
+#include <algorithm>
 
 #include "options.hpp"
 #include "wsdl.hpp"

@@ -6,8 +6,6 @@ set(target soapgen)
 add_executable(
   ${target}
   main.cpp
-  wsdl.cpp
-  wsdl.hpp
 )
 
 target_link_libraries(
