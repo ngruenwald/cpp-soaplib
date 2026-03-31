@@ -5,6 +5,23 @@
 #include <soaplib/xml/xml.hpp>
 
 
+TEST_CASE("SimpleType operators", "[all][types]")
+{
+    soaplib::Int32 val = 10;
+    REQUIRE(val == 10);
+    REQUIRE(val != 20);
+    REQUIRE(val < 20);
+    REQUIRE(val > 5);
+    REQUIRE(val <= 10);
+    REQUIRE(val >= 10);
+
+    val = 20;
+    REQUIRE(val == 20);
+    
+    int raw = (int)val;
+    REQUIRE(raw == 20);
+}
+
 TEST_CASE("Timezone to_string", "[all][types]")
 {
     {

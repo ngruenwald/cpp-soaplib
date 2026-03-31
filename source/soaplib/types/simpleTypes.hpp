@@ -70,9 +70,49 @@ struct TSimpleType
     /// Compares against the given value
     /// @param[in] other The value to compare against
     /// @returns The result of the value comparison
-    bool operator==(const T& other)
+    bool operator==(const T& other) const
     {
         return Value == other;
+    }
+
+    /// Compares against the given value
+    /// @param[in] other The value to compare against
+    /// @returns The result of the value comparison
+    bool operator!=(const T& other) const
+    {
+        return Value != other;
+    }
+
+    /// Compares against the given value
+    /// @param[in] other The value to compare against
+    /// @returns The result of the value comparison
+    bool operator<(const T& other) const
+    {
+        return Value < other;
+    }
+
+    /// Compares against the given value
+    /// @param[in] other The value to compare against
+    /// @returns The result of the value comparison
+    bool operator>(const T& other) const
+    {
+        return Value > other;
+    }
+
+    /// Compares against the given value
+    /// @param[in] other The value to compare against
+    /// @returns The result of the value comparison
+    bool operator<=(const T& other) const
+    {
+        return Value <= other;
+    }
+
+    /// Compares against the given value
+    /// @param[in] other The value to compare against
+    /// @returns The result of the value comparison
+    bool operator>=(const T& other) const
+    {
+        return Value >= other;
     }
 
     /// Type to XML
