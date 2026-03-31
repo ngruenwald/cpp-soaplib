@@ -14,6 +14,10 @@ set(
   genServiceHeader.hpp
   genServiceImpl.cpp
   genServiceImpl.hpp
+  genServerHeader.cpp
+  genServerHeader.hpp
+  genServerImpl.cpp
+  genServerImpl.hpp
   genServiceHelper.cpp
   genServiceHelper.hpp
   genTypeHeader.cpp

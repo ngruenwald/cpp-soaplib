@@ -18,6 +18,7 @@ target_link_libraries(
   ${target}
   PUBLIC
   soaplib::xml
+  argparse::argparse
   LibXml2::LibXml2
 )
 

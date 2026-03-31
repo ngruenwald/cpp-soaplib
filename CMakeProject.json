@@ -13,6 +13,7 @@
     }
   },
   "dependencies": {
+    "argparse": "3.2",
     "cpp-httplib": {
       "version": "0.40.0",
       "url_hash": ""

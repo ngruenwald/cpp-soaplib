@@ -332,6 +332,8 @@ nlohmann::json JsonMapper::ToJson(const Options& o)
         {"cmakeNamespace", o.cmakeNamespace},
         {"cmakeExport", o.cmakeExport},
         {"innerTypeSuffix", o.innerTypeSuffix},
+        {"generateClient", o.generateClient},
+        {"generateServer", o.generateServer},
         {"writeTimestamp", o.writeTimestamp}
     };
 }
@@ -347,6 +349,8 @@ void to_json(nlohmann::json& j, const Options& o)
         {"cmakeNamespace", o.cmakeNamespace},
         {"cmakeExport", o.cmakeExport},
         {"innerTypeSuffix", o.innerTypeSuffix},
+        {"generateClient", o.generateClient},
+        {"generateServer", o.generateServer},
         {"writeTimestamp", o.writeTimestamp}
     };
 }

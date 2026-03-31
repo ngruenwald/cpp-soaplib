@@ -24,6 +24,9 @@ struct Options
 
     std::string innerTypeSuffix = "T";
 
+    bool generateClient = true;
+    bool generateServer = false;
+
     bool writeTimestamp = true;
 
     bool enableHacks = false;

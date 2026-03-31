@@ -44,6 +44,16 @@ void compareDirectories(const fs::path& generatedDir, const fs::path& goldenDir)
     }
 }
 
+TEST_CASE("Options: ServerFlag", "[generator][options]")
+{
+    cppgen::Options options;
+    REQUIRE_FALSE(options.generateServer);
+    REQUIRE(options.generateClient);
+
+    options.generateServer = true;
+    REQUIRE(options.generateServer);
+}
+
 TEST_CASE("Generator: Calculator", "[all][generator]")
 {
     std::string wsdlPath = FIXTURES_PATH "/../../examples/calculator/calculator.wsdl";
@@ -72,6 +82,36 @@ TEST_CASE("Generator: Calculator", "[all][generator]")
     compareDirectories(tempDir, goldenDir);
 
     // fs::remove_all(tempDir);
+}
+
+TEST_CASE("Generator: CalculatorServer", "[all][generator]")
+{
+    std::string wsdlPath = FIXTURES_PATH "/../../examples/calculator/calculator.wsdl";
+    std::string goldenDir = FIXTURES_PATH "/golden/calc_server";
+    fs::path tempDir = fs::path{OUTPUT_BASE_PATH} / "soapgen_test_calc_server";
+
+    if (fs::exists(tempDir)) fs::remove_all(tempDir);
+    fs::create_directories(tempDir);
+
+    cppgen::Options options;
+    options.name = "calculator-service";
+    options.outputPath = tempDir.string();
+    options.appendNamespacesToPath = false;
+    options.typesSubfolder = "types";
+    options.namespaces = {"calc"};
+    options.cmakeNamespace = "calc";
+    options.templatePath = TEMPLATES_PATH;
+    options.writeTimestamp = false;
+    options.portFilter = {"CalculatorSoap"};
+    options.generateClient = false;
+    options.generateServer = true;
+
+    auto definition = LoadWsdl(wsdlPath);
+    REQUIRE(definition);
+
+    cppgen::Generate(options, *definition);
+
+    compareDirectories(tempDir, goldenDir);
 }
 
 TEST_CASE("Generator: CountryInfo", "[all][generator]")

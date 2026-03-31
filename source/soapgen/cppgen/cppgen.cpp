@@ -12,6 +12,8 @@
 #include "genAnyTypeImpl.hpp"
 #include "genServiceHeader.hpp"
 #include "genServiceImpl.hpp"
+#include "genServerHeader.hpp"
+#include "genServerImpl.hpp"
 #include "genCMakeLists.hpp"
 #include "utils.hpp"
 #include "Renderer.hpp"
@@ -75,24 +77,50 @@ void GenerateServices(
 
         std::cout << "service: " << serviceName << '\n';
 
-        const auto headerPath = GetFilePath(serviceName + ".hpp", options, false);
-        const auto implPath = GetFilePath(serviceName + ".cpp", options, false);
-
-        std::ofstream hdrFile(headerPath);
-        if (!hdrFile.is_open())
+        if (options.generateClient)
         {
-            throw std::runtime_error("could not open output file " + headerPath.string());
-        }
-        std::cout << "  * hdr:  " << headerPath << std::endl;
-        service::GenerateHeader(hdrFile, service, options, definition);
+            const auto headerPath = GetFilePath(serviceName + ".hpp", options, false);
+            const auto implPath = GetFilePath(serviceName + ".cpp", options, false);
 
-        std::ofstream implFile(implPath);
-        if (!implFile.is_open())
-        {
-            throw std::runtime_error("could not open output file " + implPath.string());
+            std::ofstream hdrFile(headerPath);
+            if (!hdrFile.is_open())
+            {
+                throw std::runtime_error("could not open output file " + headerPath.string());
+            }
+            std::cout << "  * hdr:  " << headerPath << std::endl;
+            service::GenerateHeader(hdrFile, service, options, definition);
+
+            std::ofstream implFile(implPath);
+            if (!implFile.is_open())
+            {
+                throw std::runtime_error("could not open output file " + implPath.string());
+            }
+            std::cout << "  * impl: " << implPath << std::endl;
+            service::GenerateImplementation(implFile, service, options, definition);
         }
-        std::cout << "  * impl: " << implPath << std::endl;
-        service::GenerateImplementation(implFile, service, options, definition);
+
+        if (options.generateServer)
+        {
+            const std::string serverName = serviceName + "Server";
+            const auto headerPath = GetFilePath(serverName + ".hpp", options, false);
+            const auto implPath = GetFilePath(serverName + ".cpp", options, false);
+
+            std::ofstream hdrFile(headerPath);
+            if (!hdrFile.is_open())
+            {
+                throw std::runtime_error("could not open output file " + headerPath.string());
+            }
+            std::cout << "  * server hdr:  " << headerPath << std::endl;
+            service::GenerateServerHeader(hdrFile, service, options, definition);
+
+            std::ofstream implFile(implPath);
+            if (!implFile.is_open())
+            {
+                throw std::runtime_error("could not open output file " + implPath.string());
+            }
+            std::cout << "  * server impl: " << implPath << std::endl;
+            service::GenerateServerImplementation(implFile, service, options, definition);
+        }
     }
 }
 
