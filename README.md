@@ -41,8 +41,8 @@ Do not expect this to work!_ ¯\\_(ツ)_/¯
 - [x]  decouple transport layer (HTTP, WebSockets, etc.) for client and server
 - [x]  implement WebSocket client transport
 - [x]  implement WebSocket server transport
-- [ ]  support for split definition files
-- [ ]  support file download in generator
+- [x]  support for split definition files
+- [x]  support file download in generator
 - [ ]  auto detect and resolve cyclic references
 - [ ]  cleanup cmake scripts
 - [ ]  generate doxygen files
