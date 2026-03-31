@@ -14,8 +14,14 @@ set(target soaplib)
 add_library(
   ${target}
   STATIC
-  soapClient.cpp
-  soapClient.hpp
+  SoapBase.cpp
+  SoapBase.hpp
+  SoapServer.hpp
+  SoapTransport.hpp
+  HttpSoapTransport.cpp
+  HttpSoapTransport.hpp
+  HttpSoapServer.cpp
+  HttpSoapServer.hpp
   soapException.cpp
   soapException.hpp
   soapService.cpp
@@ -86,9 +92,13 @@ install(
 
 install(
   FILES
-    soapClient.hpp
     soapException.hpp
     soapService.hpp
+    SoapBase.hpp
+    SoapServer.hpp
+    SoapTransport.hpp
+    HttpSoapTransport.hpp
+    HttpSoapServer.hpp
     basicTypes.hpp
     parseHelper.hpp
   DESTINATION

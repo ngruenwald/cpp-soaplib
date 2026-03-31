@@ -4,34 +4,31 @@
 #include <string>
 
 #include <soaplib/xml/xml.hpp>
-
-#include <soaplib/soapClient.hpp>
+#include <soaplib/SoapBase.hpp>
+#include <soaplib/SoapTransport.hpp>
 
 namespace soaplib {
 
 /// Base class for SOAP services.
-class SoapService
+class SoapService : public SoapBase
 {
-protected:
-    // TODO: check it these are still used
-    const std::string SoapNamespace = "http://www.w3.org/2003/05/soap-envelope";    ///< SOAP namespace
-    const std::string TempNamespace = "http://tempuri.org/";                        ///< TempUri namespace
-    const std::string AddrNamespace = "http://www.w3.org/2005/08/addressing";       ///< Addressing namespace
-    const std::string InstNamespace = "http://www.w3.org/2001/XMLSchema-instance";  ///< Instance namespace
-
 public:
-    /// Creates a SoapService instance
+    /// Creates a SoapService instance using a specific transport.
+    /// @param[in] transport The transport implementation to use
+    /// @param[in] serviceNamespace XML namespace
+    SoapService(
+        std::unique_ptr<SoapTransport> transport,
+        const std::string& serviceNamespace);
+
+    /// Creates a SoapService instance with default HTTP transport.
     /// @param[in] serviceAddress URL of the SOAP service
     /// @param[in] serviceNamespace XML namespace
-    /// @throws soap::SoapException
     SoapService(
         const std::string& serviceAddress,
         const std::string& serviceNamespace);
 
-    /// Enables or disables the SOAP header.
-    /// @param[in] enable If true, SOAP headers are generated, otherwise not.
-    void EnableHeader(
-        bool enable);
+    /// Destructs the instance.
+    virtual ~SoapService();
 
     /// Enables logging of the transmitted HTTP messages.
     /// @param[in] enable If true, logging will be enabled.
@@ -44,20 +41,12 @@ public:
         int timeoutSeconds);
 
 protected:
-    // TODO: check if these are still used
+    // Redundant namespace helpers (TODO: check if generated code uses these)
     std::string SoapNS() const { return "s"; }  ///< Default SOAP namespace prefix
     std::string TempNS() const { return "t"; }  ///< Default TempUri namespace prefix
     std::string AddrNS() const { return "a"; }  ///< Default Addressing namespace prefix
     std::string InstNS() const { return "i"; }  ///< Default Instance namespace prefix
     std::string NS()     const { return "e"; }  ///< Default namespace prefix
-
-    /// Formats a XML namespace.
-    /// @param[in] ns XML namespace
-    /// @param[in] name Name prefix
-    /// @returns The formatted namespace
-    static std::string ns(
-        const std::string& ns,
-        const std::string& name);
 
 protected:
     /// Executes a method call using the defaut request timeout.
@@ -74,51 +63,13 @@ protected:
         const xml::Document& request,
         int timeoutSeconds);
 
-    /// Creates a SOAP Envelope element.
-    /// @param[in] doc XML document
-    /// @param[in] soapAction The SOAP Action name
-    /// @returns The envelope element
-    xml::Node CreateEnvelope(
-        xml::Document& doc,
-        const std::string& soapAction);
-
-    /// Adds a namespace.
-    /// @param[in] doc XML document
-    /// @param[in] node XML node for which to set the namespace
-    /// @param[in] href XML namespace URL
-    /// @param[in] prefix XML namespace prefix
-    void AddNamespace(
-        xml::Document& doc,
-        xml::Node& node,
-        const std::string& href,
-        const std::string& prefix);
-
-    /// Adds a XML child element.
-    /// @param[in] doc XML document
-    /// @param[in] parentNode XML parent element
-    /// @param[in] name Element name
-    /// @param[in] prefix XML namespace prefix
-    xml::Node AddChild(
-        xml::Document& doc,
-        xml::Node& parentNode,
-        const std::string& name,
-        const std::string& prefix);
-
-private:
-    void ParseServiceAddress(
-        const std::string& serviceAddress);
-
 protected:
-    soaplib::SoapClient client_;    ///< SOAP client instance
+    std::unique_ptr<SoapTransport> transport_; ///< SOAP transport instance
 
-    std::string address_;           ///< SOAP service URL
+    std::string address_;           ///< SOAP service URL (might be empty if custom transport used)
     std::string namespace_;         ///< SOAP service XML namespace
 
-    std::string host_;              ///< SOAP service host address
-    std::string path_;              ///< SOAP service path
-    std::string service_;           ///< SOAP service name
-
-    bool enableHeader_{true};       ///< Indicates if SOAP headers are enabled
+    int defaultTimeout_ = 5;        ///< Default timeout in seconds
 };
 
 } // namespace soaplib

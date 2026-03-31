@@ -15,6 +15,7 @@ add_executable(
   type_tests.cpp
   xml_tests.cpp
   generator_tests.cpp
+  soaplib_tests.cpp
 )
 
 if(PARSER_TESTS)
