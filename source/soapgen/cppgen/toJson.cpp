@@ -49,13 +49,13 @@ nlohmann::json JsonMapper::ToJson(const Name& n)
 nlohmann::json JsonMapper::ToJson(const Type& t)
 {
     nlohmann::json j;
-    j["name"] = ResolveType(t.name, true);
+    j["name"] = ResolveType(t.name, options_, true);
     j["wsdl_name"] = t.name.name;
     j["xmlns"] = ToJson(t.name);
     j["kind_enum"] = (int)t.kind;
     j["isNativeType"] = IsNativeType(t.name);
-    j["resolved_name"] = ResolveType(t.name, true);
-    j["full_resolved_name"] = ResolveType(t.name, false);
+    j["resolved_name"] = ResolveType(t.name, options_, true);
+    j["full_resolved_name"] = ResolveType(t.name, options_, false);
     j["namespaces"] = options_.namespaces;
 
     switch (t.kind)
@@ -65,9 +65,9 @@ nlohmann::json JsonMapper::ToJson(const Type& t)
             const auto& bt = static_cast<const BasicType&>(t);
             j["kind"] = "basic";
             if (bt.base.has_value()) {
-                j["base"]["name"] = ResolveType(bt.base.value(), true);
+                j["base"]["name"] = ResolveType(bt.base.value(), options_, true);
                 j["base"]["xmlns"] = ToJson(bt.base.value());
-                j["base"]["resolved_name"] = ResolveType(bt.base.value(), true);
+                j["base"]["resolved_name"] = ResolveType(bt.base.value(), options_, true);
             }
             break;
         }
@@ -76,9 +76,9 @@ nlohmann::json JsonMapper::ToJson(const Type& t)
             const auto& et = static_cast<const ExtendedType&>(t);
             j["kind"] = "struct";
             if (et.base.has_value()) {
-                j["base"]["name"] = ResolveType(et.base.value(), true);
+                j["base"]["name"] = ResolveType(et.base.value(), options_, true);
                 j["base"]["xmlns"] = ToJson(et.base.value());
-                j["base"]["resolved_name"] = ResolveType(et.base.value(), true);
+                j["base"]["resolved_name"] = ResolveType(et.base.value(), options_, true);
             }
             j["struct"]["parameters"] = nlohmann::json::array();
             for (const auto& p : et.parameters) {
@@ -113,11 +113,11 @@ nlohmann::json JsonMapper::ToJson(const Parameter& p, const ExtendedType& et)
         {"name", FormatParameterName(p.name.name)},
         {"wsdl_name", p.name.name},
         {"xmlns", ToJson(p.name)},
-        {"type", ResolveType(p.type, true)},
+        {"type", ResolveType(p.type, options_, true)},
         {"wsdl_type", ToJson(p.type)},
         {"kind_enum", (int)p.kind},
-        {"resolved_type", ResolveType(p.type, true)},
-        {"full_resolved_type", ResolveType(p.type, false)},
+        {"resolved_type", ResolveType(p.type, options_, true)},
+        {"full_resolved_type", ResolveType(p.type, options_, false)},
         {"isNativeType", IsNativeType(p.type)},
         {"isInnerType", IsInnerType(p.type, et.innerTypes)},
         {"cpp_name", FormatParameterName(p.name.name)}
@@ -163,7 +163,7 @@ nlohmann::json JsonMapper::ToJson(const Message& m)
             {"xmlns", ToJson(p.name)},
             {"element", p.element.name},
             {"xmlns_element", ToJson(p.element)},
-            {"resolved_element", ResolveType(p.element, true)}
+            {"resolved_element", ResolveType(p.element, options_, true)}
         });
     }
     return j;
@@ -247,8 +247,8 @@ nlohmann::json JsonMapper::ToJson(const Operation& o, const Definition& d)
         auto inputTypes = service::getMessagePartNames(o.input.message, d);
         if (!inputTypes.empty()) {
             j["input_type"] = inputTypes[0].name;
-            j["input_resolved_type"] = ResolveType(inputTypes[0], true);
-            j["input_full_resolved_type"] = ResolveType(inputTypes[0], false);
+            j["input_resolved_type"] = ResolveType(inputTypes[0], options_, true);
+            j["input_full_resolved_type"] = ResolveType(inputTypes[0], options_, false);
             j["input_is_native"] = IsNativeType(inputTypes[0]);
         }
     }
@@ -257,8 +257,8 @@ nlohmann::json JsonMapper::ToJson(const Operation& o, const Definition& d)
         auto outputTypes = service::getMessagePartNames(o.output.message, d);
         if (!outputTypes.empty()) {
             j["output_type"] = outputTypes[0].name;
-            j["output_resolved_type"] = ResolveType(outputTypes[0], true);
-            j["output_full_resolved_type"] = ResolveType(outputTypes[0], false);
+            j["output_resolved_type"] = ResolveType(outputTypes[0], options_, true);
+            j["output_full_resolved_type"] = ResolveType(outputTypes[0], options_, false);
             j["output_is_native"] = IsNativeType(outputTypes[0]);
         } else {
             j["output_resolved_type"] = "void";
@@ -334,6 +334,7 @@ nlohmann::json JsonMapper::ToJson(const Options& o)
         {"innerTypeSuffix", o.innerTypeSuffix},
         {"generateClient", o.generateClient},
         {"generateServer", o.generateServer},
+        {"abortOnUnknownType", o.abortOnUnknownType},
         {"writeTimestamp", o.writeTimestamp}
     };
 }
@@ -351,6 +352,7 @@ void to_json(nlohmann::json& j, const Options& o)
         {"innerTypeSuffix", o.innerTypeSuffix},
         {"generateClient", o.generateClient},
         {"generateServer", o.generateServer},
+        {"abortOnUnknownType", o.abortOnUnknownType},
         {"writeTimestamp", o.writeTimestamp}
     };
 }

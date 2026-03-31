@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <map>
+#include <stdexcept>
 
 namespace cppgen {
 
@@ -85,9 +86,16 @@ bool IsNativeType(
 
 std::string ResolveType(
     const Name& name,
+    const Options& options,
     bool stripNamespace)
 {
     auto it = NativeTypes.find(name.name);
+    
+    if (it == NativeTypes.end() && options.abortOnUnknownType)
+    {
+        throw std::runtime_error("Unknown type detected: " + name.name);
+    }
+
     auto tp = it == NativeTypes.end() ? name.name : it->second;
 
     std::replace(tp.begin(), tp.end(), '.', '_');

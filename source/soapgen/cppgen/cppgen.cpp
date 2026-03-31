@@ -150,7 +150,7 @@ void GenerateTypes(
         }
 
         //std::string baseName = /*definition.name.name + "_" +*/ type.name.name;
-        auto baseName = ResolveType(type.name, true);
+        auto baseName = ResolveType(type.name, options, true);
 
         const auto headerPath = GetFilePath(baseName + ".hpp", options, true);
         const auto implPath = GetFilePath(baseName + ".cpp", options, true);

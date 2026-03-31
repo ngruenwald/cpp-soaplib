@@ -3,6 +3,8 @@
 #include <string>
 #include "../wsdl.hpp"
 
+#include "options.hpp"
+
 namespace cppgen {
 
 bool IsNativeType(
@@ -10,6 +12,7 @@ bool IsNativeType(
 
 std::string ResolveType(
     const Name& name,
+    const Options& options,
     bool stripNamespace = false);
 
 std::string FormatParameterName(

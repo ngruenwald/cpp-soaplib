@@ -29,6 +29,7 @@ std::unique_ptr<Config> LoadConfig(
 
         XML_OPTIONAL(config->cpp.generateClient = doc->GetNode("/config/cpp/client").GetBoolProp("enable"));
         XML_OPTIONAL(config->cpp.generateServer = doc->GetNode("/config/cpp/server").GetBoolProp("enable"));
+        XML_OPTIONAL(config->cpp.abortOnUnknownType = doc->GetNode("/config/cpp/abort-on-unknown").GetBoolProp("enable"));
 
         try
         {
@@ -149,6 +150,11 @@ int main(int argc, const char** argv)
         .default_value(false)
         .implicit_value(true);
 
+    program.add_argument("--abort-on-unknown")
+        .help("abort if an unknown type is detected")
+        .default_value(false)
+        .implicit_value(true);
+
     program.add_argument("--types-folder")
         .help("subfolder for types");
 
@@ -194,6 +200,7 @@ int main(int argc, const char** argv)
 
     if (program.get<bool>("--client")) config->cpp.generateClient = true;
     if (program.get<bool>("--server")) config->cpp.generateServer = true;
+    if (program.get<bool>("--abort-on-unknown")) config->cpp.abortOnUnknownType = true;
 
     if (program.present("--namespace"))
     {

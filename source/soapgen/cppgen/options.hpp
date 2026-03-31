@@ -27,6 +27,8 @@ struct Options
     bool generateClient = true;
     bool generateServer = false;
 
+    bool abortOnUnknownType = false;
+
     bool writeTimestamp = true;
 
     bool enableHacks = false;
