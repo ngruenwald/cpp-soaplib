@@ -155,6 +155,53 @@ struct Duration
     bool IsNegative = false;    ///< Indicates if the duration is negative
 };
 
+/// Holds a year (gYear)
+struct GYear : soaplib::SoapBaseType {
+    GYear() = default;
+    GYear(int yyyy) : Year{yyyy} {}
+    void ToAnyXml(soaplib::xml::Document& doc, soaplib::xml::Node& anyNode) const override;
+    int Year = 0;
+    std::optional<struct Timezone> Timezone;
+};
+
+/// Holds a year and month (gYearMonth)
+struct GYearMonth : soaplib::SoapBaseType {
+    GYearMonth() = default;
+    GYearMonth(int yyyy, int mm) : Year{yyyy}, Month{mm} {}
+    void ToAnyXml(soaplib::xml::Document& doc, soaplib::xml::Node& anyNode) const override;
+    int Year = 0;
+    int Month = 0;
+    std::optional<struct Timezone> Timezone;
+};
+
+/// Holds a month (gMonth)
+struct GMonth : soaplib::SoapBaseType {
+    GMonth() = default;
+    GMonth(int mm) : Month{mm} {}
+    void ToAnyXml(soaplib::xml::Document& doc, soaplib::xml::Node& anyNode) const override;
+    int Month = 0;
+    std::optional<struct Timezone> Timezone;
+};
+
+/// Holds a month and day (gMonthDay)
+struct GMonthDay : soaplib::SoapBaseType {
+    GMonthDay() = default;
+    GMonthDay(int mm, int dd) : Month{mm}, Day{dd} {}
+    void ToAnyXml(soaplib::xml::Document& doc, soaplib::xml::Node& anyNode) const override;
+    int Month = 0;
+    int Day = 0;
+    std::optional<struct Timezone> Timezone;
+};
+
+/// Holds a day (gDay)
+struct GDay : soaplib::SoapBaseType {
+    GDay() = default;
+    GDay(int dd) : Day{dd} {}
+    void ToAnyXml(soaplib::xml::Document& doc, soaplib::xml::Node& anyNode) const override;
+    int Day = 0;
+    std::optional<struct Timezone> Timezone;
+};
+
 } // namespace soaplib
 
 //
@@ -235,6 +282,46 @@ std::string to_string(const soaplib::Duration& du);
 /// @param[out] s Output string
 /// @param[in] du Duration information
 void to_string(std::string& s, const soaplib::Duration& du);
+
+// gYear
+void from_string(const std::string& s, soaplib::GYear& v);
+std::string to_string(const soaplib::GYear& v);
+void GYearFromXml(const soaplib::xml::Node& n, soaplib::GYear& v);
+soaplib::GYear GYearFromXml(const soaplib::xml::Node& n);
+std::unique_ptr<soaplib::SoapBaseType> GYearPtrFromXml(const soaplib::xml::Node& n);
+void GYearToXml(soaplib::xml::Node& n, const soaplib::GYear& v);
+
+// gYearMonth
+void from_string(const std::string& s, soaplib::GYearMonth& v);
+std::string to_string(const soaplib::GYearMonth& v);
+void GYearMonthFromXml(const soaplib::xml::Node& n, soaplib::GYearMonth& v);
+soaplib::GYearMonth GYearMonthFromXml(const soaplib::xml::Node& n);
+std::unique_ptr<soaplib::SoapBaseType> GYearMonthPtrFromXml(const soaplib::xml::Node& n);
+void GYearMonthToXml(soaplib::xml::Node& n, const soaplib::GYearMonth& v);
+
+// gMonth
+void from_string(const std::string& s, soaplib::GMonth& v);
+std::string to_string(const soaplib::GMonth& v);
+void GMonthFromXml(const soaplib::xml::Node& n, soaplib::GMonth& v);
+soaplib::GMonth GMonthFromXml(const soaplib::xml::Node& n);
+std::unique_ptr<soaplib::SoapBaseType> GMonthPtrFromXml(const soaplib::xml::Node& n);
+void GMonthToXml(soaplib::xml::Node& n, const soaplib::GMonth& v);
+
+// gMonthDay
+void from_string(const std::string& s, soaplib::GMonthDay& v);
+std::string to_string(const soaplib::GMonthDay& v);
+void GMonthDayFromXml(const soaplib::xml::Node& n, soaplib::GMonthDay& v);
+soaplib::GMonthDay GMonthDayFromXml(const soaplib::xml::Node& n);
+std::unique_ptr<soaplib::SoapBaseType> GMonthDayPtrFromXml(const soaplib::xml::Node& n);
+void GMonthDayToXml(soaplib::xml::Node& n, const soaplib::GMonthDay& v);
+
+// gDay
+void from_string(const std::string& s, soaplib::GDay& v);
+std::string to_string(const soaplib::GDay& v);
+void GDayFromXml(const soaplib::xml::Node& n, soaplib::GDay& v);
+soaplib::GDay GDayFromXml(const soaplib::xml::Node& n);
+std::unique_ptr<soaplib::SoapBaseType> GDayPtrFromXml(const soaplib::xml::Node& n);
+void GDayToXml(soaplib::xml::Node& n, const soaplib::GDay& v);
 
 //
 // xml conversion

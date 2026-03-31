@@ -78,6 +78,31 @@ void soaplib::Duration::ToAnyXml(
     DurationToXml(anyNode, *this);
 }
 
+void soaplib::GYear::ToAnyXml(soaplib::xml::Document& doc, soaplib::xml::Node& anyNode) const {
+    setAnyTypeAttribute(doc, anyNode, "gYear", "http://www.w3.org/2001/XMLSchema", "zrk");
+    GYearToXml(anyNode, *this);
+}
+
+void soaplib::GYearMonth::ToAnyXml(soaplib::xml::Document& doc, soaplib::xml::Node& anyNode) const {
+    setAnyTypeAttribute(doc, anyNode, "gYearMonth", "http://www.w3.org/2001/XMLSchema", "zrk");
+    GYearMonthToXml(anyNode, *this);
+}
+
+void soaplib::GMonth::ToAnyXml(soaplib::xml::Document& doc, soaplib::xml::Node& anyNode) const {
+    setAnyTypeAttribute(doc, anyNode, "gMonth", "http://www.w3.org/2001/XMLSchema", "zrk");
+    GMonthToXml(anyNode, *this);
+}
+
+void soaplib::GMonthDay::ToAnyXml(soaplib::xml::Document& doc, soaplib::xml::Node& anyNode) const {
+    setAnyTypeAttribute(doc, anyNode, "gMonthDay", "http://www.w3.org/2001/XMLSchema", "zrk");
+    GMonthDayToXml(anyNode, *this);
+}
+
+void soaplib::GDay::ToAnyXml(soaplib::xml::Document& doc, soaplib::xml::Node& anyNode) const {
+    setAnyTypeAttribute(doc, anyNode, "gDay", "http://www.w3.org/2001/XMLSchema", "zrk");
+    GDayToXml(anyNode, *this);
+}
+
 //
 // string conversion
 //
@@ -359,6 +384,88 @@ void to_string(std::string& s, const soaplib::Duration& du)
     s = to_string(du);
 }
 
+// GYear: YYYY
+void from_string(const std::string& s, soaplib::GYear& v) {
+    v.Year = std::stoi(s.substr(0, 4));
+    if (s.length() > 4) {
+        soaplib::Timezone tz;
+        from_string(s.substr(4), tz);
+        v.Timezone = tz;
+    }
+}
+std::string to_string(const soaplib::GYear& v) {
+    std::ostringstream oss;
+    oss << std::setw(4) << std::setfill('0') << v.Year;
+    if (v.Timezone) oss << to_string(v.Timezone.value());
+    return oss.str();
+}
+
+// GYearMonth: YYYY-MM
+void from_string(const std::string& s, soaplib::GYearMonth& v) {
+    v.Year = std::stoi(s.substr(0, 4));
+    v.Month = std::stoi(s.substr(5, 2));
+    if (s.length() > 7) {
+        soaplib::Timezone tz;
+        from_string(s.substr(7), tz);
+        v.Timezone = tz;
+    }
+}
+std::string to_string(const soaplib::GYearMonth& v) {
+    std::ostringstream oss;
+    oss << std::setw(4) << std::setfill('0') << v.Year << "-" << std::setw(2) << std::setfill('0') << v.Month;
+    if (v.Timezone) oss << to_string(v.Timezone.value());
+    return oss.str();
+}
+
+// GMonth: --MM
+void from_string(const std::string& s, soaplib::GMonth& v) {
+    v.Month = std::stoi(s.substr(2, 2));
+    if (s.length() > 4) {
+        soaplib::Timezone tz;
+        from_string(s.substr(4), tz);
+        v.Timezone = tz;
+    }
+}
+std::string to_string(const soaplib::GMonth& v) {
+    std::ostringstream oss;
+    oss << "--" << std::setw(2) << std::setfill('0') << v.Month;
+    if (v.Timezone) oss << to_string(v.Timezone.value());
+    return oss.str();
+}
+
+// GMonthDay: --MM-DD
+void from_string(const std::string& s, soaplib::GMonthDay& v) {
+    v.Month = std::stoi(s.substr(2, 2));
+    v.Day = std::stoi(s.substr(5, 2));
+    if (s.length() > 7) {
+        soaplib::Timezone tz;
+        from_string(s.substr(7), tz);
+        v.Timezone = tz;
+    }
+}
+std::string to_string(const soaplib::GMonthDay& v) {
+    std::ostringstream oss;
+    oss << "--" << std::setw(2) << std::setfill('0') << v.Month << "-" << std::setw(2) << std::setfill('0') << v.Day;
+    if (v.Timezone) oss << to_string(v.Timezone.value());
+    return oss.str();
+}
+
+// GDay: ---DD
+void from_string(const std::string& s, soaplib::GDay& v) {
+    v.Day = std::stoi(s.substr(3, 2));
+    if (s.length() > 5) {
+        soaplib::Timezone tz;
+        from_string(s.substr(5), tz);
+        v.Timezone = tz;
+    }
+}
+std::string to_string(const soaplib::GDay& v) {
+    std::ostringstream oss;
+    oss << "---" << std::setw(2) << std::setfill('0') << v.Day;
+    if (v.Timezone) oss << to_string(v.Timezone.value());
+    return oss.str();
+}
+
 
 //
 // xml conversion
@@ -459,3 +566,19 @@ void DurationToXml(soaplib::xml::Node& n, const soaplib::Duration& du)
 {
     n.SetVal(to_string(du));
 }
+
+#define _DATE_FROM_TO_XML(TYPE) \
+    void TYPE ## FromXml(const soaplib::xml::Node& n, soaplib::TYPE& v) { from_string(n.GetStringVal(), v); } \
+    soaplib::TYPE TYPE ## FromXml(const soaplib::xml::Node& n) { soaplib::TYPE v; TYPE ## FromXml(n, v); return v; } \
+    std::unique_ptr<soaplib::SoapBaseType> TYPE ## PtrFromXml(const soaplib::xml::Node& n) { \
+        auto ptr = std::make_unique<soaplib::TYPE>(); \
+        TYPE ## FromXml(n, *ptr.get()); \
+        return ptr; \
+    } \
+    void TYPE ## ToXml(soaplib::xml::Node& n, const soaplib::TYPE& v) { n.SetVal(to_string(v)); }
+
+_DATE_FROM_TO_XML(GYear)
+_DATE_FROM_TO_XML(GYearMonth)
+_DATE_FROM_TO_XML(GMonth)
+_DATE_FROM_TO_XML(GMonthDay)
+_DATE_FROM_TO_XML(GDay)

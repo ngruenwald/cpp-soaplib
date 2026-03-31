@@ -1,6 +1,8 @@
 #include "unit_tests.hpp"
 
 #include <soaplib/types/dateTypes.hpp>
+#include <soaplib/types/simpleTypes.hpp>
+#include <soaplib/xml/xml.hpp>
 
 
 TEST_CASE("Timezone to_string", "[all][types]")
@@ -320,3 +322,89 @@ TEST_CASE("Duration from_string", "[all][types]")
     }
 }
 
+TEST_CASE("GYear to/from string", "[all][types]")
+{
+    {
+        auto s = to_string(soaplib::GYear{2026});
+        REQUIRE(s == "2026");
+    }
+    {
+        soaplib::GYear v;
+        from_string("2026Z", v);
+        REQUIRE(v.Year == 2026);
+        REQUIRE(v.Timezone.has_value());
+        REQUIRE(v.Timezone->IsUTC);
+    }
+}
+
+TEST_CASE("GYearMonth to/from string", "[all][types]")
+{
+    {
+        auto s = to_string(soaplib::GYearMonth{2026, 3});
+        REQUIRE(s == "2026-03");
+    }
+    {
+        soaplib::GYearMonth v;
+        from_string("2026-03+02:00", v);
+        REQUIRE(v.Year == 2026);
+        REQUIRE(v.Month == 3);
+        REQUIRE(v.Timezone.has_value());
+        REQUIRE(v.Timezone->Offset == 2.0f);
+    }
+}
+
+TEST_CASE("GMonth to/from string", "[all][types]")
+{
+    {
+        auto s = to_string(soaplib::GMonth{3});
+        REQUIRE(s == "--03");
+    }
+    {
+        soaplib::GMonth v;
+        from_string("--03Z", v);
+        REQUIRE(v.Month == 3);
+        REQUIRE(v.Timezone.has_value());
+    }
+}
+
+TEST_CASE("GMonthDay to/from string", "[all][types]")
+{
+    {
+        auto s = to_string(soaplib::GMonthDay{3, 30});
+        REQUIRE(s == "--03-30");
+    }
+    {
+        soaplib::GMonthDay v;
+        from_string("--03-30-05:00", v);
+        REQUIRE(v.Month == 3);
+        REQUIRE(v.Day == 30);
+        REQUIRE(v.Timezone.has_value());
+        REQUIRE(v.Timezone->Offset == -5.0f);
+    }
+}
+
+TEST_CASE("GDay to/from string", "[all][types]")
+{
+    {
+        auto s = to_string(soaplib::GDay{30});
+        REQUIRE(s == "---30");
+    }
+    {
+        soaplib::GDay v;
+        from_string("---30Z", v);
+        REQUIRE(v.Day == 30);
+        REQUIRE(v.Timezone.has_value());
+    }
+}
+
+TEST_CASE("HexBinary to/from xml", "[all][types]")
+{
+    soaplib::xml::Document doc;
+    auto node = doc.CreateRootNode("test");
+    soaplib::HexBinary val("0123456789ABCDEF");
+    HexBinaryToXml(node, val);
+    REQUIRE(std::string(node.GetStringVal()) == "0123456789ABCDEF");
+
+    auto val2 = HexBinaryFromXml(node);
+    REQUIRE(val2.Value == "0123456789ABCDEF");
+}

@@ -169,6 +169,57 @@ typedef TSimpleType<bool> Bool;         ///< Boolean type
 typedef TSimpleType<float> Float;       ///< Float value
 typedef TSimpleType<double> Double;     ///< Double value
 
+/// HexBinary type
+struct HexBinary
+    : TSimpleType<std::string>
+{
+    /// Default constructor
+    HexBinary() = default;
+
+    /// Constructs a hexBinary object with the given string
+    /// @param[in] value The hexBinary value
+    explicit HexBinary(
+        const std::string& value)
+        : TSimpleType<std::string>(value)
+    {
+    }
+
+    /// Constructs a hexBinary object with the given c-string
+    /// @param[in] value The hexBinary value
+    explicit HexBinary(
+        const char* value)
+    {
+        Value = value;
+    }
+
+    /// Assigns a value
+    /// @param[in] value The value
+    /// @returns Reference to the object
+    HexBinary& operator=(
+        const std::string& value)
+    {
+        Value = value;
+        return *this;
+    }
+
+    /// Assigns a value
+    /// @param[in] value The value
+    /// @returns Reference to the object
+    HexBinary& operator=(
+        const char* value)
+    {
+        Value = value;
+        return *this;
+    }
+
+    /// Gets the string
+    /// @returns The contained string
+    const std::string& str() const
+    {
+        return Value;
+    }
+};
+
 } // namespace soaplib
 
 
@@ -498,6 +549,36 @@ void StringToXml(soaplib::xml::Node& node, const soaplib::String& value);
 void StringToAnyXml(soaplib::xml::Document& doc, soaplib::xml::Node& anyNode, const soaplib::String& value);
 
 //
+// hexBinary
+//
+
+/// Extracts a hexBinary from XML
+/// @param[in] node XML node
+/// @param[out] value Value object
+void HexBinaryFromXml(const soaplib::xml::Node& node, soaplib::HexBinary& value);
+
+/// Extracts a hexBinary from XML
+/// @param[in] node XML node
+/// @returns Value object
+soaplib::HexBinary HexBinaryFromXml(const soaplib::xml::Node& node);
+
+/// Extracts a hexBinary from XML, as pointer type
+/// @param[in] node XML node
+/// @returns Pointer holding the value object
+std::unique_ptr<soaplib::SoapBaseType> HexBinaryPtrFromXml(const soaplib::xml::Node& node);
+
+/// Writes a hexBinary to XML
+/// @param[in] node XML node
+/// @param[in] value Value object
+void HexBinaryToXml(soaplib::xml::Node& node, const soaplib::HexBinary& value);
+
+/// Writes a hexBinary to XML
+/// @param[in] doc XML document
+/// @param[in] anyNode XML node
+/// @param[in] value Value object
+void HexBinaryToAnyXml(soaplib::xml::Document& doc, soaplib::xml::Node& anyNode, const soaplib::HexBinary& value);
+
+//
 // boolean
 //
 
@@ -589,9 +670,18 @@ namespace soaplib {
 
 template<> inline void TSimpleType<std::string>::ToAnyXml(xml::Document& d, xml::Node& n) const
 {
-    auto ptr = dynamic_cast<const String*>(this);
-    assert(ptr);
-    StringToAnyXml(d, n, *ptr);
+    if (dynamic_cast<const String*>(this))
+    {
+        StringToAnyXml(d, n, static_cast<const String&>(*this));
+    }
+    else if (dynamic_cast<const HexBinary*>(this))
+    {
+        HexBinaryToAnyXml(d, n, static_cast<const HexBinary&>(*this));
+    }
+    else
+    {
+        assert(false);
+    }
 }
 
 template<> inline void TSimpleType<std::int8_t>::ToAnyXml(xml::Document& d, xml::Node& n) const { Int8ToAnyXml(d, n, *this); }

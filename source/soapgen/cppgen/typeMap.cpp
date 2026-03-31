@@ -17,6 +17,7 @@ std::map<std::string, std::string> NativeTypes =
     { "NCName",             "soaplib::String"   },
     { "NMTOKEN",            "soaplib::String"   },
     { "NMTOKENS",           "soaplib::String"   },
+    { "normalizedString",   "soaplib::String"   },
     { "normalizedStrings",  "soaplib::String"   },
     { "QName",              "soaplib::String"   },
     { "string",             "soaplib::String"   },
@@ -27,11 +28,11 @@ std::map<std::string, std::string> NativeTypes =
     { "time",               "soaplib::Time"     },
     { "dateTime",           "soaplib::DateTime" },
     { "duration",           "soaplib::Duration" },
-    { "gDay",               "soaplib::Date"     },
-    { "gMonth",             "soaplib::Date"     },
-    { "gMonthDay",          "soaplib::Date"     },
-    { "gYear",              "soaplib::Date"     },
-    { "gYearMonth",         "soaplib::Date"     },
+    { "gDay",               "soaplib::GDay"     },
+    { "gMonth",             "soaplib::GMonth"   },
+    { "gMonthDay",          "soaplib::GMonthDay" },
+    { "gYear",              "soaplib::GYear"    },
+    { "gYearMonth",         "soaplib::GYearMonth" },
 
     // numeric types
     { "byte",               "soaplib::UInt8"    },
@@ -56,8 +57,7 @@ std::map<std::string, std::string> NativeTypes =
     { "boolean",            "soaplib::Bool"     },
     { "double",             "soaplib::Double"   },
     { "float",              "soaplib::Float"    },
-    { "hexBinary",          "soaplib::String"   },
-    { "float",              "soaplib::Float"    },
+    { "hexBinary",          "soaplib::HexBinary" },
     { "NOTATION",           "soaplib::String"   },
 
     // custom

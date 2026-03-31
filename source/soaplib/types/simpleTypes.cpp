@@ -171,6 +171,36 @@ void StringToAnyXml(
 }
 
 //
+// hexBinary
+//
+
+void HexBinaryFromXml(
+    const soaplib::xml::Node& node,
+    soaplib::HexBinary& value)
+{
+    value.Value = node.GetStringVal();
+}
+
+_FROM_XML_RET(HexBinary)
+_FROM_XML_PTR(HexBinary)
+
+void HexBinaryToXml(
+    soaplib::xml::Node& node,
+    const soaplib::HexBinary& value)
+{
+    node.SetVal(value.Value);
+}
+
+void HexBinaryToAnyXml(
+    soaplib::xml::Document& doc,
+    soaplib::xml::Node& anyNode,
+    const soaplib::HexBinary& value)
+{
+    soaplib::setAnyTypeAttribute(doc, anyNode, "hexBinary", XS_HREF, XS_PREFIX);
+    HexBinaryToXml(anyNode, value);
+}
+
+//
 // boolean
 //
 
