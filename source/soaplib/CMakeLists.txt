@@ -22,6 +22,10 @@ add_library(
   HttpSoapTransport.hpp
   HttpSoapServer.cpp
   HttpSoapServer.hpp
+  WebSocketSoapTransport.cpp
+  WebSocketSoapTransport.hpp
+  WebSocketSoapServer.cpp
+  WebSocketSoapServer.hpp
   soapException.cpp
   soapException.hpp
   soapService.cpp
@@ -99,6 +103,8 @@ install(
     SoapTransport.hpp
     HttpSoapTransport.hpp
     HttpSoapServer.hpp
+    WebSocketSoapTransport.hpp
+    WebSocketSoapServer.hpp
     basicTypes.hpp
     parseHelper.hpp
   DESTINATION

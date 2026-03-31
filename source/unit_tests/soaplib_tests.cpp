@@ -3,6 +3,9 @@
 #include <soaplib/SoapServer.hpp>
 #include <soaplib/HttpSoapServer.hpp>
 #include <soaplib/SoapTransport.hpp>
+#include <soaplib/HttpSoapTransport.hpp>
+#include <soaplib/WebSocketSoapTransport.hpp>
+#include <soaplib/WebSocketSoapServer.hpp>
 #include <soaplib/soapService.hpp>
 #include <soaplib/xml/xml.hpp>
 #include <httplib.h>
@@ -126,6 +129,38 @@ TEST_CASE("SoapService: Custom Transport", "[soaplib][client][transport]") {
     REQUIRE(response != nullptr);
     REQUIRE(std::string(response->GetRootNode().GetName()) == "Envelope");
     REQUIRE(response->GetRootNode().GetChild("Body").GetChildren("TestResponse").size() == 1);
+}
+
+TEST_CASE("WebSocketSoapServer/Transport: Basic Request", "[soaplib][transport][ws]") {
+    MockSoapServer soapLogic;
+    WebSocketSoapServer server(soapLogic, "/ws");
+    
+    // Start server in a separate thread
+    std::thread serverThread([&]() {
+        server.Listen("localhost", 8081);
+    });
+
+    int retry = 0;
+    while (!server.IsRunning() && retry < 100) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        retry++;
+    }
+
+    WebSocketSoapTransport transport("ws://localhost:8081/ws");
+    transport.EnableLogging(true);
+    
+    xml::Document request;
+    request.CreateRootNode("Envelope").AddChild("Body").AddChild("TestAction");
+    
+    auto response = transport.Send(request, 5);
+    
+    REQUIRE(response != nullptr);
+    REQUIRE(std::string(response->GetRootNode().GetName()) == "Envelope");
+    REQUIRE(response->GetRootNode().GetChild("Body").IsValid());
+
+    transport.Close();
+    server.Stop();
+    if (serverThread.joinable()) serverThread.join();
 }
 
 } // namespace soaplib

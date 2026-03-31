@@ -29,9 +29,9 @@ Do not expect this to work!_ ¯\\_(ツ)_/¯
 ## TODO
 
 - [x]  all types (int, string, etc.) should be derived from _SoapLibBaseType_
-- [~]  add operators for direct value access on simple types (single member and value types)
-- [ ]  implement missing data types
-- [ ]  abort if unknown type is detected
+- [x]  add operators for direct value access on simple types (single member and value types)
+- [x]  implement missing data types
+- [x]  abort if unknown type is detected
 - [x]  use templates for code generation ([inja][3])
 - [x]  use command line parameters for configuration ([argparse][4])
 - [x]  use libxml2 directly, remove xmlwrp dependency
@@ -39,6 +39,8 @@ Do not expect this to work!_ ¯\\_(ツ)_/¯
 - [x]  add unit tests
 - [x]  support for SOAP server stub generation
 - [x]  decouple transport layer (HTTP, WebSockets, etc.) for client and server
+- [x]  implement WebSocket client transport
+- [x]  implement WebSocket server transport
 - [ ]  support for split definition files
 - [ ]  support file download in generator
 - [ ]  auto detect and resolve cyclic references
@@ -102,15 +104,13 @@ The library is designed to be transport-agnostic. SOAP logic (XML processing and
 By default, the generated client uses `HttpSoapTransport`. You can provide your own by implementing the `SoapTransport` interface:
 
 ```cpp
-class MyCustomTransport : public soaplib::SoapTransport {
-    std::unique_ptr<xml::Document> Send(const xml::Document& req, int timeout) override {
-        // Your custom logic (e.g. WebSockets, Message Queue)
-    }
-    // ... other methods
-};
+// Built-in HTTP transport
+auto httpTransport = std::make_unique<soaplib::HttpSoapTransport>("http://localhost:8080/soap");
+MyService client(std::move(httpTransport), "http://namespace");
 
-auto transport = std::make_unique<MyCustomTransport>();
-MyService service(std::move(transport), "http://namespace");
+// Built-in WebSocket transport
+auto wsTransport = std::make_unique<soaplib::WebSocketSoapTransport>("ws://localhost:8081/ws");
+MyService client(std::move(wsTransport), "http://namespace");
 ```
 
 ### Server Side
@@ -118,7 +118,15 @@ MyService service(std::move(transport), "http://namespace");
 The generated server stub (`HandleRequest`) takes an `xml::Document` and returns one. You can wrap this in any server:
 
 1. **HTTP**: Use the built-in `HttpSoapServer`.
-2. **Custom**: Call `myService.HandleRequest(*incomingDoc)` manually from your transport handler.
+2. **WebSocket**: Use the built-in `WebSocketSoapServer`.
+3. **Custom**: Call `myService.HandleRequest(*incomingDoc)` manually from your transport handler.
+
+Example WebSocket server:
+```cpp
+MyServiceImpl service;
+soaplib::WebSocketSoapServer server(service, "/ws");
+server.Listen("0.0.0.0", 8081);
+```
 
 ---
 
