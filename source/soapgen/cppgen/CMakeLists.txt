@@ -35,10 +35,12 @@ set(
   toJson.cpp
   toJson.hpp
   ../wsdl.cpp
+  ../ResourceResolver.cpp
+  ../ResourceResolver.hpp
 )
 
 add_library(${target} STATIC ${SOURCES})
-target_link_libraries(${target} PUBLIC soaplib::xml inja nlohmann_json)
+target_link_libraries(${target} PUBLIC soaplib::xml inja nlohmann_json httplib::httplib)
 target_compiler_warnings(${target})
 
 if(WIN32)

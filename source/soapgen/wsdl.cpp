@@ -578,11 +578,33 @@ TypePtr LoadElement(
 }
 
 std::vector<TypePtr> LoadSchemaTypes(
-    const soaplib::xml::Node& schemaNode)
+    const soaplib::xml::Node& schemaNode,
+    soapgen::ResourceResolver& resolver,
+    const std::string& baseUri)
 {
     std::vector<TypePtr> types;
 
     const auto targetNamespace = schemaNode.GetStringProp("targetNamespace");
+
+    // Handle xsd:import and xsd:include
+    for (const auto& tag : {"import", "include"}) {
+        for (const auto& node : schemaNode.GetChildren(tag)) {
+            std::string location = node.GetStringProp("schemaLocation");
+            if (!location.empty()) {
+                try {
+                    std::string content = resolver.Load(location, baseUri);
+                    if (!content.empty()) {
+                        auto doc = soaplib::xml::Document::ParseMemory(content.c_str(), content.length());
+                        auto root = doc->GetRootNode();
+                        auto importedTypes = LoadSchemaTypes(root, resolver, resolver.Resolve(location, baseUri));
+                        types.insert(types.end(), importedTypes.begin(), importedTypes.end());
+                    }
+                } catch (const std::exception& e) {
+                    std::cerr << "Warning: could not load schema from " << location << ": " << e.what() << std::endl;
+                }
+            }
+        }
+    }
 
     const auto elementNodes = schemaNode.GetChildren("element");
     for (const auto& elementNode : elementNodes)
@@ -606,14 +628,16 @@ std::vector<TypePtr> LoadSchemaTypes(
 }
 
 std::vector<TypePtr> LoadTypes(
-    const soaplib::xml::Node& typesNode)
+    const soaplib::xml::Node& typesNode,
+    soapgen::ResourceResolver& resolver,
+    const std::string& baseUri)
 {
     std::vector<TypePtr> types;
 
     const auto schemaNodes = typesNode.GetChildren("schema");  // getChildren(typesNode, "schema");
     for (const auto& schemaNode : schemaNodes)
     {
-        auto schemaTypes = LoadSchemaTypes(schemaNode);
+        auto schemaTypes = LoadSchemaTypes(schemaNode, resolver, baseUri);
 
         types.insert(
             std::end(types),
@@ -625,7 +649,9 @@ std::vector<TypePtr> LoadTypes(
 }
 
 std::shared_ptr<Definition> LoadDefinition(
-    const soaplib::xml::Node& definitionNode)
+    const soaplib::xml::Node& definitionNode,
+    soapgen::ResourceResolver& resolver,
+    const std::string& baseUri)
 {
     auto definition = std::make_shared<Definition>();
 
@@ -636,6 +662,30 @@ std::shared_ptr<Definition> LoadDefinition(
     catch (const std::exception& ex)
     {
         std::cerr << "LoadDefinition: " << ex.what() << '\n';
+    }
+
+    // Handle wsdl:import
+    for (const auto& importNode : definitionNode.GetChildren("import")) {
+        std::string location = importNode.GetStringProp("location");
+        if (!location.empty()) {
+            try {
+                std::string content = resolver.Load(location, baseUri);
+                if (!content.empty()) {
+                    auto doc = soaplib::xml::Document::ParseMemory(content.c_str(), content.length());
+                    auto root = doc->GetRootNode();
+                    auto importedDef = LoadDefinition(root, resolver, resolver.Resolve(location, baseUri));
+                    
+                    // Merge imported definition
+                    definition->types.insert(definition->types.end(), importedDef->types.begin(), importedDef->types.end());
+                    definition->messages.insert(definition->messages.end(), importedDef->messages.begin(), importedDef->messages.end());
+                    definition->portTypes.insert(definition->portTypes.end(), importedDef->portTypes.begin(), importedDef->portTypes.end());
+                    definition->bindings.insert(definition->bindings.end(), importedDef->bindings.begin(), importedDef->bindings.end());
+                    definition->services.insert(definition->services.end(), importedDef->services.begin(), importedDef->services.end());
+                }
+            } catch (const std::exception& e) {
+                std::cerr << "Warning: could not load imported WSDL from " << location << ": " << e.what() << std::endl;
+            }
+        }
     }
 
     const auto serviceNodes = definitionNode.GetChildren("service");  // getChildren(definitionNode, "service");
@@ -665,7 +715,7 @@ std::shared_ptr<Definition> LoadDefinition(
     const auto typesNodes = definitionNode.GetChildren("types");  // getChildren(definitionNode, "types");
     for (const auto& typesNode : typesNodes)
     {
-        auto types = LoadTypes(typesNode);
+        auto types = LoadTypes(typesNode, resolver, baseUri);
 
         definition->types.insert(
             std::end(definition->types),
@@ -677,13 +727,17 @@ std::shared_ptr<Definition> LoadDefinition(
 }
 
 std::shared_ptr<Definition> LoadWsdl(
-    const std::string& fileName)
+    const std::string& fileName,
+    soapgen::ResourceResolver& resolver)
 {
     try
     {
-        auto doc = soaplib::xml::Document::ParseFile(fileName.c_str());
+        std::string content = resolver.Load(fileName);
+        if (content.empty()) return {};
+
+        auto doc = soaplib::xml::Document::ParseMemory(content.c_str(), content.length());
         auto root = doc->GetRootNode();
-        return LoadDefinition(root);
+        return LoadDefinition(root, resolver, resolver.Resolve(fileName, ""));
     }
     catch (const std::exception& ex)
     {

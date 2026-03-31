@@ -6,6 +6,8 @@ set(target soapgen)
 add_executable(
   ${target}
   main.cpp
+  ResourceResolver.cpp
+  ResourceResolver.hpp
 )
 
 target_link_libraries(

@@ -74,7 +74,8 @@ TEST_CASE("Generator: Calculator", "[all][generator]")
     options.writeTimestamp = false;
     options.portFilter = {"CalculatorSoap"};
 
-    auto definition = LoadWsdl(wsdlPath);
+    soapgen::ResourceResolver resolver;
+    auto definition = LoadWsdl(wsdlPath, resolver);
     REQUIRE(definition);
 
     cppgen::Generate(options, *definition);
@@ -106,7 +107,8 @@ TEST_CASE("Generator: CalculatorServer", "[all][generator]")
     options.generateClient = false;
     options.generateServer = true;
 
-    auto definition = LoadWsdl(wsdlPath);
+    soapgen::ResourceResolver resolver;
+    auto definition = LoadWsdl(wsdlPath, resolver);
     REQUIRE(definition);
 
     cppgen::Generate(options, *definition);
@@ -134,7 +136,8 @@ TEST_CASE("Generator: CountryInfo", "[all][generator]")
     options.writeTimestamp = false;
     options.portFilter = {"CountryInfoServiceSoap12"};
 
-    auto definition = LoadWsdl(wsdlPath);
+    soapgen::ResourceResolver resolver;
+    auto definition = LoadWsdl(wsdlPath, resolver);
     REQUIRE(definition);
 
     cppgen::Generate(options, *definition);

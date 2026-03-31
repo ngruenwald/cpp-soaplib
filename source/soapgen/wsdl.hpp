@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 
+#include "ResourceResolver.hpp"
+
 //#define DEPCHECK
 
 struct Name
@@ -193,7 +195,8 @@ struct Definition
 };
 
 std::shared_ptr<Definition> LoadWsdl(
-    const std::string& fileName);
+    const std::string& fileName,
+    soapgen::ResourceResolver& resolver);
 
 #ifdef DEBCHECK
 void RedundancyCheck(

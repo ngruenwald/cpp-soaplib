@@ -217,7 +217,8 @@ int main(int argc, const char** argv)
         return -1;
     }
 
-    auto definition = LoadWsdl(config->wsdlFile);
+    soapgen::ResourceResolver resolver;
+    auto definition = LoadWsdl(config->wsdlFile, resolver);
 
     if (!definition)
     {
