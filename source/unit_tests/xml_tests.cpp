@@ -27,7 +27,7 @@ TEST_CASE("xml load document", "[all][xml]")
     REQUIRE(!buffer.empty());
 
     auto doc = soaplib::xml::Document::ParseMemory(buffer.c_str(), buffer.length());
-    auto s2 = doc.Serialize();
+    auto s2 = doc->Serialize();
 
     REQUIRE(buffer == s2);
 }
@@ -41,7 +41,7 @@ TEST_CASE("xml nodes", "[all][xml]")
 
     std::string name;
 
-    auto root = doc.GetRootNode();
+    auto root = doc->GetRootNode();
     REQUIRE(root.IsValid());
     name = root.GetName();
     REQUIRE(name == "root");

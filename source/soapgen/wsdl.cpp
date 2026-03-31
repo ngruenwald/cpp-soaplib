@@ -682,7 +682,7 @@ std::shared_ptr<Definition> LoadWsdl(
     try
     {
         auto doc = soaplib::xml::Document::ParseFile(fileName.c_str());
-        auto root = doc.GetRootNode();
+        auto root = doc->GetRootNode();
         return LoadDefinition(root);
     }
     catch (const std::exception& ex)

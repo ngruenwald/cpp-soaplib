@@ -37,6 +37,12 @@ public:
     Document& operator=(
         const Document&) = delete;
 
+    /// Move construction
+    Document(Document&& other) noexcept;
+
+    /// Move assignment
+    Document& operator=(Document&& other) noexcept;
+
     /// Destructor
     virtual ~Document();
 
@@ -79,14 +85,14 @@ public:
     /// Loads XML from file
     /// @param[in] fileName Path of the XML file to load
     /// @returns XML document
-    static Document ParseFile(
+    static std::unique_ptr<Document> ParseFile(
         const char* fileName);
 
     /// Loads XML from memory
     /// @param[in] buffer Pointer to XML data
     /// @param[in] length Size of the XML data
     /// @returns XML document
-    static Document ParseMemory(
+    static std::unique_ptr<Document> ParseMemory(
         const char* buffer,
         size_t length);
 

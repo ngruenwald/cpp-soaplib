@@ -1,4 +1,5 @@
 #include <iostream>
+#include <argparse/argparse.hpp>
 #include "cppgen/cppgen.hpp"
 #include "wsdl.hpp"
 
@@ -19,16 +20,19 @@ std::unique_ptr<Config> LoadConfig(
 
         auto config = std::make_unique<Config>();
 
-        XML_MANDATORY(config->wsdlFile = doc.GetNode("/config/wsdl").GetStringProp("path"));
+        XML_MANDATORY(config->wsdlFile = doc->GetNode("/config/wsdl").GetStringProp("path"));
 
-        XML_OPTIONAL(config->cpp.name = doc.GetNode("/config").GetStringProp("name"));
-        XML_OPTIONAL(config->cpp.outputPath = doc.GetNode("/config/cpp/output").GetStringProp("path"));
-        XML_OPTIONAL(config->cpp.appendNamespacesToPath = doc.GetNode("/config/cpp/output").GetBoolProp("append-ns"));
-        XML_OPTIONAL(config->cpp.typesSubfolder = doc.GetNode("/config/cpp/output").GetStringProp("types-subfolder"));
+        XML_OPTIONAL(config->cpp.name = doc->GetNode("/config").GetStringProp("name"));
+        XML_OPTIONAL(config->cpp.outputPath = doc->GetNode("/config/cpp/output").GetStringProp("path"));
+        XML_OPTIONAL(config->cpp.appendNamespacesToPath = doc->GetNode("/config/cpp/output").GetBoolProp("append-ns"));
+        XML_OPTIONAL(config->cpp.typesSubfolder = doc->GetNode("/config/cpp/output").GetStringProp("types-subfolder"));
+
+        XML_OPTIONAL(config->cpp.generateClient = doc->GetNode("/config/cpp/client").GetBoolProp("enable"));
+        XML_OPTIONAL(config->cpp.generateServer = doc->GetNode("/config/cpp/server").GetBoolProp("enable"));
 
         try
         {
-            auto nsNodes = doc.GetNodes("/config/cpp/namespaces/namespace");
+            auto nsNodes = doc->GetNodes("/config/cpp/namespaces/namespace");
             for (const auto& nsNode : nsNodes)
             {
                 config->cpp.namespaces.push_back(nsNode.GetStringVal());
@@ -40,7 +44,7 @@ std::unique_ptr<Config> LoadConfig(
 
         try
         {
-            auto ptrNodes = doc.GetNodes("/config/cpp/pointer-types/param");
+            auto ptrNodes = doc->GetNodes("/config/cpp/pointer-types/param");
             for (const auto& ptrNode : ptrNodes)
             {
                 config->cpp.pointerTypes.push_back(ptrNode.GetStringVal());
@@ -52,14 +56,14 @@ std::unique_ptr<Config> LoadConfig(
         }
 
 
-        XML_OPTIONAL(config->cpp.cmakeNamespace = doc.GetNode("/config/cpp/cmake").GetStringProp("namespace"));
-        XML_OPTIONAL(config->cpp.cmakeExport = doc.GetNode("/config/cpp/cmake").GetStringProp("export"));
+        XML_OPTIONAL(config->cpp.cmakeNamespace = doc->GetNode("/config/cpp/cmake").GetStringProp("namespace"));
+        XML_OPTIONAL(config->cpp.cmakeExport = doc->GetNode("/config/cpp/cmake").GetStringProp("export"));
 
-        XML_OPTIONAL(config->cpp.writeTimestamp = doc.GetNode("/config/cpp/timestamp").GetBoolProp("enable"));
+        XML_OPTIONAL(config->cpp.writeTimestamp = doc->GetNode("/config/cpp/timestamp").GetBoolProp("enable"));
 
         try
         {
-            auto pfNodes = doc.GetNodes("/config/cpp/portFilter/port");
+            auto pfNodes = doc->GetNodes("/config/cpp/portFilter/port");
             for (const auto& pfNode : pfNodes)
             {
                 config->cpp.portFilter.push_back(pfNode.GetStringProp("name"));
@@ -69,10 +73,10 @@ std::unique_ptr<Config> LoadConfig(
         {
         }
 
-        XML_OPTIONAL(config->cpp.enableHacks = doc.GetNode("/config/cpp/hacks").GetBoolProp("enable"));
+        XML_OPTIONAL(config->cpp.enableHacks = doc->GetNode("/config/cpp/hacks").GetBoolProp("enable"));
         try
         {
-            auto tpNodes = doc.GetNodes("/config/cpp/hacks/ignored-wsdl-types/operation");
+            auto tpNodes = doc->GetNodes("/config/cpp/hacks/ignored-wsdl-types/operation");
             for (const auto& tpNode : tpNodes)
             {
                 config->cpp.ignoredOperations.push_back(tpNode.GetStringProp("name"));
@@ -83,7 +87,7 @@ std::unique_ptr<Config> LoadConfig(
         }
         try
         {
-            auto tpNodes = doc.GetNodes("/config/cpp/hacks/ignored-wsdl-types/message");
+            auto tpNodes = doc->GetNodes("/config/cpp/hacks/ignored-wsdl-types/message");
             for (const auto& tpNode : tpNodes)
             {
                 config->cpp.ignoredMessages.push_back(tpNode.GetStringProp("name"));
@@ -94,7 +98,7 @@ std::unique_ptr<Config> LoadConfig(
         }
         try
         {
-            auto tpNodes = doc.GetNodes("/config/cpp/hacks/ignored-wsdl-types/type");
+            auto tpNodes = doc->GetNodes("/config/cpp/hacks/ignored-wsdl-types/type");
             for (const auto& tpNode : tpNodes)
             {
                 config->cpp.ignoredTypes.push_back(tpNode.GetStringProp("name"));
@@ -109,7 +113,7 @@ std::unique_ptr<Config> LoadConfig(
     }
     catch (const std::exception& e)
     {
-        std::cerr << e.what() << '\n';
+        //std::cerr << e.what() << '\n';
     }
 
     return {};
@@ -118,18 +122,91 @@ std::unique_ptr<Config> LoadConfig(
 
 int main(int argc, const char** argv)
 {
-    const char* configFile = "config.xml";
+    argparse::ArgumentParser program("soapgen", "0.2.0");
 
-    if (argc > 1)
+    program.add_argument("config")
+        .help("path to config.xml file")
+        .remaining()
+        .default_value(std::string("config.xml"));
+
+    program.add_argument("-i", "--input")
+        .help("path to the input wsdl file");
+
+    program.add_argument("-o", "--output")
+        .help("output path for generated files");
+
+    program.add_argument("-n", "--namespace")
+        .help("namespace(s) to use")
+        .append();
+
+    program.add_argument("--client")
+        .help("enable generation of client proxy")
+        .default_value(false)
+        .implicit_value(true);
+
+    program.add_argument("--server")
+        .help("enable generation of server stubs")
+        .default_value(false)
+        .implicit_value(true);
+
+    program.add_argument("--types-folder")
+        .help("subfolder for types");
+
+    program.add_argument("--cmake-namespace")
+        .help("namespace for generated CMake targets");
+
+    program.add_argument("--cmake-export")
+        .help("name for CMake export");
+
+    try
     {
-        configFile = argv[1];
+        program.parse_args(argc, argv);
+    }
+    catch (const std::runtime_error& err)
+    {
+        std::cerr << err.what() << std::endl;
+        std::cerr << program;
+        return 1;
     }
 
-    auto config = LoadConfig(configFile);
+    auto configPath = program.get<std::string>("config");
+    auto config = LoadConfig(configPath);
 
     if (!config)
     {
-        std::cerr << "could not load config" << '\n';
+        if (program.present("--input"))
+        {
+            config = std::make_unique<Config>();
+        }
+        else
+        {
+            std::cerr << "could not load config file '" << configPath << "' and no --input provided." << '\n';
+            return -1;
+        }
+    }
+
+    // CLI overrides
+    if (program.present("--input")) config->wsdlFile = program.get<std::string>("--input");
+    if (program.present("--output")) config->cpp.outputPath = program.get<std::string>("--output");
+    if (program.present("--types-folder")) config->cpp.typesSubfolder = program.get<std::string>("--types-folder");
+    if (program.present("--cmake-namespace")) config->cpp.cmakeNamespace = program.get<std::string>("--cmake-namespace");
+    if (program.present("--cmake-export")) config->cpp.cmakeExport = program.get<std::string>("--cmake-export");
+
+    if (program.get<bool>("--client")) config->cpp.generateClient = true;
+    if (program.get<bool>("--server")) config->cpp.generateServer = true;
+
+    if (program.present("--namespace"))
+    {
+        auto nss = program.get<std::vector<std::string>>("--namespace");
+        if (!nss.empty())
+        {
+            config->cpp.namespaces = nss;
+        }
+    }
+
+    if (config->wsdlFile.empty())
+    {
+        std::cerr << "No WSDL input file specified." << std::endl;
         return -1;
     }
 
@@ -137,11 +214,19 @@ int main(int argc, const char** argv)
 
     if (!definition)
     {
-        std::cerr << "could not load wsdl" << '\n';
+        std::cerr << "could not load wsdl: " << config->wsdlFile << '\n';
         return -1;
     }
 
-    cppgen::Generate(config->cpp, *definition);
+    try
+    {
+        cppgen::Generate(config->cpp, *definition);
+    }
+    catch (const std::exception& e)
+    {
+        std::cerr << "Generation failed: " << e.what() << std::endl;
+        return -1;
+    }
 
     return 0;
 }

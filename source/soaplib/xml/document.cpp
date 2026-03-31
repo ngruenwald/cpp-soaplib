@@ -5,6 +5,7 @@
 #include <libxml/xpath.h>
 
 #include <sstream>
+#include <utility>
 
 namespace soaplib {
 namespace xml {
@@ -69,10 +70,29 @@ Document::Document(
 {
 }
 
+Document::Document(Document&& other) noexcept
+    : doc_{std::exchange(other.doc_, nullptr)}
+    , xpathContext_{std::exchange(other.xpathContext_, nullptr)}
+{
+}
+
+Document& Document::operator=(Document&& other) noexcept
+{
+    if (this != &other)
+    {
+        if (doc_) xmlFreeDoc(doc_);
+        if (xpathContext_) xmlXPathFreeContext(xpathContext_);
+        
+        doc_ = std::exchange(other.doc_, nullptr);
+        xpathContext_ = std::exchange(other.xpathContext_, nullptr);
+    }
+    return *this;
+}
+
 Document::~Document()
 {
-    xmlFreeDoc(doc_);
-    xmlXPathFreeContext(xpathContext_);
+    if (doc_) xmlFreeDoc(doc_);
+    if (xpathContext_) xmlXPathFreeContext(xpathContext_);
 }
 
 Node Document::GetRootNode()
@@ -164,17 +184,17 @@ NodeList Document::GetNodes(
     return nodes;
 }
 
-Document Document::ParseFile(
+std::unique_ptr<Document> Document::ParseFile(
     const char* fileName)
 {
-    return Document{fileName};
+    return std::unique_ptr<Document>(new Document(fileName));
 }
 
-Document Document::ParseMemory(
+std::unique_ptr<Document> Document::ParseMemory(
     const char* buffer,
     size_t length)
 {
-    return Document{buffer, length};
+    return std::unique_ptr<Document>(new Document(buffer, length));
 }
 
 } // namespace xml
