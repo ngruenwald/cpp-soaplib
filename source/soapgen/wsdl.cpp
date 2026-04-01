@@ -226,7 +226,18 @@ Binding LoadBinding(
     binding.name = getName(bindingNode, "name", {});
     binding.type = getName(bindingNode, "type", {});
 
-    // TODO
+    for (const auto& opNode : bindingNode.GetChildren("operation")) {
+        Operation op;
+        op.name = getName(opNode, "name", {});
+        
+        // Extract soapAction (works for both 1.1 and 1.2 if we ignore namespace for now)
+        try {
+            auto soapOp = opNode.GetChild("operation");
+            op.input.action.name = soapOp.GetStringProp("soapAction");
+        } catch (...) {}
+        
+        binding.operations.push_back(op);
+    }
 
     return binding;
 }
@@ -697,7 +708,35 @@ std::shared_ptr<Definition> LoadDefinition(
     const auto bindingNodes = definitionNode.GetChildren("binding");  // getChildren(definitionNode, "binding");
     for (const auto& bindingNode : bindingNodes)
     {
-        definition->bindings.push_back(LoadBinding(bindingNode));
+        auto binding = LoadBinding(bindingNode);
+        
+        // Detect version: if any binding uses SOAP 1.1 namespace
+        try {
+            auto soapBinding = bindingNode.GetChild("binding");
+            std::string transport = soapBinding.GetStringProp("transport");
+            // Check namespace of the 'binding' child
+            std::string ns = (const char*)soapBinding.GetXmlNode()->ns->href;
+            if (ns == "http://schemas.xmlsoap.org/wsdl/soap/") {
+                definition->version = soaplib::SoapVersion::Soap11;
+            }
+        } catch (...) {}
+
+        definition->bindings.push_back(binding);
+    }
+
+    // Merge actions from bindings into portType operations
+    for (const auto& binding : definition->bindings) {
+        for (auto& pt : definition->portTypes) {
+            if (pt.name.name == binding.type.name) {
+                for (auto& ptOp : pt.operations) {
+                    for (const auto& bOp : binding.operations) {
+                        if (ptOp.name.name == bOp.name.name) {
+                            ptOp.input.action.name = bOp.input.action.name;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     const auto portTypeNodes = definitionNode.GetChildren("portType");  // getChildren(definitionNode, "portType");

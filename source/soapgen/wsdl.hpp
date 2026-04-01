@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "ResourceResolver.hpp"
+#include <soaplib/SoapBase.hpp>
 
 //#define DEPCHECK
 
@@ -186,6 +187,7 @@ struct Binding
 struct Definition
 {
     Name name;
+    soaplib::SoapVersion version = soaplib::SoapVersion::Soap12;
     // policies
     std::vector<TypePtr> types;
     std::vector<Message> messages;
