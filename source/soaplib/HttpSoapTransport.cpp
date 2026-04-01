@@ -57,20 +57,45 @@ std::unique_ptr<xml::Document> HttpSoapTransport::Send(
         throw SoapException("request failed");
     }
 
-    if (response->status != 200)
-    {
-        throw SoapException("request was not successful: " + std::to_string(response->status));
-    }
-
     if (logging_)
     {
         std::cout << response->body << std::endl << std::flush;
     }
 
-    return xml::Document::ParseMemory(
+    if (response->body.empty()) {
+        if (response->status != 200) {
+            throw SoapException("request failed with status " + std::to_string(response->status));
+        }
+        return nullptr;
+    }
+
+    auto doc = xml::Document::ParseMemory(
         response->body.c_str(),
         response->body.length()
     );
+
+    // Check for SOAP Fault
+    try {
+        auto root = doc->GetRootNode();
+        auto body = root.GetChild("Body");
+        auto faults = body.GetChildren("Fault");
+        if (!faults.empty()) {
+            SoapFault fault;
+            SoapFaultFromXml(faults[0], fault);
+            throw SoapFaultException(fault);
+        }
+    } catch (const SoapFaultException&) {
+        throw; // rethrow our structured fault
+    } catch (...) {
+        // Not a SOAP Fault or malformed XML
+    }
+
+    if (response->status != 200)
+    {
+        throw SoapException("request was not successful: " + std::to_string(response->status) + ". Body: " + response->body);
+    }
+
+    return doc;
 }
 
 void HttpSoapTransport::extractAddressParts(

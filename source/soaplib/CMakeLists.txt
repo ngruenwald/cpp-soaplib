@@ -26,6 +26,8 @@ add_library(
   WebSocketSoapTransport.hpp
   WebSocketSoapServer.cpp
   WebSocketSoapServer.hpp
+  SoapFault.cpp
+  SoapFault.hpp
   soapException.cpp
   soapException.hpp
   soapService.cpp
@@ -105,6 +107,7 @@ install(
     HttpSoapServer.hpp
     WebSocketSoapTransport.hpp
     WebSocketSoapServer.hpp
+    SoapFault.hpp
     basicTypes.hpp
     parseHelper.hpp
   DESTINATION

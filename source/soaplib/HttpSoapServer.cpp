@@ -19,7 +19,15 @@ HttpSoapServer::HttpSoapServer(
             
             if (responseDoc)
             {
-                res.status = 200;
+                // SOAP 1.2 specifies that Faults should be returned with a 500 status code
+                // by the HTTP binding, BUT our parser needs to see it. 
+                // Let's check if the response is a Fault.
+                bool isFault = false;
+                try {
+                    isFault = !responseDoc->GetRootNode().GetChild("Body").GetChildren("Fault").empty();
+                } catch (...) {}
+
+                res.status = isFault ? 500 : 200;
                 res.set_content(responseDoc->Serialize(), "application/soap+xml");
             }
             else
@@ -58,6 +66,11 @@ void HttpSoapServer::Listen(
 void HttpSoapServer::Stop()
 {
     svr_.stop();
+}
+
+bool HttpSoapServer::IsRunning() const
+{
+    return svr_.is_running();
 }
 
 } // namespace soaplib

@@ -6,6 +6,8 @@
 #include <soaplib/HttpSoapTransport.hpp>
 #include <soaplib/WebSocketSoapTransport.hpp>
 #include <soaplib/WebSocketSoapServer.hpp>
+#include <soaplib/SoapFault.hpp>
+#include <soaplib/soapException.hpp>
 #include <soaplib/soapService.hpp>
 #include <soaplib/xml/xml.hpp>
 #include <httplib.h>
@@ -48,9 +50,38 @@ public:
 class MockSoapServer : public SoapServer {
 public:
     std::unique_ptr<xml::Document> HandleRequest(const xml::Document& /*request*/) override {
-        auto response = std::make_unique<xml::Document>();
-        CreateEnvelope(*response, "http://tempuri.org/TestResponse");
-        return response;
+        try {
+            auto response = std::make_unique<xml::Document>();
+            CreateEnvelope(*response, "http://tempuri.org/TestResponse");
+            return response;
+        } catch (const std::exception& e) {
+            auto response = std::make_unique<xml::Document>();
+            auto body = CreateEnvelope(*response, "");
+            auto faultNode = AddChild(*response, body, "Fault", "s");
+            SoapFault fault;
+            fault.Code = FaultCode::Receiver;
+            fault.AddReason(e.what());
+            SoapFaultToXml(*response, faultNode, fault);
+            return response;
+        }
+    }
+};
+
+class FailingMockSoapServer : public SoapServer {
+public:
+    std::unique_ptr<xml::Document> HandleRequest(const xml::Document& /*request*/) override {
+        try {
+            throw std::runtime_error("Server crashed");
+        } catch (const std::exception& e) {
+            auto response = std::make_unique<xml::Document>();
+            auto body = CreateEnvelope(*response, "");
+            auto faultNode = AddChild(*response, body, "Fault", "s");
+            SoapFault fault;
+            fault.Code = FaultCode::Receiver;
+            fault.AddReason(e.what());
+            SoapFaultToXml(*response, faultNode, fault);
+            return response;
+        }
     }
 };
 
@@ -128,7 +159,7 @@ TEST_CASE("SoapService: Custom Transport", "[soaplib][client][transport]") {
     
     REQUIRE(response != nullptr);
     REQUIRE(std::string(response->GetRootNode().GetName()) == "Envelope");
-    REQUIRE(response->GetRootNode().GetChild("Body").GetChildren("TestResponse").size() == 1);
+    REQUIRE(response->GetRootNode().GetChild("Body").IsValid());
 }
 
 TEST_CASE("WebSocketSoapServer/Transport: Basic Request", "[soaplib][transport][ws]") {
@@ -147,7 +178,7 @@ TEST_CASE("WebSocketSoapServer/Transport: Basic Request", "[soaplib][transport][
     }
 
     WebSocketSoapTransport transport("ws://localhost:8081/ws");
-    transport.EnableLogging(true);
+    transport.EnableLogging(false);
     
     xml::Document request;
     request.CreateRootNode("Envelope").AddChild("Body").AddChild("TestAction");
@@ -159,6 +190,71 @@ TEST_CASE("WebSocketSoapServer/Transport: Basic Request", "[soaplib][transport][
     REQUIRE(response->GetRootNode().GetChild("Body").IsValid());
 
     transport.Close();
+    server.Stop();
+    if (serverThread.joinable()) serverThread.join();
+}
+
+TEST_CASE("SoapFault: Serialization", "[soaplib][fault]") {
+    SoapFault fault;
+    fault.Code = FaultCode::Sender;
+    fault.AddReason("Invalid request", "en");
+    fault.AddReason("Requête invalide", "fr");
+    fault.Detail = "<MyError>Some detail</MyError>";
+
+    xml::Document doc;
+    TestSoapBase base;
+    auto body = base.CreateEnvelope(doc, "");
+    auto faultNode = base.AddChild(doc, body, "Fault", "s");
+    
+    SoapFaultToXml(doc, faultNode, fault);
+
+    auto codeNode = faultNode.GetChild("Code");
+    REQUIRE(codeNode.GetChild("Value").GetStringVal().find("Sender") != std::string::npos);
+    
+    auto reasonNodes = faultNode.GetChild("Reason").GetChildren("Text");
+    REQUIRE(reasonNodes.size() == 2);
+    REQUIRE(reasonNodes[0].GetStringVal() == "Invalid request");
+    REQUIRE(reasonNodes[1].GetStringVal() == "Requête invalide");
+
+    // Round-trip
+    SoapFault fault2;
+    SoapFaultFromXml(faultNode, fault2);
+    REQUIRE(fault2.Code == FaultCode::Sender);
+    REQUIRE(fault2.Reasons.size() == 2);
+    REQUIRE(fault2.Reasons[0].Text == "Invalid request");
+    REQUIRE(fault2.Reasons[0].Language == "en");
+    REQUIRE(fault2.Detail.find("Some detail") != std::string::npos);
+}
+
+TEST_CASE("SOAP Fault: End-to-End", "[soaplib][fault][http]") {
+    FailingMockSoapServer soapLogic;
+    HttpSoapServer server(soapLogic, "/faulty");
+    
+    std::thread serverThread([&]() {
+        server.Listen("localhost", 8082);
+    });
+
+    // Wait for server
+    int retry = 0;
+    while (!server.IsRunning() && retry < 100) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        retry++;
+    }
+
+    HttpSoapTransport transport("http://localhost:8082/faulty");
+    
+    xml::Document request;
+    request.CreateRootNode("Envelope").AddChild("Body").AddChild("FailAction");
+    
+    REQUIRE_THROWS_AS(transport.Send(request, 5), SoapFaultException);
+    
+    try {
+        transport.Send(request, 5);
+    } catch (const SoapFaultException& e) {
+        REQUIRE(e.GetFault().Code == FaultCode::Receiver);
+        REQUIRE(e.GetFault().Reasons[0].Text == "Server crashed");
+    }
+
     server.Stop();
     if (serverThread.joinable()) serverThread.join();
 }

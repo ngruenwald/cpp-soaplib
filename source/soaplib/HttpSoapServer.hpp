@@ -33,6 +33,9 @@ public:
     /// Stops the server.
     void Stop();
 
+    /// Checks if the server is running.
+    bool IsRunning() const;
+
 private:
     SoapServer& service_;
     std::string path_;

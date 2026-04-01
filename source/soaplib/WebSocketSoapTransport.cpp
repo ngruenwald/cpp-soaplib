@@ -80,7 +80,24 @@ std::unique_ptr<xml::Document> WebSocketSoapTransport::Send(
         std::cout << "WS Recv: " << response_msg << std::endl;
     }
 
-    return xml::Document::ParseMemory(response_msg.c_str(), response_msg.length());
+    auto doc = xml::Document::ParseMemory(response_msg.c_str(), response_msg.length());
+
+    // Check for SOAP Fault
+    try {
+        auto root = doc->GetRootNode();
+        auto body = root.GetChild("Body");
+        auto faults = body.GetChildren("Fault");
+        if (!faults.empty()) {
+            SoapFault fault;
+            SoapFaultFromXml(faults[0], fault);
+            throw SoapFaultException(fault);
+        }
+    } catch (const SoapFaultException&) {
+        throw;
+    } catch (...) {
+    }
+
+    return doc;
 }
 
 void WebSocketSoapTransport::Close()

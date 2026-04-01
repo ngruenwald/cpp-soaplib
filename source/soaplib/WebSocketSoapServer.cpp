@@ -16,13 +16,10 @@ WebSocketSoapServer::WebSocketSoapServer(
         while (ws.is_open()) {
             auto res = ws.read(msg);
             if (res != httplib::ws::ReadResult::Fail) {
-                try {
-                    auto doc = xml::Document::ParseMemory(msg.c_str(), msg.length());
-                    auto responseDoc = service_.HandleRequest(*doc);
-                    if (responseDoc) {
-                        ws.send(responseDoc->Serialize("UTF-8", false));
-                    }
-                } catch (...) {
+                auto doc = xml::Document::ParseMemory(msg.c_str(), msg.length());
+                auto responseDoc = service_.HandleRequest(*doc);
+                if (responseDoc) {
+                    ws.send(responseDoc->Serialize("UTF-8", false));
                 }
             } else {
                 break;
