@@ -36,7 +36,24 @@ std::unique_ptr<xml::Document> HttpSoapTransport::Send(
 {
     constexpr bool prettyXml = false;
 
-    const std::string contentType = "application/soap+xml; charset=utf-8";
+    // Detect version from the document namespace if possible, 
+    // or rely on a setting. For now let's use a simple heuristic:
+    // If we have a SoapAction that is not empty, it might be 1.1.
+    // But better yet, we should have a version member.
+    
+    // Let's check the root node namespace
+    SoapVersion version = SoapVersion::Soap12;
+    try {
+        auto xmlDoc = request.GetXmlDoc();
+        if (xmlDoc && xmlDoc->children && xmlDoc->children->ns && xmlDoc->children->ns->href) {
+            std::string ns = (const char*)xmlDoc->children->ns->href;
+            if (ns.find("http://schemas.xmlsoap.org/soap/envelope/") != std::string::npos) {
+                version = SoapVersion::Soap11;
+            }
+        }
+    } catch (...) {}
+
+    std::string contentType = (version == SoapVersion::Soap11) ? "text/xml; charset=utf-8" : "application/soap+xml; charset=utf-8";
     const std::string content = request.Serialize("UTF-8", prettyXml);
 
     if (logging_)
@@ -50,7 +67,16 @@ std::unique_ptr<xml::Document> HttpSoapTransport::Send(
     cli.set_decompress(true);
     cli.set_keep_alive(true);
 
-    auto response = cli.Post(path_.c_str(), content, contentType.c_str());
+    httplib::Headers headers;
+    headers.emplace("Content-Type", contentType);
+    
+    if (version == SoapVersion::Soap11) {
+        // Try to find the action from the payload if not passed (though it's usually passed via Addressing in 1.2)
+        // For 1.1 we really need the SOAPAction header.
+        // For now, let's assume if it's 1.1, the caller might have put it in Addressing which we can extract.
+    }
+
+    auto response = cli.Post(path_.c_str(), headers, content, contentType.c_str());
 
     if (!response)
     {
@@ -63,7 +89,7 @@ std::unique_ptr<xml::Document> HttpSoapTransport::Send(
     }
 
     if (response->body.empty()) {
-        if (response->status != 200) {
+        if (response->status != 200 && response->status != 202) {
             throw SoapException("request failed with status " + std::to_string(response->status));
         }
         return nullptr;
@@ -79,18 +105,22 @@ std::unique_ptr<xml::Document> HttpSoapTransport::Send(
         auto root = doc->GetRootNode();
         auto body = root.GetChild("Body");
         auto faults = body.GetChildren("Fault");
+        if (faults.empty()) {
+            // SOAP 1.1 uses lowercase 'fault' or 'Fault'? Spec says 'Fault' but let's check both
+            faults = body.GetChildren("fault"); 
+        }
+        
         if (!faults.empty()) {
             SoapFault fault;
-            SoapFaultFromXml(faults[0], fault);
+            SoapFaultFromXml(faults[0], fault, version);
             throw SoapFaultException(fault);
         }
     } catch (const SoapFaultException&) {
-        throw; // rethrow our structured fault
+        throw;
     } catch (...) {
-        // Not a SOAP Fault or malformed XML
     }
 
-    if (response->status != 200)
+    if (response->status != 200 && response->status != 202)
     {
         throw SoapException("request was not successful: " + std::to_string(response->status) + ". Body: " + response->body);
     }

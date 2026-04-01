@@ -6,10 +6,19 @@
 
 namespace soaplib {
 
+/// Supported SOAP Versions
+enum class SoapVersion {
+    Soap11,
+    Soap12
+};
+
 /// Base class for SOAP components (client and server).
 class SoapBase {
 public:
     virtual ~SoapBase() = default;
+
+    /// Sets the SOAP version.
+    void SetSoapVersion(SoapVersion version);
 
     /// Enables or disables the SOAP header.
     /// @param[in] enable If true, SOAP headers are generated, otherwise not.
@@ -48,11 +57,14 @@ protected:
 
 protected:
     // Constants for common namespaces
-    const std::string SoapNamespace = "http://www.w3.org/2003/05/soap-envelope";
+    const std::string Soap11Namespace = "http://schemas.xmlsoap.org/soap/envelope/";
+    const std::string Soap12Namespace = "http://www.w3.org/2003/05/soap-envelope";
+    
     const std::string TempNamespace = "http://tempuri.org/";
     const std::string AddrNamespace = "http://www.w3.org/2005/08/addressing";
     const std::string InstNamespace = "http://www.w3.org/2001/XMLSchema-instance";
 
+    SoapVersion version_{SoapVersion::Soap12}; ///< Current SOAP version
     bool enableHeader_{true};       ///< Indicates if SOAP headers are enabled
 };
 

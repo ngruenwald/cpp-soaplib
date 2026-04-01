@@ -4,10 +4,11 @@
 #include <vector>
 #include <memory>
 #include <soaplib/xml/xml.hpp>
+#include <soaplib/SoapBase.hpp>
 
 namespace soaplib {
 
-/// Standard SOAP 1.2 Fault Codes
+/// Standard SOAP Fault Codes
 enum class FaultCode {
     VersionMismatch,
     MustUnderstand,
@@ -16,13 +17,13 @@ enum class FaultCode {
     Receiver
 };
 
-/// Represents a SOAP 1.2 Fault Reason text
+/// Represents a SOAP Fault Reason text
 struct FaultReason {
     std::string Text;
     std::string Language = "en"; // xml:lang
 };
 
-/// Represents a SOAP 1.2 Fault
+/// Represents a SOAP Fault
 struct SoapFault {
     FaultCode Code = FaultCode::Receiver;
     std::vector<FaultReason> Reasons;
@@ -46,12 +47,14 @@ struct SoapFault {
 void SoapFaultToXml(
     xml::Document& doc,
     xml::Node& faultNode,
-    const SoapFault& fault);
+    const SoapFault& fault,
+    SoapVersion version = SoapVersion::Soap12);
 
 /// Deserializes a SoapFault from an XML node
 void SoapFaultFromXml(
     const xml::Node& faultNode,
-    SoapFault& fault);
+    SoapFault& fault,
+    SoapVersion version = SoapVersion::Soap12);
 
 /// Helper to parse FaultCode from string
 FaultCode FaultCodeFromString(

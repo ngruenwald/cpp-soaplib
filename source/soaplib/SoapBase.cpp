@@ -6,6 +6,11 @@
 
 namespace soaplib {
 
+void SoapBase::SetSoapVersion(SoapVersion version)
+{
+    version_ = version;
+}
+
 void SoapBase::EnableHeader(bool enable)
 {
     enableHeader_ = enable;
@@ -20,10 +25,12 @@ xml::Node SoapBase::CreateEnvelope(
 
     auto envelope = doc.CreateRootNode("Envelope");
 
+    const std::string& soapNs = (version_ == SoapVersion::Soap11) ? Soap11Namespace : Soap12Namespace;
+
     AddNamespace(doc, envelope, "http://tempuri.org/", "t");
     AddNamespace(doc, envelope, "http://www.w3.org/2005/08/addressing", "a");
     AddNamespace(doc, envelope, "http://www.w3.org/2001/XMLSchema-instance", "i");
-    AddNamespace(doc, envelope, "http://www.w3.org/2003/05/soap-envelope", "s");
+    AddNamespace(doc, envelope, soapNs, "s");
 
     //
     // header

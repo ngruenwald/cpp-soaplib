@@ -61,7 +61,7 @@ public:
             SoapFault fault;
             fault.Code = FaultCode::Receiver;
             fault.AddReason(e.what());
-            SoapFaultToXml(*response, faultNode, fault);
+            SoapFaultToXml(*response, faultNode, fault, version_);
             return response;
         }
     }
@@ -79,7 +79,7 @@ public:
             SoapFault fault;
             fault.Code = FaultCode::Receiver;
             fault.AddReason(e.what());
-            SoapFaultToXml(*response, faultNode, fault);
+            SoapFaultToXml(*response, faultNode, fault, version_);
             return response;
         }
     }
@@ -257,6 +257,29 @@ TEST_CASE("SOAP Fault: End-to-End", "[soaplib][fault][http]") {
 
     server.Stop();
     if (serverThread.joinable()) serverThread.join();
+}
+
+TEST_CASE("SoapFault: SOAP 1.1 Serialization", "[soaplib][fault]") {
+    SoapFault fault;
+    fault.Code = FaultCode::Sender;
+    fault.AddReason("1.1 error");
+
+    xml::Document doc;
+    TestSoapBase base;
+    base.SetSoapVersion(SoapVersion::Soap11);
+    auto body = base.CreateEnvelope(doc, "");
+    auto faultNode = base.AddChild(doc, body, "Fault", "s");
+    
+    SoapFaultToXml(doc, faultNode, fault, SoapVersion::Soap11);
+
+    REQUIRE(faultNode.GetChild("faultcode").GetStringVal().find("Sender") != std::string::npos);
+    REQUIRE(faultNode.GetChild("faultstring").GetStringVal() == "1.1 error");
+
+    SoapFault fault2;
+    SoapFaultFromXml(faultNode, fault2, SoapVersion::Soap11);
+    REQUIRE(fault2.Code == FaultCode::Sender);
+    REQUIRE(fault2.Reasons.size() == 1);
+    REQUIRE(fault2.Reasons[0].Text == "1.1 error");
 }
 
 } // namespace soaplib
