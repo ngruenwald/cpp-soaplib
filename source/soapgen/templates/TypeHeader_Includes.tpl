@@ -6,7 +6,7 @@
 {{ fmacro("TypeHeader_Includes.tpl", innerType) }}
 {% endfor %}
 {% for parameter in struct.parameters %}
-{% if not parameter.isNativeType and not parameter.isPointerType and not parameter.isInnerType %}
+{% if not parameter.isNativeType and not parameter.isPointerType and not parameter.isInnerType and not parameter.needsForwardDeclaration %}
 #include "{{ parameter.type }}.hpp"
 {% endif %}
 {% endfor %}

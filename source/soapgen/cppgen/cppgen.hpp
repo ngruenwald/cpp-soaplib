@@ -8,7 +8,7 @@
 namespace cppgen {
 
 void Generate(
-    const Options& options,
-    /*const*/ Definition& definition);
+    Options& options,
+    Definition& definition);
 
 } // namespace cppgen

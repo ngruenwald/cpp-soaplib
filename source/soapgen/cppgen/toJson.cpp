@@ -135,6 +135,7 @@ nlohmann::json JsonMapper::ToJson(const Parameter& p, const ExtendedType& et)
     j["isPointerType"] = (p.kind == Parameter::Pointer) || (p.kind == Parameter::Optional && usePointer) || (p.kind == Parameter::Multiple && usePointer);
     j["isOptionalType"] = (p.kind == Parameter::Optional);
     j["isMultipleType"] = (p.kind == Parameter::Multiple);
+    j["needsForwardDeclaration"] = options_.cyclicTypes.count(p.type.name) > 0 && !j["isInnerType"].get<bool>();
 
     if (IsInnerType(p.name, et.innerTypes))
     {

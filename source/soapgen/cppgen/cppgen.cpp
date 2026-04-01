@@ -4,6 +4,9 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <functional>
+#include <map>
+#include <set>
 
 #include "typeMap.hpp"
 #include "genTypeHeader.hpp"
@@ -149,7 +152,6 @@ void GenerateTypes(
             continue;
         }
 
-        //std::string baseName = /*definition.name.name + "_" +*/ type.name.name;
         auto baseName = ResolveType(type.name, options, true);
 
         const auto headerPath = GetFilePath(baseName + ".hpp", options, true);
@@ -223,7 +225,6 @@ void GenerateCMake(
 //
 //
 
-//std::shared_ptr<Type> _createNewType(
 Type* _createNewType(
     const Definition& definition,
     const ExtendedType& type,
@@ -244,7 +245,6 @@ Type* _createNewType(
         return {};
     }
 
-#if 1
     Type* newType = nullptr;
 
     switch (it->get()->kind)
@@ -267,23 +267,9 @@ Type* _createNewType(
 
     newType->name.name = type.name.name + "__" + newType->name.name;
 
-    //return std::shared_ptr<Type>(newType);
     return newType;
-#else
-    auto newType = it->get()->Clone();
-
-    if (!newType)
-    {
-        return {};
-    }
-
-    newType->name.name = type.name.name + "__" + newType->name.name;
-
-    return newType;
-#endif
 }
 
-//std::shared_ptr<Type> _createNewType(
 Type* _createNewType(
     const Definition& definition,
     const ExtendedType& type,
@@ -320,43 +306,16 @@ Type* _createNewType(
 void CreateDistinctListTypes(
     Definition& definition)
 {
-    // TODO: there's a mess with the smartpoints. Fix it.
-
-    // create types for all occurences of
-    //   ListDCResponseBase, ArrayOfReturnEntity and ReturnEntity
-    // and replace the original types with the generated ones
-
-    std::vector<TypePtr> newTypes;
-
-    //for (auto& typePtr : definition.types)
     for (size_t idx = 0; idx < definition.types.size(); ++idx)
     {
         auto typePtr = definition.types[idx];
 
-        if (!typePtr)
+        if (!typePtr || IsNativeType(typePtr->name) || typePtr->kind != Type::Extended)
         {
             continue;
         }
 
-        auto& type = *typePtr;
-
-        if (IsNativeType(type.name))
-        {
-            continue;
-        }
-
-        if (type.kind != Type::Extended)
-        {
-            continue;
-        }
-
-        // // testing only
-        // if (type.name.name != "FileMetadata_GetListResponse")
-        // {
-        //     continue;
-        // }
-
-        auto etype = reinterpret_cast<ExtendedType*>(&type);
+        auto etype = reinterpret_cast<ExtendedType*>(typePtr.get());
 
         auto listType = _createNewType(definition, *etype, etype->parameters, "ListDCResponseBase");
         if (!listType)
@@ -365,7 +324,6 @@ void CreateDistinctListTypes(
         }
         definition.types.push_back(std::shared_ptr<Type>{listType});
 
-//        auto arrayType = _createNewType(definition, *etype, reinterpret_cast<ExtendedType*>(&listType)->parameters, "ArrayOfReturnEntity");
         auto arrayType = _createNewType(definition, *etype, reinterpret_cast<ExtendedType*>(listType)->parameters, "ArrayOfReturnEntity");
         if (!arrayType)
         {
@@ -373,14 +331,13 @@ void CreateDistinctListTypes(
         }
         definition.types.push_back(std::shared_ptr<Type>{arrayType});
 
-//        auto entityType = _createNewType(definition, *etype, reinterpret_cast<ExtendedType*>(&arrayType)->parameters, "ReturnEntity");
         auto entityType = _createNewType(definition, *etype, reinterpret_cast<ExtendedType*>(arrayType)->parameters, "ReturnEntity");
         if (!entityType)
         {
             continue;
         }
 
-        auto fn = [] (const Definition& defintion, const ExtendedType& type, std::vector<Parameter>& parameters, const std::string& name) {
+        auto fn = [] (const Definition& /*definition*/, const ExtendedType& type, std::vector<Parameter>& parameters, const std::string& name) {
             // search the parameter
             auto parameter =
                 std::find_if(
@@ -472,13 +429,69 @@ void RemoveIgnoredTypes(
 }
 
 //
+// Cycles
 //
+
+void ResolveCyclicReferences(
+    Options& options,
+    Definition& definition)
+{
+    std::map<std::string, TypePtr> typeMap;
+    for (const auto& t : definition.types) typeMap[t->name.name] = t;
+
+    std::set<std::string> visited;
+    std::set<std::string> stack;
+
+    std::function<void(TypePtr)> visit = [&](TypePtr t) {
+        if (!t || t->kind != Type::Extended) return;
+        
+        const std::string& name = t->name.name;
+        if (stack.count(name)) {
+            options.cyclicTypes.insert(name);
+            return;
+        }
+        if (visited.count(name)) return;
+
+        visited.insert(name);
+        stack.insert(name);
+
+        auto& et = static_cast<ExtendedType&>(*t);
+        for (auto& p : et.parameters) {
+            if (IsNativeType(p.type)) continue;
+            
+            auto it = typeMap.find(p.type.name);
+            if (it != typeMap.end()) {
+                visit(it->second);
+                if (options.cyclicTypes.count(p.type.name)) {
+                    // Mark this specific parameter as pointer to break the cycle
+                    p.kind = Parameter::Pointer;
+                }
+            }
+        }
+
+        stack.erase(name);
+    };
+
+    for (const auto& t : definition.types) {
+        visit(t);
+    }
+}
+
+//
+// Generate
 //
 
 void Generate(
-    const Options& options,
-    /*const*/ Definition& definition)
+    Options& options,
+    Definition& definition)
 {
+    ResolveCyclicReferences(options, definition);
+
+    if (options.templatePath.empty())
+    {
+        options.templatePath = "templates";
+    }
+
     Renderer renderer(options.templatePath, options.outputPath);
 
     if (options.enableHacks)

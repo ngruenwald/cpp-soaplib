@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <set>
 
 namespace cppgen {
 
@@ -28,6 +29,8 @@ struct Options
     bool generateServer = false;
 
     bool abortOnUnknownType = false;
+
+    std::set<std::string> cyclicTypes;
 
     bool writeTimestamp = true;
 
