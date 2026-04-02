@@ -15,6 +15,7 @@ using namespace ::soaplib;
     const std::string& serviceAddress)
     : soaplib::SoapService(serviceAddress, "")
 {
+    {% if service.version == "1.1" %}SetSoapVersion(soaplib::SoapVersion::Soap11);{% endif %}
 }
 
 {{ service.name }}::~{{ service.name }}()

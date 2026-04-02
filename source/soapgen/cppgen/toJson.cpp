@@ -210,7 +210,8 @@ nlohmann::json JsonMapper::ToJson(const Service& s, const Definition& d)
         {"xmlns", ToJson(s.name)},
         {"ports", ports},
         {"operations", operations},
-        {"safe_name", safe_name(s.name.name)}
+        {"safe_name", safe_name(s.name.name)},
+        {"version", (d.version == soaplib::SoapVersion::Soap11) ? "1.1" : "1.2"}
     };
 }
 
@@ -302,6 +303,7 @@ nlohmann::json JsonMapper::ToJson(const Definition& d)
     nlohmann::json j;
     j["name"] = d.name.name;
     j["xmlns"] = ToJson(d.name);
+    j["version"] = (d.version == soaplib::SoapVersion::Soap11) ? "1.1" : "1.2";
     j["types"] = nlohmann::json::array();
     for (const auto& t : d.types) {
         if (t) j["types"].push_back(ToJson(*t));

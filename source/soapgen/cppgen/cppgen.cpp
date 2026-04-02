@@ -487,6 +487,13 @@ void Generate(
 {
     ResolveCyclicReferences(options, definition);
 
+    // Apply explicit version override if provided
+    if (options.soapVersion == Options::SoapVersion::Soap11) {
+        definition.version = soaplib::SoapVersion::Soap11;
+    } else if (options.soapVersion == Options::SoapVersion::Soap12) {
+        definition.version = soaplib::SoapVersion::Soap12;
+    }
+
     if (options.templatePath.empty())
     {
         options.templatePath = "templates";

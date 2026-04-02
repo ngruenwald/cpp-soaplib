@@ -8,6 +8,12 @@ namespace cppgen {
 
 struct Options
 {
+    enum class SoapVersion {
+        Auto,
+        Soap11,
+        Soap12
+    };
+
     std::string name = "service";
 
     std::string outputPath = "_output";
@@ -27,6 +33,8 @@ struct Options
 
     bool generateClient = true;
     bool generateServer = false;
+
+    SoapVersion soapVersion = SoapVersion::Auto;
 
     bool abortOnUnknownType = false;
 

@@ -31,6 +31,12 @@ std::unique_ptr<Config> LoadConfig(
         XML_OPTIONAL(config->cpp.generateServer = doc->GetNode("/config/cpp/server").GetBoolProp("enable"));
         XML_OPTIONAL(config->cpp.abortOnUnknownType = doc->GetNode("/config/cpp/abort-on-unknown").GetBoolProp("enable"));
 
+        try {
+            auto v = doc->GetNode("/config/cpp/soap-version").GetStringVal();
+            if (v == "1.1") config->cpp.soapVersion = cppgen::Options::SoapVersion::Soap11;
+            else if (v == "1.2") config->cpp.soapVersion = cppgen::Options::SoapVersion::Soap12;
+        } catch (...) {}
+
         try
         {
             auto nsNodes = doc->GetNodes("/config/cpp/namespaces/namespace");
@@ -155,6 +161,10 @@ int main(int argc, const char** argv)
         .default_value(false)
         .implicit_value(true);
 
+    program.add_argument("--soap-version")
+        .help("SOAP version (1.1, 1.2, auto)")
+        .default_value(std::string("auto"));
+
     program.add_argument("--types-folder")
         .help("subfolder for types");
 
@@ -201,6 +211,13 @@ int main(int argc, const char** argv)
     if (program.get<bool>("--client")) config->cpp.generateClient = true;
     if (program.get<bool>("--server")) config->cpp.generateServer = true;
     if (program.get<bool>("--abort-on-unknown")) config->cpp.abortOnUnknownType = true;
+
+    if (program.present("--soap-version")) {
+        auto v = program.get<std::string>("--soap-version");
+        if (v == "1.1") config->cpp.soapVersion = cppgen::Options::SoapVersion::Soap11;
+        else if (v == "1.2") config->cpp.soapVersion = cppgen::Options::SoapVersion::Soap12;
+        else if (v == "auto") config->cpp.soapVersion = cppgen::Options::SoapVersion::Auto;
+    }
 
     if (program.present("--namespace"))
     {

@@ -14,6 +14,7 @@ using namespace ::soaplib;
 
 {{ service.name }}Server::{{ service.name }}Server()
 {
+    {% if service.version == "1.1" %}SetSoapVersion(soaplib::SoapVersion::Soap11);{% endif %}
 }
 
 {{ service.name }}Server::~{{ service.name }}Server()
@@ -64,7 +65,7 @@ std::unique_ptr<soaplib::xml::Document> {{ service.name }}Server::HandleRequest(
         fault.Code = soaplib::FaultCode::Receiver;
         fault.AddReason(e.what());
         
-        soaplib::SoapFaultToXml(*response, faultNode, fault);
+        soaplib::SoapFaultToXml(*response, faultNode, fault, version_);
         return response;
     } catch (...) {
         auto response = std::make_unique<soaplib::xml::Document>();
@@ -75,7 +76,7 @@ std::unique_ptr<soaplib::xml::Document> {{ service.name }}Server::HandleRequest(
         fault.Code = soaplib::FaultCode::Receiver;
         fault.AddReason("Unknown internal error");
         
-        soaplib::SoapFaultToXml(*response, faultNode, fault);
+        soaplib::SoapFaultToXml(*response, faultNode, fault, version_);
         return response;
     }
 }

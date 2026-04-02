@@ -12,7 +12,7 @@ Calculator::Calculator(
     const std::string& serviceAddress)
     : soaplib::SoapService(serviceAddress, "")
 {
-}
+SetSoapVersion(soaplib::SoapVersion::Soap11);}
 
 Calculator::~Calculator()
 {

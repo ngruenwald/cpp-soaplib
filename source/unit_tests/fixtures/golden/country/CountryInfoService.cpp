@@ -12,7 +12,7 @@ CountryInfoService::CountryInfoService(
     const std::string& serviceAddress)
     : soaplib::SoapService(serviceAddress, "")
 {
-}
+SetSoapVersion(soaplib::SoapVersion::Soap11);}
 
 CountryInfoService::~CountryInfoService()
 {
