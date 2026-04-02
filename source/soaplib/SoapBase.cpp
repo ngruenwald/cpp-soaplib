@@ -12,6 +12,11 @@ void SoapBase::SetSoapVersion(SoapVersion version)
     version_ = version;
 }
 
+void SoapBase::SetRole(const std::string& role)
+{
+    role_ = role;
+}
+
 void SoapBase::EnableHeader(bool enable)
 {
     enableHeader_ = enable;
@@ -30,8 +35,22 @@ void SoapBase::ValidateHeaders(const xml::Node& envelope) const {
     }
 
     const std::string& soapNs = (version_ == SoapVersion::Soap11) ? Soap11Namespace : Soap12Namespace;
+    const std::string roleAttr = (version_ == SoapVersion::Soap11) ? "actor" : "role";
 
     for (const auto& hNode : header.GetChildren(nullptr)) {
+        // Check if header is intended for us
+        std::string hRole = hNode.GetStringProp(roleAttr.c_str(), soapNs);
+        if (hRole.empty()) {
+            try { hRole = hNode.GetStringProp(roleAttr.c_str()); } catch(...) {}
+        }
+
+        // Default role is 'next' (1.2) or empty (1.1)
+        bool isForUs = hRole.empty() || hRole == role_ || 
+                       (version_ == SoapVersion::Soap12 && hRole == "http://www.w3.org/2003/05/soap-envelope/role/next") ||
+                       (version_ == SoapVersion::Soap11 && hRole == "http://schemas.xmlsoap.org/soap/actor/next");
+
+        if (!isForUs) continue;
+
         std::string mustUnderstand = hNode.GetStringProp("mustUnderstand", soapNs);
         if (mustUnderstand.empty()) {
             // Check without namespace as some services might not prefix it correctly

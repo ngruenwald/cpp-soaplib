@@ -308,4 +308,30 @@ TEST_CASE("SoapBase: ValidateHeaders", "[soaplib][header]") {
     REQUIRE_NOTHROW(base.ValidateHeaders(envelope));
 }
 
+TEST_CASE("SoapBase: Role/Actor Validation", "[soaplib][header]") {
+    xml::Document doc;
+    TestSoapBase base;
+    base.SetRole("http://my-role");
+    
+    auto body = base.CreateEnvelope(doc, "");
+    auto envelope = doc.GetRootNode();
+    auto header = envelope.GetChild("Header");
+    
+    // Header for someone else
+    auto h1 = base.AddChild(doc, header, "OtherHeader", "t");
+    h1.SetProp("s:mustUnderstand", "1");
+    h1.SetProp("s:role", "http://someone-else");
+
+    // Should PASS because it's not for us
+    REQUIRE_NOTHROW(base.ValidateHeaders(envelope));
+
+    // Header for us
+    auto h2 = base.AddChild(doc, header, "MyHeader", "t");
+    h2.SetProp("s:mustUnderstand", "1");
+    h2.SetProp("s:role", "http://my-role");
+
+    // Should FAIL because MyHeader is not registered
+    REQUIRE_THROWS_AS(base.ValidateHeaders(envelope), SoapFaultException);
+}
+
 } // namespace soaplib

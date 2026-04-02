@@ -22,12 +22,17 @@ Support both versions by making the core library version-agnostic and allowing t
 - [x] Implement `SOAPAction` HTTP header support for SOAP 1.1 in `HttpSoapTransport`.
 
 ### Priority 3: Specification Gaps
-- [ ] Implement `mustUnderstand` attribute validation for both versions.
-- [ ] Add support for `role` (1.2) / `actor` (1.1) attributes.
+- [x] Implement `mustUnderstand` attribute validation for both versions.
+- [x] Add support for `role` (1.2) / `actor` (1.1) attributes.
 - [ ] Add support for `relay` attribute (1.2).
 - [ ] Implement support for HTTP `GET` (SOAP 1.2 Web Method Feature).
 
-### Priority 4: Advanced Features
+### Priority 4: Binding & Transport
+- [x] Update `HttpSoapTransport` to handle HTTP 202 (Accepted) for one-way messages.
+- [x] Ensure `Content-Type` is strictly compliant with `application/soap+xml`.
+- [x] Support HTTP 400/500 status codes correctly as potentially containing valid SOAP Faults.
+
+### Priority 5: Advanced Features
 - [ ] Hierarchical Subcodes (SOAP 1.2).
 - [ ] Response-Only MEP.
 - [ ] Section 5 Encoding support.

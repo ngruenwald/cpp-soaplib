@@ -21,6 +21,9 @@ public:
     /// Sets the SOAP version.
     void SetSoapVersion(SoapVersion version);
 
+    /// Sets the SOAP role/actor URI.
+    void SetRole(const std::string& role);
+
     /// Enables or disables the SOAP header.
     /// @param[in] enable If true, SOAP headers are generated, otherwise not.
     void EnableHeader(
@@ -80,6 +83,7 @@ protected:
 
     SoapVersion version_{SoapVersion::Soap12}; ///< Current SOAP version
     bool enableHeader_{true};       ///< Indicates if SOAP headers are enabled
+    std::string role_;              ///< SOAP role (1.2) or actor (1.1) URI
     std::set<std::pair<std::string, std::string>> understoodHeaders_; ///< Registry of understood headers (name, ns)
 };
 
