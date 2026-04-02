@@ -51,17 +51,21 @@ protected:
 protected:
     /// Executes a method call using the defaut request timeout.
     /// @param[in] request Request data as XML document
+    /// @param[in] soapAction SOAP action string
     /// @returns Response data as XML document
     std::unique_ptr<xml::Document> Call(
-        const xml::Document& request);
+        const xml::Document& request,
+        const std::string& soapAction);
 
     /// Executes a method call using a custom timeout.
     /// @param[in] request Request data as XML document
     /// @param[in] timeoutSeconds Request timeout in seconds
+    /// @param[in] soapAction SOAP action string
     /// @returns Response data as XML document
     std::unique_ptr<xml::Document> Call(
         const xml::Document& request,
-        int timeoutSeconds);
+        int timeoutSeconds,
+        const std::string& soapAction);
 
 protected:
     std::unique_ptr<SoapTransport> transport_; ///< SOAP transport instance

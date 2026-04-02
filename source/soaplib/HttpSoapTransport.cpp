@@ -32,16 +32,12 @@ void HttpSoapTransport::SetReadTimeout(
 
 std::unique_ptr<xml::Document> HttpSoapTransport::Send(
     const xml::Document& request,
-    int timeoutSeconds)
+    int timeoutSeconds,
+    const std::string& soapAction)
 {
     constexpr bool prettyXml = false;
 
-    // Detect version from the document namespace if possible, 
-    // or rely on a setting. For now let's use a simple heuristic:
-    // If we have a SoapAction that is not empty, it might be 1.1.
-    // But better yet, we should have a version member.
-    
-    // Let's check the root node namespace
+    // Detect version from the document namespace
     SoapVersion version = SoapVersion::Soap12;
     try {
         auto xmlDoc = request.GetXmlDoc();
@@ -53,7 +49,16 @@ std::unique_ptr<xml::Document> HttpSoapTransport::Send(
         }
     } catch (...) {}
 
-    std::string contentType = (version == SoapVersion::Soap11) ? "text/xml; charset=utf-8" : "application/soap+xml; charset=utf-8";
+    std::string contentType;
+    if (version == SoapVersion::Soap11) {
+        contentType = "text/xml; charset=utf-8";
+    } else {
+        contentType = "application/soap+xml; charset=utf-8";
+        if (!soapAction.empty()) {
+            contentType += "; action=\"" + soapAction + "\"";
+        }
+    }
+
     const std::string content = request.Serialize("UTF-8", prettyXml);
 
     if (logging_)
@@ -70,10 +75,8 @@ std::unique_ptr<xml::Document> HttpSoapTransport::Send(
     httplib::Headers headers;
     headers.emplace("Content-Type", contentType);
     
-    if (version == SoapVersion::Soap11) {
-        // Try to find the action from the payload if not passed (though it's usually passed via Addressing in 1.2)
-        // For 1.1 we really need the SOAPAction header.
-        // For now, let's assume if it's 1.1, the caller might have put it in Addressing which we can extract.
+    if (version == SoapVersion::Soap11 && !soapAction.empty()) {
+        headers.emplace("SOAPAction", "\"" + soapAction + "\"");
     }
 
     auto response = cli.Post(path_.c_str(), headers, content, contentType.c_str());

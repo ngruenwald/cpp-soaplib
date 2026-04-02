@@ -19,7 +19,7 @@ namespace soaplib {
 
 class MockSoapTransport : public SoapTransport {
 public:
-    std::unique_ptr<xml::Document> Send(const xml::Document& /*request*/, int /*timeoutSeconds*/) override {
+    std::unique_ptr<xml::Document> Send(const xml::Document& /*request*/, int /*timeoutSeconds*/, const std::string& /*soapAction*/) override {
         auto doc = std::make_unique<xml::Document>();
         auto body = doc->CreateRootNode("Envelope").AddChild("Body");
         body.AddChild("TestResponse");
@@ -35,7 +35,7 @@ public:
         : SoapService(std::move(transport), "http://tempuri.org/") {}
     
     std::unique_ptr<xml::Document> TestCall(const xml::Document& request) {
-        return Call(request);
+        return Call(request, "TestAction");
     }
 };
 
@@ -120,14 +120,15 @@ TEST_CASE("HttpSoapServer: Basic Request", "[soaplib][transport][http]") {
     HttpSoapServer server(soapLogic, "/soap");
     
     // Start server in a separate thread
-    std::promise<void> serverStarted;
-    auto serverFuture = std::async(std::launch::async, [&]() {
-        serverStarted.set_value();
+    std::thread serverThread([&]() {
         server.Listen("localhost", 8080);
     });
 
-    serverStarted.get_future().wait();
-    std::this_thread::sleep_for(std::chrono::milliseconds(200)); // Give it a moment to bind
+    int retry = 0;
+    while (!server.IsRunning() && retry < 100) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        retry++;
+    }
 
     // Send a request using httplib::Client
     httplib::Client cli("localhost", 8080);
@@ -147,7 +148,7 @@ TEST_CASE("HttpSoapServer: Basic Request", "[soaplib][transport][http]") {
     REQUIRE(res->body.find("TestResponse") != std::string::npos);
 
     server.Stop();
-    serverFuture.wait();
+    if (serverThread.joinable()) serverThread.join();
 }
 
 TEST_CASE("SoapService: Custom Transport", "[soaplib][client][transport]") {
@@ -246,10 +247,10 @@ TEST_CASE("SOAP Fault: End-to-End", "[soaplib][fault][http]") {
     xml::Document request;
     request.CreateRootNode("Envelope").AddChild("Body").AddChild("FailAction");
     
-    REQUIRE_THROWS_AS(transport.Send(request, 5), SoapFaultException);
+    REQUIRE_THROWS_AS(transport.Send(request, 5, "FailAction"), SoapFaultException);
     
     try {
-        transport.Send(request, 5);
+        transport.Send(request, 5, "FailAction");
     } catch (const SoapFaultException& e) {
         REQUIRE(e.GetFault().Code == FaultCode::Receiver);
         REQUIRE(e.GetFault().Reasons[0].Text == "Server crashed");

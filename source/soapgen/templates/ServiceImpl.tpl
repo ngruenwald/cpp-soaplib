@@ -30,7 +30,7 @@ using namespace ::soaplib;
     auto body = CreateEnvelope(request, "{{ op.input.action }}");
     {{ op.input_resolved_type }}ToXml(input, request, body, true);
 
-    auto response = Call(request);
+    auto response = Call(request, "{{ op.input.action }}");
     auto envelope = response->GetRootNode();
     auto operation = envelope.GetChild("Body").GetChild("{{ op.output_type }}");
 

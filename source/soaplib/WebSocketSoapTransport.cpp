@@ -52,7 +52,8 @@ bool WebSocketSoapTransport::connect()
 
 std::unique_ptr<xml::Document> WebSocketSoapTransport::Send(
     const xml::Document& request,
-    int /*timeoutSeconds*/)
+    int /*timeoutSeconds*/,
+    const std::string& /*soapAction*/)
 {
     if (!connect()) {
         throw SoapException("WebSocket connection failed to " + address_);
