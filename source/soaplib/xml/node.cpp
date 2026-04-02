@@ -107,6 +107,22 @@ std::string Node::GetStringProp(
     return result;
 }
 
+std::string Node::GetStringProp(
+    const char* name,
+    const std::string& ns) const
+{
+    const auto prop = xmlGetNsProp(node_, BAD_CAST name, BAD_CAST ns.c_str());
+
+    if (prop == nullptr)
+    {
+        return {};
+    }
+
+    auto result = std::string{reinterpret_cast<const char*>(prop)};
+    xmlFree(prop);
+    return result;
+}
+
 int Node::GetIntProp(
     const char* name) const
 {

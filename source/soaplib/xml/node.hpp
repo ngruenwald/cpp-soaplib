@@ -76,6 +76,12 @@ public:
     /// @returns The attribute value
     std::string GetStringProp(const char* name) const;
 
+    /// Gets an XML attribute (string) with namespace
+    /// @param[in] name The name of the attribute
+    /// @param[in] ns The namespace URI
+    /// @returns The attribute value
+    std::string GetStringProp(const char* name, const std::string& ns) const;
+
     /// Gets an XML attribute (int)
     /// @param[in] name The name of the attribute
     /// @returns The attribute value
