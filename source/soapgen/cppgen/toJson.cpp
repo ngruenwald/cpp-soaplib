@@ -69,6 +69,7 @@ nlohmann::json JsonMapper::ToJson(const Type& t)
                 j["base"]["xmlns"] = ToJson(bt.base.value());
                 j["base"]["resolved_name"] = ResolveType(bt.base.value(), options_, true);
                 j["base"]["full_resolved_name"] = ResolveType(bt.base.value(), options_, false);
+                j["base"]["isNativeType"] = IsNativeType(bt.base.value());
             }
             break;
         }
@@ -81,6 +82,7 @@ nlohmann::json JsonMapper::ToJson(const Type& t)
                 j["base"]["xmlns"] = ToJson(et.base.value());
                 j["base"]["resolved_name"] = ResolveType(et.base.value(), options_, true);
                 j["base"]["full_resolved_name"] = ResolveType(et.base.value(), options_, false);
+                j["base"]["isNativeType"] = IsNativeType(et.base.value());
             }
             j["struct"]["parameters"] = nlohmann::json::array();
             for (const auto& p : et.parameters) {
@@ -99,7 +101,8 @@ nlohmann::json JsonMapper::ToJson(const Type& t)
             j["enum"]["enumerations"] = nlohmann::json::array();
             for (const auto& e : et.enumerations) {
                 nlohmann::json ej;
-                ej["text"] = e.text;
+                ej["text"] = safe_name(e.text);
+                ej["wsdl_text"] = e.text;
                 if (e.value.has_value()) ej["value"] = e.value.value();
                 j["enum"]["enumerations"].push_back(ej);
             }

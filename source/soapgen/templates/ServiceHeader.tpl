@@ -16,7 +16,7 @@
 namespace {{ ns }} {
 {% endfor %}
 
-The "{{ service.name }}" SOAP service
+/// The "{{ service.name }}" SOAP service
 class {{ service.name }}
     : public soaplib::SoapService
 {

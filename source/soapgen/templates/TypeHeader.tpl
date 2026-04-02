@@ -8,7 +8,7 @@
 #include <memory>
 #include <soaplib/basicTypes.hpp>
 
-{%- if length(default(type.base.name, "")) > 0 and type.base.name != "soaplib::SoapBaseType" %}
+{%- if length(default(type.base.name, "")) > 0 and type.base.name != "soaplib::SoapBaseType" and not type.base.isNativeType %}
 #include "{{ type.base.name }}.hpp"
 {% endif -%}
 {{ fmacro("TypeHeader_Includes.tpl", type) }}

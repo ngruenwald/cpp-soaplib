@@ -73,15 +73,19 @@ std::map<std::string, std::string> NativeTypes =
 bool IsNativeType(
     const Name& name)
 {
-    // TODO
     auto it = NativeTypes.find(name.name);
+
+    if (it == NativeTypes.end())
+    {
+        return false;
+    }
 
     if (it->second == "SoapLibAnyType")
     {
         return false;
     }
 
-    return it != NativeTypes.end();
+    return true;
 }
 
 std::string ResolveType(

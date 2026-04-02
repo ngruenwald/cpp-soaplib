@@ -14,7 +14,7 @@ void {{ name }}FromXml(
 {% if kind == "enum" %}
     auto s = StringFromXml(objNode);
 {% for enumeration in enum.enumerations %}
-    {% if not loop.is_first %}else {% endif %}if (s == "{{ enumeration.text }}")
+    {% if not loop.is_first %}else {% endif %}if (s == "{{ enumeration.wsdl_text }}")
     {
         obj.Value = {{ name }}::{{ enumeration.text }};
     }
@@ -63,7 +63,7 @@ static void _{{ name }}ToXml(
 {% for enumeration in enum.enumerations %}
         case {{ name }}::{{ enumeration.text }}:
         {
-            s = "{{ enumeration.text }}";
+            s = "{{ enumeration.wsdl_text }}";
             break;
         }
 {% endfor %}
