@@ -43,7 +43,7 @@ Do not expect this to work!_ ¯\\_(ツ)_/¯
 - [x]  implement WebSocket server transport
 - [x]  support for split definition files
 - [x]  support file download in generator
-- [ ]  auto detect and resolve cyclic references
+- [x]  auto detect and resolve cyclic references
 - [ ]  cleanup cmake scripts
 - [ ]  generate doxygen files
 

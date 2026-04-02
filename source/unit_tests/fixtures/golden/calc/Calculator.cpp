@@ -12,7 +12,11 @@ Calculator::Calculator(
     const std::string& serviceAddress)
     : soaplib::SoapService(serviceAddress, "")
 {
-SetSoapVersion(soaplib::SoapVersion::Soap11);}
+SetSoapVersion(soaplib::SoapVersion::Soap11);    RegisterUnderstoodHeader("Action", "http://www.w3.org/2005/08/addressing");
+    RegisterUnderstoodHeader("To", "http://www.w3.org/2005/08/addressing");
+    RegisterUnderstoodHeader("MessageID", "http://www.w3.org/2005/08/addressing");
+    RegisterUnderstoodHeader("ReplyTo", "http://www.w3.org/2005/08/addressing");
+}
 
 Calculator::~Calculator()
 {
@@ -25,7 +29,7 @@ Calculator::~Calculator()
     auto body = CreateEnvelope(request, "");
     AddToXml(input, request, body, true);
 
-    auto response = Call(request);
+    auto response = Call(request, "");
     auto envelope = response->GetRootNode();
     auto operation = envelope.GetChild("Body").GetChild("AddResponse");
 
@@ -39,7 +43,7 @@ Calculator::~Calculator()
     auto body = CreateEnvelope(request, "");
     SubtractToXml(input, request, body, true);
 
-    auto response = Call(request);
+    auto response = Call(request, "");
     auto envelope = response->GetRootNode();
     auto operation = envelope.GetChild("Body").GetChild("SubtractResponse");
 
@@ -53,7 +57,7 @@ Calculator::~Calculator()
     auto body = CreateEnvelope(request, "");
     MultiplyToXml(input, request, body, true);
 
-    auto response = Call(request);
+    auto response = Call(request, "");
     auto envelope = response->GetRootNode();
     auto operation = envelope.GetChild("Body").GetChild("MultiplyResponse");
 
@@ -67,7 +71,7 @@ Calculator::~Calculator()
     auto body = CreateEnvelope(request, "");
     DivideToXml(input, request, body, true);
 
-    auto response = Call(request);
+    auto response = Call(request, "");
     auto envelope = response->GetRootNode();
     auto operation = envelope.GetChild("Body").GetChild("DivideResponse");
 

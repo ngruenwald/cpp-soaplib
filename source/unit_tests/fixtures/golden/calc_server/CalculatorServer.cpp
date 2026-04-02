@@ -11,7 +11,11 @@ using namespace ::soaplib;
 
 CalculatorServer::CalculatorServer()
 {
-SetSoapVersion(soaplib::SoapVersion::Soap11);}
+SetSoapVersion(soaplib::SoapVersion::Soap11);    RegisterUnderstoodHeader("Action", "http://www.w3.org/2005/08/addressing");
+    RegisterUnderstoodHeader("To", "http://www.w3.org/2005/08/addressing");
+    RegisterUnderstoodHeader("MessageID", "http://www.w3.org/2005/08/addressing");
+    RegisterUnderstoodHeader("ReplyTo", "http://www.w3.org/2005/08/addressing");
+}
 
 CalculatorServer::~CalculatorServer()
 {
@@ -22,6 +26,10 @@ std::unique_ptr<soaplib::xml::Document> CalculatorServer::HandleRequest(
 {
     try {
         auto envelope = request.GetRootNode();
+        
+        // Validate headers before dispatching
+        ValidateHeaders(envelope);
+
         auto body = envelope.GetChild("Body");
         auto operationNode = body.GetChildren()[0];
         std::string operationName = operationNode.GetName();
