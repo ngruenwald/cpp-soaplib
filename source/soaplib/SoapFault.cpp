@@ -81,10 +81,9 @@ void SoapFaultFromXml(const xml::Node& faultNode, SoapFault& fault, SoapVersion 
             for (const auto& textNode : reasonNode.GetChildren("Text")) {
                 FaultReason r;
                 r.Text = textNode.GetStringVal();
-                XML_OPTIONAL(r.Language = textNode.GetStringProp("xml:lang"));
+                XML_OPTIONAL(r.Language = textNode.GetStringProp("lang", "http://www.w3.org/XML/1998/namespace"));
                 fault.Reasons.push_back(r);
-            }
-        } catch (...) {}
+            }        } catch (...) {}
 
         XML_OPTIONAL(fault.Node = faultNode.GetChild("Node").GetStringVal());
         XML_OPTIONAL(fault.Role = faultNode.GetChild("Role").GetStringVal());

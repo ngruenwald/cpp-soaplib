@@ -45,6 +45,7 @@ public:
     using SoapBase::AddNamespace;
     using SoapBase::AddChild;
     using SoapBase::ns;
+    using SoapBase::ValidateHeaders;
 };
 
 class MockSoapServer : public SoapServer {
@@ -281,6 +282,30 @@ TEST_CASE("SoapFault: SOAP 1.1 Serialization", "[soaplib][fault]") {
     REQUIRE(fault2.Code == FaultCode::Sender);
     REQUIRE(fault2.Reasons.size() == 1);
     REQUIRE(fault2.Reasons[0].Text == "1.1 error");
+}
+
+TEST_CASE("SoapBase: ValidateHeaders", "[soaplib][header]") {
+    xml::Document doc;
+    TestSoapBase base;
+    auto body = base.CreateEnvelope(doc, "");
+    auto envelope = doc.GetRootNode();
+    auto header = envelope.GetChild("Header");
+    
+    auto h1 = base.AddChild(doc, header, "UnknownHeader", "t");
+    h1.SetProp("s:mustUnderstand", "1");
+
+    // Should throw because UnknownHeader is not registered
+    REQUIRE_THROWS_AS(base.ValidateHeaders(envelope), SoapFaultException);
+
+    try {
+        base.ValidateHeaders(envelope);
+    } catch (const SoapFaultException& e) {
+        REQUIRE(e.GetFault().Code == FaultCode::MustUnderstand);
+    }
+
+    // Register it and it should pass
+    base.RegisterUnderstoodHeader("UnknownHeader", "http://tempuri.org/");
+    REQUIRE_NOTHROW(base.ValidateHeaders(envelope));
 }
 
 } // namespace soaplib

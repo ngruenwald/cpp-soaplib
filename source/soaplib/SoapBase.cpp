@@ -1,5 +1,6 @@
 #include "SoapBase.hpp"
 #include "parseHelper.hpp"
+#include "soapException.hpp"
 #include "types/uuid.hpp"
 
 #include <libxml/tree.h>
@@ -14,6 +15,47 @@ void SoapBase::SetSoapVersion(SoapVersion version)
 void SoapBase::EnableHeader(bool enable)
 {
     enableHeader_ = enable;
+}
+
+void SoapBase::RegisterUnderstoodHeader(const std::string& name, const std::string& ns) {
+    understoodHeaders_.insert({name, ns});
+}
+
+void SoapBase::ValidateHeaders(const xml::Node& envelope) const {
+    xml::Node header;
+    try {
+        header = envelope.GetChild("Header");
+    } catch (...) {
+        return; // No header, nothing to validate
+    }
+
+    const std::string& soapNs = (version_ == SoapVersion::Soap11) ? Soap11Namespace : Soap12Namespace;
+
+    for (const auto& hNode : header.GetChildren(nullptr)) {
+        std::string mustUnderstand = hNode.GetStringProp("mustUnderstand", soapNs);
+        if (mustUnderstand.empty()) {
+            // Check without namespace as some services might not prefix it correctly
+            try {
+                mustUnderstand = hNode.GetStringProp("mustUnderstand");
+            } catch (...) {}
+        }
+
+        bool mandatory = (mustUnderstand == "1" || mustUnderstand == "true");
+        if (mandatory) {
+            std::string name = hNode.GetName();
+            std::string ns = "";
+            if (hNode.GetXmlNode()->ns && hNode.GetXmlNode()->ns->href) {
+                ns = (const char*)hNode.GetXmlNode()->ns->href;
+            }
+
+            if (understoodHeaders_.count({name, ns}) == 0 && understoodHeaders_.count({name, ""}) == 0) {
+                SoapFault fault;
+                fault.Code = FaultCode::MustUnderstand;
+                fault.AddReason("Header not understood: " + name);
+                throw SoapFaultException(fault);
+            }
+        }
+    }
 }
 
 xml::Node SoapBase::CreateEnvelope(

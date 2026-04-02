@@ -15,6 +15,10 @@ using namespace ::soaplib;
 {{ service.name }}Server::{{ service.name }}Server()
 {
     {% if service.version == "1.1" %}SetSoapVersion(soaplib::SoapVersion::Soap11);{% endif %}
+    RegisterUnderstoodHeader("Action", "http://www.w3.org/2005/08/addressing");
+    RegisterUnderstoodHeader("To", "http://www.w3.org/2005/08/addressing");
+    RegisterUnderstoodHeader("MessageID", "http://www.w3.org/2005/08/addressing");
+    RegisterUnderstoodHeader("ReplyTo", "http://www.w3.org/2005/08/addressing");
 }
 
 {{ service.name }}Server::~{{ service.name }}Server()
@@ -26,6 +30,10 @@ std::unique_ptr<soaplib::xml::Document> {{ service.name }}Server::HandleRequest(
 {
     try {
         auto envelope = request.GetRootNode();
+        
+        // Validate headers before dispatching
+        ValidateHeaders(envelope);
+
         auto body = envelope.GetChild("Body");
         auto operationNode = body.GetChildren()[0];
         std::string operationName = operationNode.GetName();

@@ -2,6 +2,7 @@
 
 #include <string>
 #include <memory>
+#include <set>
 #include <soaplib/xml/xml.hpp>
 
 namespace soaplib {
@@ -25,7 +26,20 @@ public:
     void EnableHeader(
         bool enable);
 
+    /// Registers a header name as "understood".
+    /// @param[in] name The element name of the header
+    /// @param[in] ns Optional namespace URI
+    void RegisterUnderstoodHeader(
+        const std::string& name,
+        const std::string& ns = "");
+
 protected:
+    /// Validates that all 'mustUnderstand' headers are recognized.
+    /// @param[in] envelope The SOAP envelope node
+    /// @throws SoapFaultException if an unknown mandatory header is found.
+    void ValidateHeaders(
+        const xml::Node& envelope) const;
+
     /// Creates a SOAP Envelope element.
     /// @param[in] doc XML document
     /// @param[in] soapAction The SOAP Action name
@@ -66,6 +80,7 @@ protected:
 
     SoapVersion version_{SoapVersion::Soap12}; ///< Current SOAP version
     bool enableHeader_{true};       ///< Indicates if SOAP headers are enabled
+    std::set<std::pair<std::string, std::string>> understoodHeaders_; ///< Registry of understood headers (name, ns)
 };
 
 } // namespace soaplib

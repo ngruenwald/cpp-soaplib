@@ -16,6 +16,10 @@ using namespace ::soaplib;
     : soaplib::SoapService(serviceAddress, "")
 {
     {% if service.version == "1.1" %}SetSoapVersion(soaplib::SoapVersion::Soap11);{% endif %}
+    RegisterUnderstoodHeader("Action", "http://www.w3.org/2005/08/addressing");
+    RegisterUnderstoodHeader("To", "http://www.w3.org/2005/08/addressing");
+    RegisterUnderstoodHeader("MessageID", "http://www.w3.org/2005/08/addressing");
+    RegisterUnderstoodHeader("ReplyTo", "http://www.w3.org/2005/08/addressing");
 }
 
 {{ service.name }}::~{{ service.name }}()
