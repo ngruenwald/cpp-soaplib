@@ -148,25 +148,24 @@ int main(int argc, const char** argv)
 
     program.add_argument("--client")
         .help("enable generation of client proxy")
-        .default_value(false)
         .implicit_value(true);
 
     program.add_argument("--server")
         .help("enable generation of server stubs")
-        .default_value(false)
         .implicit_value(true);
 
     program.add_argument("--abort-on-unknown")
         .help("abort if an unknown type is detected")
-        .default_value(false)
         .implicit_value(true);
 
     program.add_argument("--soap-version")
-        .help("SOAP version (1.1, 1.2, auto)")
-        .default_value(std::string("auto"));
+        .help("SOAP version (1.1, 1.2, auto)");
 
     program.add_argument("--types-folder")
         .help("subfolder for types");
+
+    program.add_argument("--template-path")
+        .help("path to template files");
 
     program.add_argument("--cmake-namespace")
         .help("namespace for generated CMake targets");
@@ -202,29 +201,28 @@ int main(int argc, const char** argv)
     }
 
     // CLI overrides
-    if (program.present("--input")) config->wsdlFile = program.get<std::string>("--input");
-    if (program.present("--output")) config->cpp.outputPath = program.get<std::string>("--output");
-    if (program.present("--types-folder")) config->cpp.typesSubfolder = program.get<std::string>("--types-folder");
-    if (program.present("--cmake-namespace")) config->cpp.cmakeNamespace = program.get<std::string>("--cmake-namespace");
-    if (program.present("--cmake-export")) config->cpp.cmakeExport = program.get<std::string>("--cmake-export");
+    if (auto v = program.present("--input")) config->wsdlFile = *v;
+    if (auto v = program.present("--output")) config->cpp.outputPath = *v;
+    if (auto v = program.present("--types-folder")) config->cpp.typesSubfolder = *v;
+    if (auto v = program.present("--template-path")) config->cpp.templatePath = *v;
+    if (auto v = program.present("--cmake-namespace")) config->cpp.cmakeNamespace = *v;
+    if (auto v = program.present("--cmake-export")) config->cpp.cmakeExport = *v;
 
-    if (program.get<bool>("--client")) config->cpp.generateClient = true;
-    if (program.get<bool>("--server")) config->cpp.generateServer = true;
-    if (program.get<bool>("--abort-on-unknown")) config->cpp.abortOnUnknownType = true;
+    if (program.present("--client")) config->cpp.generateClient = true;
+    if (program.present("--server")) config->cpp.generateServer = true;
+    if (program.present("--abort-on-unknown")) config->cpp.abortOnUnknownType = true;
 
-    if (program.present("--soap-version")) {
-        auto v = program.get<std::string>("--soap-version");
-        if (v == "1.1") config->cpp.soapVersion = cppgen::Options::SoapVersion::Soap11;
-        else if (v == "1.2") config->cpp.soapVersion = cppgen::Options::SoapVersion::Soap12;
-        else if (v == "auto") config->cpp.soapVersion = cppgen::Options::SoapVersion::Auto;
+    if (auto v = program.present("--soap-version")) {
+        if (*v == "1.1") config->cpp.soapVersion = cppgen::Options::SoapVersion::Soap11;
+        else if (*v == "1.2") config->cpp.soapVersion = cppgen::Options::SoapVersion::Soap12;
+        else if (*v == "auto") config->cpp.soapVersion = cppgen::Options::SoapVersion::Auto;
     }
 
-    if (program.present("--namespace"))
+    if (auto v = program.present<std::vector<std::string>>("--namespace"))
     {
-        auto nss = program.get<std::vector<std::string>>("--namespace");
-        if (!nss.empty())
+        if (!v->empty())
         {
-            config->cpp.namespaces = nss;
+            config->cpp.namespaces = *v;
         }
     }
 

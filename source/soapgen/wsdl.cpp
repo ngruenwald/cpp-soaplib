@@ -595,7 +595,10 @@ std::vector<TypePtr> LoadSchemaTypes(
 {
     std::vector<TypePtr> types;
 
-    const auto targetNamespace = schemaNode.GetStringProp("targetNamespace");
+    std::string targetNamespace;
+    try {
+        targetNamespace = schemaNode.GetStringProp("targetNamespace");
+    } catch (...) {}
 
     // Handle xsd:import and xsd:include
     for (const auto& tag : {"import", "include"}) {

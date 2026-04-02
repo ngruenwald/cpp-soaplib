@@ -68,6 +68,7 @@ nlohmann::json JsonMapper::ToJson(const Type& t)
                 j["base"]["name"] = ResolveType(bt.base.value(), options_, true);
                 j["base"]["xmlns"] = ToJson(bt.base.value());
                 j["base"]["resolved_name"] = ResolveType(bt.base.value(), options_, true);
+                j["base"]["full_resolved_name"] = ResolveType(bt.base.value(), options_, false);
             }
             break;
         }
@@ -79,6 +80,7 @@ nlohmann::json JsonMapper::ToJson(const Type& t)
                 j["base"]["name"] = ResolveType(et.base.value(), options_, true);
                 j["base"]["xmlns"] = ToJson(et.base.value());
                 j["base"]["resolved_name"] = ResolveType(et.base.value(), options_, true);
+                j["base"]["full_resolved_name"] = ResolveType(et.base.value(), options_, false);
             }
             j["struct"]["parameters"] = nlohmann::json::array();
             for (const auto& p : et.parameters) {
