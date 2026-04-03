@@ -34,13 +34,17 @@ public:
     /// @param[in] enable If true, logging will be enabled.
     void EnableLogging(
         bool enable);
+/// Sets the HTTP request timeout.
+/// @param[in] timeoutSeconds The request timeout in seconds.
+void SetRequestTimeout(
+    int timeoutSeconds);
 
-    /// Sets the HTTP request timeout.
-    /// @param[in] timeoutSeconds The request timeout in seconds.
-    void SetRequestTimeout(
-        int timeoutSeconds);
+/// Callback for unsolicited responses (MEP).
+virtual void OnResponse(
+    std::unique_ptr<xml::Document> response);
 
 protected:
+...
     // Redundant namespace helpers (TODO: check if generated code uses these)
     std::string SoapNS() const { return "s"; }  ///< Default SOAP namespace prefix
     std::string TempNS() const { return "t"; }  ///< Default TempUri namespace prefix

@@ -15,6 +15,11 @@ SoapService::SoapService(
     : transport_(std::move(transport))
     , namespace_(serviceNamespace)
 {
+    if (transport_) {
+        transport_->SetResponseHandler([this](std::unique_ptr<xml::Document> response) {
+            OnResponse(std::move(response));
+        });
+    }
 }
 
 SoapService::SoapService(
@@ -24,6 +29,11 @@ SoapService::SoapService(
     , address_(serviceAddress)
     , namespace_(serviceNamespace)
 {
+    if (transport_) {
+        transport_->SetResponseHandler([this](std::unique_ptr<xml::Document> response) {
+            OnResponse(std::move(response));
+        });
+    }
 }
 
 SoapService::~SoapService()
@@ -41,6 +51,12 @@ void SoapService::SetRequestTimeout(
 {
     defaultTimeout_ = timeoutSeconds;
     if (transport_) transport_->SetReadTimeout(timeoutSeconds);
+}
+
+void SoapService::OnResponse(
+    std::unique_ptr<xml::Document> /*response*/)
+{
+    // Default implementation does nothing
 }
 
 std::unique_ptr<xml::Document> SoapService::Call(
@@ -62,6 +78,13 @@ std::unique_ptr<xml::Document> SoapService::Call(
         throw SoapException("No transport configured");
     }
     return transport_->Send(request, timeoutSeconds, soapAction, method);
+}
+
+xml::Node SoapService::CreateEnvelope(
+    xml::Document& doc,
+    const std::string& soapAction)
+{
+    return SoapBase::CreateEnvelope(doc, soapAction, address_);
 }
 
 } // namespace soaplib

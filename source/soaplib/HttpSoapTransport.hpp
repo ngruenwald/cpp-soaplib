@@ -21,6 +21,9 @@ public:
     /// Destructs the instance.
     ~HttpSoapTransport() override;
 
+    /// Sets a handler for unsolicited responses (no-op for HTTP).
+    void SetResponseHandler(ResponseHandler /*handler*/) override {}
+
     /// Enables logging of HTTP requests and responses.
     void EnableLogging(
         bool enable) override;

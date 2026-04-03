@@ -21,6 +21,9 @@ public:
     /// Destructs the instance.
     ~WebSocketSoapTransport() override;
 
+    /// Sets a handler for unsolicited responses.
+    void SetResponseHandler(ResponseHandler handler) override;
+
     /// Enables logging of messages.
     void EnableLogging(
         bool enable) override;
@@ -42,11 +45,25 @@ public:
 private:
     bool connect();
 
+#include <condition_variable>
+#include <mutex>
+#include <thread>
+#include <atomic>
+...
 private:
     std::string address_;
     int timeout_;
     bool logging_ = false;
     std::unique_ptr<httplib::ws::WebSocketClient> ws_client_;
+
+    ResponseHandler responseHandler_;
+    std::thread readThread_;
+    std::atomic<bool> running_{false};
+    
+    // For synchronous Send synchronization
+    std::mutex mtx_;
+    std::condition_variable cv_;
+    std::unique_ptr<xml::Document> currentResponse_;
 };
 
 } // namespace soaplib

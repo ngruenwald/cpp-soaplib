@@ -15,9 +15,7 @@ WebSocketSoapTransport::WebSocketSoapTransport(
 
 WebSocketSoapTransport::~WebSocketSoapTransport()
 {
-    if (ws_client_) {
-        ws_client_->close();
-    }
+    Close();
 }
 
 void WebSocketSoapTransport::EnableLogging(bool enable)
@@ -28,9 +26,11 @@ void WebSocketSoapTransport::EnableLogging(bool enable)
 void WebSocketSoapTransport::SetReadTimeout(int timeoutSeconds)
 {
     timeout_ = timeoutSeconds;
-    if (ws_client_) {
-        ws_client_->set_read_timeout(timeoutSeconds, 0);
-    }
+}
+
+void WebSocketSoapTransport::SetResponseHandler(ResponseHandler handler)
+{
+    responseHandler_ = handler;
 }
 
 bool WebSocketSoapTransport::connect()
@@ -38,6 +38,9 @@ bool WebSocketSoapTransport::connect()
     if (ws_client_ && ws_client_->is_valid() && ws_client_->is_open()) {
         return true;
     }
+
+    running_ = false;
+    if (readThread_.joinable()) readThread_.join();
 
     ws_client_ = std::make_unique<httplib::ws::WebSocketClient>(address_);
     ws_client_->set_read_timeout(timeout_, 0);
@@ -47,17 +50,50 @@ bool WebSocketSoapTransport::connect()
         return false;
     }
 
+    running_ = true;
+    readThread_ = std::thread([this]() {
+        std::string msg;
+        while (running_ && ws_client_ && ws_client_->is_open()) {
+            auto res = ws_client_->read(msg);
+            if (res != httplib::ws::ReadResult::Fail) {
+                if (logging_) {
+                    std::cout << "WS Async Recv: " << msg << std::endl;
+                }
+                
+                try {
+                    auto doc = xml::Document::ParseMemory(msg.c_str(), msg.length());
+                    
+                    std::lock_guard<std::mutex> lock(mtx_);
+                    if (!currentResponse_) {
+                        currentResponse_ = std::move(doc);
+                        cv_.notify_one();
+                    } else if (responseHandler_) {
+                        responseHandler_(std::move(doc));
+                    }
+                } catch (...) {}
+            } else {
+                break;
+            }
+        }
+        running_ = false;
+    });
+
     return true;
 }
 
 std::unique_ptr<xml::Document> WebSocketSoapTransport::Send(
     const xml::Document& request,
-    int /*timeoutSeconds*/,
+    int timeoutSeconds,
     const std::string& /*soapAction*/,
     HttpMethod /*method*/)
 {
     if (!connect()) {
         throw SoapException("WebSocket connection failed to " + address_);
+    }
+
+    {
+        std::lock_guard<std::mutex> lock(mtx_);
+        currentResponse_.reset();
     }
 
     std::string content = request.Serialize("UTF-8", false);
@@ -66,48 +102,29 @@ std::unique_ptr<xml::Document> WebSocketSoapTransport::Send(
     }
 
     if (!ws_client_->send(content)) {
-        ws_client_.reset();
+        Close();
         throw SoapException("WebSocket send failed");
     }
 
-    std::string response_msg;
-    auto res = ws_client_->read(response_msg);
-
-    if (res == httplib::ws::ReadResult::Fail) {
-        ws_client_.reset();
-        throw SoapException("WebSocket read failed or timed out");
+    std::unique_lock<std::mutex> lock(mtx_);
+    if (cv_.wait_for(lock, std::chrono::seconds(timeoutSeconds), [this]{ return (bool)currentResponse_ || !running_; })) {
+        if (!currentResponse_) throw SoapException("WebSocket connection closed while waiting for response");
+        return std::move(currentResponse_);
     }
 
-    if (logging_) {
-        std::cout << "WS Recv: " << response_msg << std::endl;
-    }
-
-    auto doc = xml::Document::ParseMemory(response_msg.c_str(), response_msg.length());
-
-    // Check for SOAP Fault
-    try {
-        auto root = doc->GetRootNode();
-        auto body = root.GetChild("Body");
-        auto faults = body.GetChildren("Fault");
-        if (!faults.empty()) {
-            SoapFault fault;
-            SoapFaultFromXml(faults[0], fault);
-            throw SoapFaultException(fault);
-        }
-    } catch (const SoapFaultException&) {
-        throw;
-    } catch (...) {
-    }
-
-    return doc;
+    throw SoapException("WebSocket read timed out");
 }
 
 void WebSocketSoapTransport::Close()
 {
+    running_ = false;
     if (ws_client_) {
         ws_client_->close();
-        ws_client_.reset();
     }
+    if (readThread_.joinable()) {
+        readThread_.join();
+    }
+    ws_client_.reset();
 }
 
 } // namespace soaplib

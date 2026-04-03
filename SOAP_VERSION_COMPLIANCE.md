@@ -33,7 +33,7 @@ Support both versions by making the core library version-agnostic and allowing t
 - [x] Support HTTP 400/500 status codes correctly as potentially containing valid SOAP Faults.
 
 ### Priority 5: Advanced Features
-- [ ] Hierarchical Subcodes (SOAP 1.2).
+- [x] Hierarchical Subcodes (SOAP 1.2).
 - [ ] Response-Only MEP.
 - [ ] Section 5 Encoding support.
 

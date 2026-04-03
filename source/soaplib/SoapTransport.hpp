@@ -11,10 +11,18 @@ enum class HttpMethod {
     Get
 };
 
+#include <functional>
+...
 /// Interface for SOAP transport layers.
 class SoapTransport {
 public:
     virtual ~SoapTransport() = default;
+
+    /// Callback type for unsolicited responses (MEP).
+    using ResponseHandler = std::function<void(std::unique_ptr<xml::Document>)>;
+
+    /// Sets a handler for unsolicited responses.
+    virtual void SetResponseHandler(ResponseHandler handler) = 0;
 
     /// Sends a SOAP request and returns the response.
     /// @param[in] request The request XML document (optional for GET)
