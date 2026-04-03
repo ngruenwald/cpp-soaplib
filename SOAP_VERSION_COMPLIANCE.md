@@ -24,7 +24,7 @@ Support both versions by making the core library version-agnostic and allowing t
 ### Priority 3: Specification Gaps
 - [x] Implement `mustUnderstand` attribute validation for both versions.
 - [x] Add support for `role` (1.2) / `actor` (1.1) attributes.
-- [ ] Add support for `relay` attribute (1.2).
+- [x] Add support for `relay` attribute (1.2).
 - [x] Implement support for HTTP `GET` (SOAP 1.2 Web Method Feature).
 
 ### Priority 4: Binding & Transport
