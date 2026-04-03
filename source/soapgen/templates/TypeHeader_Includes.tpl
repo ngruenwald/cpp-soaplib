@@ -1,4 +1,4 @@
-{% if default(base.name, "soaplib::SoapBaseType") != "soaplib::SoapBaseType" %}
+{% if default(base.name, "soaplib::SoapBaseType") != "soaplib::SoapBaseType" and not base.isNativeType %}
 #include "{{ base.name }}.hpp"
 {% endif %}
 {% if kind == "struct" %}
