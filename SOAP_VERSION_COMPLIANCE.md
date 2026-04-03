@@ -25,7 +25,7 @@ Support both versions by making the core library version-agnostic and allowing t
 - [x] Implement `mustUnderstand` attribute validation for both versions.
 - [x] Add support for `role` (1.2) / `actor` (1.1) attributes.
 - [ ] Add support for `relay` attribute (1.2).
-- [ ] Implement support for HTTP `GET` (SOAP 1.2 Web Method Feature).
+- [x] Implement support for HTTP `GET` (SOAP 1.2 Web Method Feature).
 
 ### Priority 4: Binding & Transport
 - [x] Update `HttpSoapTransport` to handle HTTP 202 (Accepted) for one-way messages.

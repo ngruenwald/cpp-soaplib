@@ -11,17 +11,23 @@ HttpSoapServer::HttpSoapServer(
     : service_(service)
     , path_(path)
 {
-    svr_.Post(path_, [this](const httplib::Request& req, httplib::Response& res) {
+    auto handler = [this](const httplib::Request& req, httplib::Response& res) {
         try
         {
-            auto doc = xml::Document::ParseMemory(req.body.c_str(), req.body.size());
+            std::unique_ptr<xml::Document> doc;
+            if (req.method == "POST") {
+                doc = xml::Document::ParseMemory(req.body.c_str(), req.body.size());
+            } else {
+                // For GET, we create an empty document or one based on query params
+                // For now, just an empty one to trigger the dispatcher
+                doc = std::make_unique<xml::Document>();
+                doc->CreateRootNode("Envelope").AddChild("Body");
+            }
+
             auto responseDoc = service_.HandleRequest(*doc);
             
             if (responseDoc)
             {
-                // SOAP 1.2 specifies that Faults should be returned with a 500 status code
-                // by the HTTP binding, BUT our parser needs to see it. 
-                // Let's check if the response is a Fault.
                 bool isFault = false;
                 try {
                     isFault = !responseDoc->GetRootNode().GetChild("Body").GetChildren("Fault").empty();
@@ -48,7 +54,10 @@ HttpSoapServer::HttpSoapServer(
             res.status = 500;
             res.set_content("Internal Server Error: Unknown exception", "text/plain");
         }
-    });
+    };
+
+    svr_.Post(path_, handler);
+    svr_.Get(path_, handler);
 }
 
 HttpSoapServer::~HttpSoapServer()

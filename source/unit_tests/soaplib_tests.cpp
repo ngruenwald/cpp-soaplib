@@ -17,9 +17,14 @@
 
 namespace soaplib {
 
+struct ThreadGuard {
+    std::thread& t;
+    ~ThreadGuard() { if (t.joinable()) t.join(); }
+};
+
 class MockSoapTransport : public SoapTransport {
 public:
-    std::unique_ptr<xml::Document> Send(const xml::Document& /*request*/, int /*timeoutSeconds*/, const std::string& /*soapAction*/) override {
+    std::unique_ptr<xml::Document> Send(const xml::Document& /*request*/, int /*timeoutSeconds*/, const std::string& /*soapAction*/, HttpMethod /*method*/) override {
         auto doc = std::make_unique<xml::Document>();
         auto body = doc->CreateRootNode("Envelope").AddChild("Body");
         body.AddChild("TestResponse");
@@ -35,7 +40,7 @@ public:
         : SoapService(std::move(transport), "http://tempuri.org/") {}
     
     std::unique_ptr<xml::Document> TestCall(const xml::Document& request) {
-        return Call(request, "TestAction");
+        return Call(request, "TestAction", HttpMethod::Post);
     }
 };
 
@@ -124,6 +129,7 @@ TEST_CASE("HttpSoapServer: Basic Request", "[soaplib][transport][http]") {
     std::thread serverThread([&]() {
         server.Listen("localhost", 8080);
     });
+    ThreadGuard guard{serverThread};
 
     int retry = 0;
     while (!server.IsRunning() && retry < 100) {
@@ -149,7 +155,6 @@ TEST_CASE("HttpSoapServer: Basic Request", "[soaplib][transport][http]") {
     REQUIRE(res->body.find("TestResponse") != std::string::npos);
 
     server.Stop();
-    if (serverThread.joinable()) serverThread.join();
 }
 
 TEST_CASE("SoapService: Custom Transport", "[soaplib][client][transport]") {
@@ -172,6 +177,7 @@ TEST_CASE("WebSocketSoapServer/Transport: Basic Request", "[soaplib][transport][
     std::thread serverThread([&]() {
         server.Listen("localhost", 8081);
     });
+    ThreadGuard guard{serverThread};
 
     int retry = 0;
     while (!server.IsRunning() && retry < 100) {
@@ -193,7 +199,6 @@ TEST_CASE("WebSocketSoapServer/Transport: Basic Request", "[soaplib][transport][
 
     transport.Close();
     server.Stop();
-    if (serverThread.joinable()) serverThread.join();
 }
 
 TEST_CASE("SoapFault: Serialization", "[soaplib][fault]") {
@@ -235,6 +240,7 @@ TEST_CASE("SOAP Fault: End-to-End", "[soaplib][fault][http]") {
     std::thread serverThread([&]() {
         server.Listen("localhost", 8082);
     });
+    ThreadGuard guard{serverThread};
 
     // Wait for server
     int retry = 0;
@@ -258,7 +264,6 @@ TEST_CASE("SOAP Fault: End-to-End", "[soaplib][fault][http]") {
     }
 
     server.Stop();
-    if (serverThread.joinable()) serverThread.join();
 }
 
 TEST_CASE("SoapFault: SOAP 1.1 Serialization", "[soaplib][fault]") {
@@ -332,6 +337,32 @@ TEST_CASE("SoapBase: Role/Actor Validation", "[soaplib][header]") {
 
     // Should FAIL because MyHeader is not registered
     REQUIRE_THROWS_AS(base.ValidateHeaders(envelope), SoapFaultException);
+}
+
+TEST_CASE("HttpSoapTransport: GET Request", "[soaplib][transport][http]") {
+    MockSoapServer soapLogic;
+    HttpSoapServer server(soapLogic, "/get-soap");
+    
+    std::thread serverThread([&]() {
+        server.Listen("localhost", 8083);
+    });
+    ThreadGuard guard{serverThread};
+
+    int retry = 0;
+    while (!server.IsRunning() && retry < 100) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        retry++;
+    }
+
+    HttpSoapTransport transport("http://localhost:8083/get-soap");
+    
+    xml::Document request; // Empty for GET
+    auto response = transport.Send(request, 5, "", HttpMethod::Get);
+    
+    REQUIRE(response != nullptr);
+    REQUIRE(std::string(response->GetRootNode().GetName()) == "Envelope");
+
+    server.Stop();
 }
 
 } // namespace soaplib

@@ -52,20 +52,24 @@ protected:
     /// Executes a method call using the defaut request timeout.
     /// @param[in] request Request data as XML document
     /// @param[in] soapAction SOAP action string
+    /// @param[in] method HTTP method to use
     /// @returns Response data as XML document
     std::unique_ptr<xml::Document> Call(
         const xml::Document& request,
-        const std::string& soapAction);
+        const std::string& soapAction,
+        HttpMethod method = HttpMethod::Post);
 
     /// Executes a method call using a custom timeout.
     /// @param[in] request Request data as XML document
     /// @param[in] timeoutSeconds Request timeout in seconds
     /// @param[in] soapAction SOAP action string
+    /// @param[in] method HTTP method to use
     /// @returns Response data as XML document
     std::unique_ptr<xml::Document> Call(
         const xml::Document& request,
         int timeoutSeconds,
-        const std::string& soapAction);
+        const std::string& soapAction,
+        HttpMethod method = HttpMethod::Post);
 
 protected:
     std::unique_ptr<SoapTransport> transport_; ///< SOAP transport instance

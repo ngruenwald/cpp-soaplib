@@ -29,7 +29,7 @@ Calculator::~Calculator()
     auto body = CreateEnvelope(request, "");
     AddToXml(input, request, body, true);
 
-    auto response = Call(request, "");
+    auto response = Call(request, "", soaplib::HttpMethod::Post);
     auto envelope = response->GetRootNode();
     auto operation = envelope.GetChild("Body").GetChild("AddResponse");
 
@@ -43,7 +43,7 @@ Calculator::~Calculator()
     auto body = CreateEnvelope(request, "");
     SubtractToXml(input, request, body, true);
 
-    auto response = Call(request, "");
+    auto response = Call(request, "", soaplib::HttpMethod::Post);
     auto envelope = response->GetRootNode();
     auto operation = envelope.GetChild("Body").GetChild("SubtractResponse");
 
@@ -57,7 +57,7 @@ Calculator::~Calculator()
     auto body = CreateEnvelope(request, "");
     MultiplyToXml(input, request, body, true);
 
-    auto response = Call(request, "");
+    auto response = Call(request, "", soaplib::HttpMethod::Post);
     auto envelope = response->GetRootNode();
     auto operation = envelope.GetChild("Body").GetChild("MultiplyResponse");
 
@@ -71,7 +71,7 @@ Calculator::~Calculator()
     auto body = CreateEnvelope(request, "");
     DivideToXml(input, request, body, true);
 
-    auto response = Call(request, "");
+    auto response = Call(request, "", soaplib::HttpMethod::Post);
     auto envelope = response->GetRootNode();
     auto operation = envelope.GetChild("Body").GetChild("DivideResponse");
 

@@ -29,7 +29,7 @@ CountryInfoService::~CountryInfoService()
     auto body = CreateEnvelope(request, "");
     ListOfContinentsByNameToXml(input, request, body, true);
 
-    auto response = Call(request, "");
+    auto response = Call(request, "", soaplib::HttpMethod::Post);
     auto envelope = response->GetRootNode();
     auto operation = envelope.GetChild("Body").GetChild("ListOfContinentsByNameResponse");
 
@@ -43,7 +43,7 @@ CountryInfoService::~CountryInfoService()
     auto body = CreateEnvelope(request, "");
     ListOfContinentsByCodeToXml(input, request, body, true);
 
-    auto response = Call(request, "");
+    auto response = Call(request, "", soaplib::HttpMethod::Post);
     auto envelope = response->GetRootNode();
     auto operation = envelope.GetChild("Body").GetChild("ListOfContinentsByCodeResponse");
 
@@ -57,7 +57,7 @@ CountryInfoService::~CountryInfoService()
     auto body = CreateEnvelope(request, "");
     ListOfCurrenciesByNameToXml(input, request, body, true);
 
-    auto response = Call(request, "");
+    auto response = Call(request, "", soaplib::HttpMethod::Post);
     auto envelope = response->GetRootNode();
     auto operation = envelope.GetChild("Body").GetChild("ListOfCurrenciesByNameResponse");
 
@@ -71,7 +71,7 @@ CountryInfoService::~CountryInfoService()
     auto body = CreateEnvelope(request, "");
     ListOfCurrenciesByCodeToXml(input, request, body, true);
 
-    auto response = Call(request, "");
+    auto response = Call(request, "", soaplib::HttpMethod::Post);
     auto envelope = response->GetRootNode();
     auto operation = envelope.GetChild("Body").GetChild("ListOfCurrenciesByCodeResponse");
 
@@ -85,7 +85,7 @@ CountryInfoService::~CountryInfoService()
     auto body = CreateEnvelope(request, "");
     CurrencyNameToXml(input, request, body, true);
 
-    auto response = Call(request, "");
+    auto response = Call(request, "", soaplib::HttpMethod::Post);
     auto envelope = response->GetRootNode();
     auto operation = envelope.GetChild("Body").GetChild("CurrencyNameResponse");
 
@@ -99,7 +99,7 @@ CountryInfoService::~CountryInfoService()
     auto body = CreateEnvelope(request, "");
     ListOfCountryNamesByCodeToXml(input, request, body, true);
 
-    auto response = Call(request, "");
+    auto response = Call(request, "", soaplib::HttpMethod::Post);
     auto envelope = response->GetRootNode();
     auto operation = envelope.GetChild("Body").GetChild("ListOfCountryNamesByCodeResponse");
 
@@ -113,7 +113,7 @@ CountryInfoService::~CountryInfoService()
     auto body = CreateEnvelope(request, "");
     ListOfCountryNamesByNameToXml(input, request, body, true);
 
-    auto response = Call(request, "");
+    auto response = Call(request, "", soaplib::HttpMethod::Post);
     auto envelope = response->GetRootNode();
     auto operation = envelope.GetChild("Body").GetChild("ListOfCountryNamesByNameResponse");
 
@@ -127,7 +127,7 @@ CountryInfoService::~CountryInfoService()
     auto body = CreateEnvelope(request, "");
     ListOfCountryNamesGroupedByContinentToXml(input, request, body, true);
 
-    auto response = Call(request, "");
+    auto response = Call(request, "", soaplib::HttpMethod::Post);
     auto envelope = response->GetRootNode();
     auto operation = envelope.GetChild("Body").GetChild("ListOfCountryNamesGroupedByContinentResponse");
 
@@ -141,7 +141,7 @@ CountryInfoService::~CountryInfoService()
     auto body = CreateEnvelope(request, "");
     CountryNameToXml(input, request, body, true);
 
-    auto response = Call(request, "");
+    auto response = Call(request, "", soaplib::HttpMethod::Post);
     auto envelope = response->GetRootNode();
     auto operation = envelope.GetChild("Body").GetChild("CountryNameResponse");
 
@@ -155,7 +155,7 @@ CountryInfoService::~CountryInfoService()
     auto body = CreateEnvelope(request, "");
     CountryISOCodeToXml(input, request, body, true);
 
-    auto response = Call(request, "");
+    auto response = Call(request, "", soaplib::HttpMethod::Post);
     auto envelope = response->GetRootNode();
     auto operation = envelope.GetChild("Body").GetChild("CountryISOCodeResponse");
 
@@ -169,7 +169,7 @@ CountryInfoService::~CountryInfoService()
     auto body = CreateEnvelope(request, "");
     CapitalCityToXml(input, request, body, true);
 
-    auto response = Call(request, "");
+    auto response = Call(request, "", soaplib::HttpMethod::Post);
     auto envelope = response->GetRootNode();
     auto operation = envelope.GetChild("Body").GetChild("CapitalCityResponse");
 
@@ -183,7 +183,7 @@ CountryInfoService::~CountryInfoService()
     auto body = CreateEnvelope(request, "");
     CountryCurrencyToXml(input, request, body, true);
 
-    auto response = Call(request, "");
+    auto response = Call(request, "", soaplib::HttpMethod::Post);
     auto envelope = response->GetRootNode();
     auto operation = envelope.GetChild("Body").GetChild("CountryCurrencyResponse");
 
@@ -197,7 +197,7 @@ CountryInfoService::~CountryInfoService()
     auto body = CreateEnvelope(request, "");
     CountryFlagToXml(input, request, body, true);
 
-    auto response = Call(request, "");
+    auto response = Call(request, "", soaplib::HttpMethod::Post);
     auto envelope = response->GetRootNode();
     auto operation = envelope.GetChild("Body").GetChild("CountryFlagResponse");
 
@@ -211,7 +211,7 @@ CountryInfoService::~CountryInfoService()
     auto body = CreateEnvelope(request, "");
     CountryIntPhoneCodeToXml(input, request, body, true);
 
-    auto response = Call(request, "");
+    auto response = Call(request, "", soaplib::HttpMethod::Post);
     auto envelope = response->GetRootNode();
     auto operation = envelope.GetChild("Body").GetChild("CountryIntPhoneCodeResponse");
 
@@ -225,7 +225,7 @@ CountryInfoService::~CountryInfoService()
     auto body = CreateEnvelope(request, "");
     FullCountryInfoToXml(input, request, body, true);
 
-    auto response = Call(request, "");
+    auto response = Call(request, "", soaplib::HttpMethod::Post);
     auto envelope = response->GetRootNode();
     auto operation = envelope.GetChild("Body").GetChild("FullCountryInfoResponse");
 
@@ -239,7 +239,7 @@ CountryInfoService::~CountryInfoService()
     auto body = CreateEnvelope(request, "");
     FullCountryInfoAllCountriesToXml(input, request, body, true);
 
-    auto response = Call(request, "");
+    auto response = Call(request, "", soaplib::HttpMethod::Post);
     auto envelope = response->GetRootNode();
     auto operation = envelope.GetChild("Body").GetChild("FullCountryInfoAllCountriesResponse");
 
@@ -253,7 +253,7 @@ CountryInfoService::~CountryInfoService()
     auto body = CreateEnvelope(request, "");
     CountriesUsingCurrencyToXml(input, request, body, true);
 
-    auto response = Call(request, "");
+    auto response = Call(request, "", soaplib::HttpMethod::Post);
     auto envelope = response->GetRootNode();
     auto operation = envelope.GetChild("Body").GetChild("CountriesUsingCurrencyResponse");
 
@@ -267,7 +267,7 @@ CountryInfoService::~CountryInfoService()
     auto body = CreateEnvelope(request, "");
     ListOfLanguagesByNameToXml(input, request, body, true);
 
-    auto response = Call(request, "");
+    auto response = Call(request, "", soaplib::HttpMethod::Post);
     auto envelope = response->GetRootNode();
     auto operation = envelope.GetChild("Body").GetChild("ListOfLanguagesByNameResponse");
 
@@ -281,7 +281,7 @@ CountryInfoService::~CountryInfoService()
     auto body = CreateEnvelope(request, "");
     ListOfLanguagesByCodeToXml(input, request, body, true);
 
-    auto response = Call(request, "");
+    auto response = Call(request, "", soaplib::HttpMethod::Post);
     auto envelope = response->GetRootNode();
     auto operation = envelope.GetChild("Body").GetChild("ListOfLanguagesByCodeResponse");
 
@@ -295,7 +295,7 @@ CountryInfoService::~CountryInfoService()
     auto body = CreateEnvelope(request, "");
     LanguageNameToXml(input, request, body, true);
 
-    auto response = Call(request, "");
+    auto response = Call(request, "", soaplib::HttpMethod::Post);
     auto envelope = response->GetRootNode();
     auto operation = envelope.GetChild("Body").GetChild("LanguageNameResponse");
 
@@ -309,7 +309,7 @@ CountryInfoService::~CountryInfoService()
     auto body = CreateEnvelope(request, "");
     LanguageISOCodeToXml(input, request, body, true);
 
-    auto response = Call(request, "");
+    auto response = Call(request, "", soaplib::HttpMethod::Post);
     auto envelope = response->GetRootNode();
     auto operation = envelope.GetChild("Body").GetChild("LanguageISOCodeResponse");
 

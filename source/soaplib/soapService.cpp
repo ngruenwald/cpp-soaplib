@@ -45,21 +45,23 @@ void SoapService::SetRequestTimeout(
 
 std::unique_ptr<xml::Document> SoapService::Call(
     const xml::Document& request,
-    const std::string& soapAction)
+    const std::string& soapAction,
+    HttpMethod method)
 {
-    return Call(request, defaultTimeout_, soapAction);
+    return Call(request, defaultTimeout_, soapAction, method);
 }
 
 std::unique_ptr<xml::Document> SoapService::Call(
     const xml::Document& request,
     int timeoutSeconds,
-    const std::string& soapAction)
+    const std::string& soapAction,
+    HttpMethod method)
 {
     if (!transport_)
     {
         throw SoapException("No transport configured");
     }
-    return transport_->Send(request, timeoutSeconds, soapAction);
+    return transport_->Send(request, timeoutSeconds, soapAction, method);
 }
 
 } // namespace soaplib

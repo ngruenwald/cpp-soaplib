@@ -33,7 +33,8 @@ void HttpSoapTransport::SetReadTimeout(
 std::unique_ptr<xml::Document> HttpSoapTransport::Send(
     const xml::Document& request,
     int timeoutSeconds,
-    const std::string& soapAction)
+    const std::string& soapAction,
+    HttpMethod method)
 {
     constexpr bool prettyXml = false;
 
@@ -54,16 +55,9 @@ std::unique_ptr<xml::Document> HttpSoapTransport::Send(
         contentType = "text/xml; charset=utf-8";
     } else {
         contentType = "application/soap+xml; charset=utf-8";
-        if (!soapAction.empty()) {
+        if (!soapAction.empty() && method == HttpMethod::Post) {
             contentType += "; action=\"" + soapAction + "\"";
         }
-    }
-
-    const std::string content = request.Serialize("UTF-8", prettyXml);
-
-    if (logging_)
-    {
-        std::cout << content << std::endl << std::flush;
     }
 
     httplib::Client cli(host_.c_str(), port_);
@@ -74,19 +68,34 @@ std::unique_ptr<xml::Document> HttpSoapTransport::Send(
 
     httplib::Headers headers;
     headers.emplace("Content-Type", contentType);
+    headers.emplace("Accept", "application/soap+xml, text/xml");
     
-    if (version == SoapVersion::Soap11 && !soapAction.empty()) {
+    if (version == SoapVersion::Soap11 && !soapAction.empty() && method == HttpMethod::Post) {
         headers.emplace("SOAPAction", "\"" + soapAction + "\"");
     }
 
-    auto response = cli.Post(path_.c_str(), headers, content, contentType.c_str());
+    httplib::Result response;
+    if (method == HttpMethod::Post) {
+        const std::string content = request.Serialize("UTF-8", prettyXml);
+        if (logging_)
+        {
+            std::cout << "POST " << path_ << "\n" << content << std::endl << std::flush;
+        }
+        response = cli.Post(path_.c_str(), headers, content, contentType.c_str());
+    } else {
+        if (logging_)
+        {
+            std::cout << "GET " << path_ << std::endl << std::flush;
+        }
+        response = cli.Get(path_.c_str(), headers);
+    }
 
     if (!response)
     {
         throw SoapException("request failed");
     }
 
-    if (logging_)
+    if (logging_ && method == HttpMethod::Post)
     {
         std::cout << response->body << std::endl << std::flush;
     }

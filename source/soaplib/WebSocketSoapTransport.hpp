@@ -33,7 +33,8 @@ public:
     std::unique_ptr<xml::Document> Send(
         const xml::Document& request,
         int timeoutSeconds,
-        const std::string& soapAction = "") override;
+        const std::string& soapAction = "",
+        HttpMethod method = HttpMethod::Post) override;
 
     /// Closes the connection.
     void Close();
