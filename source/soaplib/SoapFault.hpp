@@ -17,6 +17,14 @@ enum class FaultCode {
     Receiver
 };
 
+/// Represents a SOAP 1.2 Subcode
+struct SoapSubcode {
+    std::string Value; // QName as string
+    std::string Prefix;
+    std::string Namespace;
+    std::shared_ptr<SoapSubcode> Subcode; // Recursive for hierarchical subcodes
+};
+
 /// Represents a SOAP Fault Reason text
 struct FaultReason {
     std::string Text;
@@ -26,12 +34,13 @@ struct FaultReason {
 /// Represents a SOAP Fault
 struct SoapFault {
     FaultCode Code = FaultCode::Receiver;
+    std::shared_ptr<SoapSubcode> Subcode; // SOAP 1.2 only
+    
     std::vector<FaultReason> Reasons;
     std::string Node; // URI
     std::string Role; // URI
     
     // For now, we store detail as a string or raw XML. 
-    // In the future, we could use a list of xml::Nodes.
     std::string Detail; 
 
     /// Helper to add a reason

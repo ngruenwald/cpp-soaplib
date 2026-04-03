@@ -234,6 +234,38 @@ TEST_CASE("SoapFault: Serialization", "[soaplib][fault]") {
     REQUIRE(fault2.Detail.find("Some detail") != std::string::npos);
 }
 
+TEST_CASE("SoapFault: Hierarchical Subcodes (1.2)", "[soaplib][fault]") {
+    SoapFault fault;
+    fault.Code = FaultCode::Sender;
+    fault.Subcode = std::make_shared<SoapSubcode>();
+    fault.Subcode->Value = "MessageTimeout";
+    fault.Subcode->Subcode = std::make_shared<SoapSubcode>();
+    fault.Subcode->Subcode->Value = "InternalTimeout";
+
+    xml::Document doc;
+    TestSoapBase base;
+    auto body = base.CreateEnvelope(doc, "");
+    auto faultNode = base.AddChild(doc, body, "Fault", "s");
+    
+    SoapFaultToXml(doc, faultNode, fault);
+
+    auto codeNode = faultNode.GetChild("Code");
+    auto sub1 = codeNode.GetChild("Subcode");
+    REQUIRE(sub1.GetChild("Value").GetStringVal() == "MessageTimeout");
+    
+    auto sub2 = sub1.GetChild("Subcode");
+    REQUIRE(sub2.GetChild("Value").GetStringVal() == "InternalTimeout");
+
+    // Round-trip
+    SoapFault fault2;
+    SoapFaultFromXml(faultNode, fault2);
+    REQUIRE(fault2.Code == FaultCode::Sender);
+    REQUIRE(fault2.Subcode != nullptr);
+    REQUIRE(fault2.Subcode->Value == "MessageTimeout");
+    REQUIRE(fault2.Subcode->Subcode != nullptr);
+    REQUIRE(fault2.Subcode->Subcode->Value == "InternalTimeout");
+}
+
 TEST_CASE("SOAP Fault: End-to-End", "[soaplib][fault][http]") {
     FailingMockSoapServer soapLogic;
     HttpSoapServer server(soapLogic, "/faulty");

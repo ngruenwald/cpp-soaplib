@@ -13,6 +13,25 @@ std::string SoapFault::GetCodeString() const {
     }
 }
 
+static void SubcodeToXml(xml::Node& parent, const std::shared_ptr<SoapSubcode>& sub) {
+    if (!sub) return;
+    auto subNode = parent.AddChild("Subcode");
+    auto valNode = subNode.AddChild("Value");
+    
+    std::string prefix = sub->Prefix.empty() ? "m" : sub->Prefix;
+    if (!sub->Namespace.empty()) {
+        // We need a way to add namespace to the document/node properly if not there
+        // For now simple prefix:value
+        valNode.SetVal(prefix + ":" + sub->Value);
+    } else {
+        valNode.SetVal(sub->Value);
+    }
+
+    if (sub->Subcode) {
+        SubcodeToXml(subNode, sub->Subcode);
+    }
+}
+
 void SoapFaultToXml(
     xml::Document& /*doc*/,
     xml::Node& faultNode,
@@ -23,6 +42,10 @@ void SoapFaultToXml(
         auto code = faultNode.AddChild("Code");
         auto value = code.AddChild("Value");
         value.SetVal("s:" + fault.GetCodeString());
+
+        if (fault.Subcode) {
+            SubcodeToXml(code, fault.Subcode);
+        }
 
         auto reason = faultNode.AddChild("Reason");
         for (const auto& r : fault.Reasons) {
@@ -69,11 +92,38 @@ FaultCode FaultCodeFromString(const std::string& code) {
     return FaultCode::Receiver;
 }
 
+static std::shared_ptr<SoapSubcode> SubcodeFromXml(const xml::Node& subNode) {
+    auto sub = std::make_shared<SoapSubcode>();
+    try {
+        auto valNode = subNode.GetChild("Value");
+        std::string val = valNode.GetStringVal();
+        auto pos = val.find(':');
+        if (pos != std::string::npos) {
+            sub->Prefix = val.substr(0, pos);
+            sub->Value = val.substr(pos + 1);
+        } else {
+            sub->Value = val;
+        }
+    } catch (...) {}
+
+    try {
+        auto nestedSub = subNode.GetChild("Subcode");
+        sub->Subcode = SubcodeFromXml(nestedSub);
+    } catch (...) {}
+
+    return sub;
+}
+
 void SoapFaultFromXml(const xml::Node& faultNode, SoapFault& fault, SoapVersion version) {
     if (version == SoapVersion::Soap12) {
         try {
             auto codeNode = faultNode.GetChild("Code");
             fault.Code = FaultCodeFromString(codeNode.GetChild("Value").GetStringVal());
+            
+            try {
+                auto subNode = codeNode.GetChild("Subcode");
+                fault.Subcode = SubcodeFromXml(subNode);
+            } catch (...) {}
         } catch (...) {}
 
         try {
@@ -83,7 +133,8 @@ void SoapFaultFromXml(const xml::Node& faultNode, SoapFault& fault, SoapVersion 
                 r.Text = textNode.GetStringVal();
                 XML_OPTIONAL(r.Language = textNode.GetStringProp("lang", "http://www.w3.org/XML/1998/namespace"));
                 fault.Reasons.push_back(r);
-            }        } catch (...) {}
+            }
+        } catch (...) {}
 
         XML_OPTIONAL(fault.Node = faultNode.GetChild("Node").GetStringVal());
         XML_OPTIONAL(fault.Role = faultNode.GetChild("Role").GetStringVal());
