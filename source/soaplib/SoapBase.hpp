@@ -67,6 +67,12 @@ protected:
         const std::string& name,
         const std::string& prefix);
 
+    /// Sets a SOAP header attribute (version-aware).
+    void SetHeaderAttribute(
+        xml::Node& headerNode,
+        const std::string& name,
+        const std::string& value);
+
     /// Formats a XML namespace.
     static std::string ns(
         const std::string& ns,

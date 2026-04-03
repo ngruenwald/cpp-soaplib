@@ -51,6 +51,7 @@ public:
     using SoapBase::AddChild;
     using SoapBase::ns;
     using SoapBase::ValidateHeaders;
+    using SoapBase::SetHeaderAttribute;
 };
 
 class MockSoapServer : public SoapServer {
@@ -311,6 +312,28 @@ TEST_CASE("SoapBase: ValidateHeaders", "[soaplib][header]") {
     // Register it and it should pass
     base.RegisterUnderstoodHeader("UnknownHeader", "http://tempuri.org/");
     REQUIRE_NOTHROW(base.ValidateHeaders(envelope));
+}
+
+TEST_CASE("SoapBase: Relay Attribute", "[soaplib][header]") {
+    xml::Document doc;
+    TestSoapBase base;
+    
+    // SOAP 1.2: should set relay
+    base.SetSoapVersion(SoapVersion::Soap12);
+    auto body12 = base.CreateEnvelope(doc, "");
+    auto header12 = doc.GetRootNode().GetChild("Header");
+    auto h12 = base.AddChild(doc, header12, "RelayHeader", "t");
+    base.SetHeaderAttribute(h12, "relay", "true");
+    REQUIRE(h12.GetStringProp("relay", "http://www.w3.org/2003/05/soap-envelope") == "true");
+
+    // SOAP 1.1: should NOT set relay
+    xml::Document doc11;
+    base.SetSoapVersion(SoapVersion::Soap11);
+    auto body11 = base.CreateEnvelope(doc11, "");
+    auto header11 = doc11.GetRootNode().GetChild("Header");
+    auto h11 = base.AddChild(doc11, header11, "RelayHeader", "t");
+    base.SetHeaderAttribute(h11, "relay", "true");
+    REQUIRE(h11.GetStringProp("relay", "http://schemas.xmlsoap.org/soap/envelope/").empty());
 }
 
 TEST_CASE("SoapBase: Role/Actor Validation", "[soaplib][header]") {

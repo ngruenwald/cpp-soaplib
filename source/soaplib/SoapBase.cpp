@@ -77,6 +77,25 @@ void SoapBase::ValidateHeaders(const xml::Node& envelope) const {
     }
 }
 
+void SoapBase::SetHeaderAttribute(
+    xml::Node& headerNode,
+    const std::string& name,
+    const std::string& value)
+{
+    // Relay is only for SOAP 1.2
+    if (name == "relay" && version_ == SoapVersion::Soap11) {
+        return;
+    }
+
+    // Role (1.2) vs Actor (1.1)
+    std::string attrName = name;
+    if (name == "role" && version_ == SoapVersion::Soap11) {
+        attrName = "actor";
+    }
+
+    headerNode.SetProp(("s:" + attrName).c_str(), value.c_str());
+}
+
 xml::Node SoapBase::CreateEnvelope(
     xml::Document& doc,
     const std::string& soapAction,
@@ -104,7 +123,7 @@ xml::Node SoapBase::CreateEnvelope(
         if (!soapAction.empty())
         {
             auto headerAction = AddChild(doc, header, "Action", "a");
-            headerAction.SetProp("s:mustUnderstand", 1);
+            SetHeaderAttribute(headerAction, "mustUnderstand", "1");
             headerAction.SetVal(soapAction);
         }
 
@@ -119,7 +138,7 @@ xml::Node SoapBase::CreateEnvelope(
         if (!serviceAddress.empty())
         {
             auto to = AddChild(doc, header, "To", "a");
-            to.SetProp("s:mustUnderstand", 1);
+            SetHeaderAttribute(to, "mustUnderstand", "1");
             to.SetVal(serviceAddress);
         }
     }
