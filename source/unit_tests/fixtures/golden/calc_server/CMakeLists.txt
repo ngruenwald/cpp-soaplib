@@ -1,3 +1,9 @@
+cmake_minimum_required(VERSION 3.10)
+project(calculator-service VERSION 0.1.0 LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 if(NOT TARGET soaplib::soaplib)
   find_package(cpp-soaplib REQUIRED)
 endif()
@@ -17,7 +23,7 @@ target_include_directories(calculator-service PUBLIC
 
 if(WIN32)
   set_target_properties(calculator-service PROPERTIES
-    RELEASE_POSTFIFX "_static_${COMPILER_POSTFIX}"
+    RELEASE_POSTFIX "_static_${COMPILER_POSTFIX}"
     RELWITHDEBINFO_POSTFIX "_static_${COMPILER_POSTFIX}"
     DEBUG_POSTFIX "_static_${COMPILER_POSTFIX}d"
   )

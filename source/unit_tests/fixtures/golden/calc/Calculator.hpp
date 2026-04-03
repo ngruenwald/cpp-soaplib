@@ -15,7 +15,7 @@
 
 namespace calc {
 
-The "Calculator" SOAP service
+/// The "Calculator" SOAP service
 class Calculator
     : public soaplib::SoapService
 {

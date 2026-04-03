@@ -49,7 +49,7 @@
 
 namespace country {
 
-The "CountryInfoService" SOAP service
+/// The "CountryInfoService" SOAP service
 class CountryInfoService
     : public soaplib::SoapService
 {
