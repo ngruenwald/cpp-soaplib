@@ -8,8 +8,8 @@ namespace soaplib {
 
 HttpSoapTransport::HttpSoapTransport(
     const std::string& serviceAddress,
-    int timeoutSeconds)
-    : timeout_(timeoutSeconds)
+    const HttpConfig& config)
+    : config_(config)
 {
     extractAddressParts(serviceAddress);
 }
@@ -27,7 +27,7 @@ void HttpSoapTransport::EnableLogging(
 void HttpSoapTransport::SetReadTimeout(
     int timeoutSeconds)
 {
-    timeout_ = timeoutSeconds;
+    config_.readTimeout = timeoutSeconds;
 }
 
 std::unique_ptr<xml::Document> HttpSoapTransport::Send(
@@ -61,14 +61,31 @@ std::unique_ptr<xml::Document> HttpSoapTransport::Send(
     }
 
     httplib::Client cli(host_.c_str(), port_);
-    cli.set_read_timeout(timeoutSeconds, 0);
-    cli.set_compress(true);
-    cli.set_decompress(true);
-    cli.set_keep_alive(true);
+    
+    // Apply config
+    cli.set_connection_timeout(config_.connectionTimeout, 0);
+    cli.set_read_timeout(timeoutSeconds > 0 ? timeoutSeconds : config_.readTimeout, 0);
+    cli.set_write_timeout(config_.writeTimeout, 0);
+    
+    cli.set_compress(config_.compress);
+    cli.set_decompress(config_.decompress);
+    cli.set_keep_alive(config_.keepAlive);
+    cli.set_follow_location(config_.followRedirects);
+
+    if (!config_.proxy.host.empty()) {
+        cli.set_proxy(config_.proxy.host.c_str(), config_.proxy.port);
+        if (!config_.proxy.username.empty()) {
+            cli.set_proxy_basic_auth(config_.proxy.username.c_str(), config_.proxy.password.c_str());
+        }
+    }
 
     httplib::Headers headers;
     headers.emplace("Content-Type", contentType);
     headers.emplace("Accept", "application/soap+xml, text/xml");
+    
+    for (const auto& h : config_.customHeaders) {
+        headers.emplace(h.first, h.second);
+    }
     
     if (version == SoapVersion::Soap11 && !soapAction.empty() && method == HttpMethod::Post) {
         headers.emplace("SOAPAction", "\"" + soapAction + "\"");
@@ -118,7 +135,6 @@ std::unique_ptr<xml::Document> HttpSoapTransport::Send(
         auto body = root.GetChild("Body");
         auto faults = body.GetChildren("Fault");
         if (faults.empty()) {
-            // SOAP 1.1 uses lowercase 'fault' or 'Fault'? Spec says 'Fault' but let's check both
             faults = body.GetChildren("fault"); 
         }
         
@@ -149,20 +165,24 @@ void HttpSoapTransport::extractAddressParts(
     auto idxPort = serviceAddress.find(":", idxHost);
     auto idxPath = serviceAddress.find("/", idxHost);
 
-    if (idxPort != std::string::npos)
+    if (idxPort != std::string::npos && (idxPath == std::string::npos || idxPort < idxPath))
     {
         host_ = serviceAddress.substr(idxHost, idxPort - idxHost);
         idxPort = idxPort + 1;
-        auto p = serviceAddress.substr(idxPort, idxPath - idxPort);
+        auto p = serviceAddress.substr(idxPort, idxPath == std::string::npos ? std::string::npos : idxPath - idxPort);
         port_ = std::stoi(p);
     }
     else
     {
-        host_ = serviceAddress.substr(idxHost, idxPath - idxHost);
+        host_ = serviceAddress.substr(idxHost, idxPath == std::string::npos ? std::string::npos : idxPath - idxHost);
         port_ = 80;
     }
 
-    path_ = serviceAddress.substr(idxPath);
+    if (idxPath != std::string::npos) {
+        path_ = serviceAddress.substr(idxPath);
+    } else {
+        path_ = "/";
+    }
 }
 
 } // namespace soaplib

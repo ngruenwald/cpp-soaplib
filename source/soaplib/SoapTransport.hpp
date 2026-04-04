@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <functional>
 #include <soaplib/xml/xml.hpp>
 
 namespace soaplib {
@@ -11,8 +12,6 @@ enum class HttpMethod {
     Get
 };
 
-#include <functional>
-...
 /// Interface for SOAP transport layers.
 class SoapTransport {
 public:

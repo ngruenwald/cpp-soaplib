@@ -24,8 +24,9 @@ SoapService::SoapService(
 
 SoapService::SoapService(
     const std::string& serviceAddress,
-    const std::string& serviceNamespace)
-    : transport_(std::make_unique<HttpSoapTransport>(serviceAddress))
+    const std::string& serviceNamespace,
+    const HttpConfig& config)
+    : transport_(std::make_unique<HttpSoapTransport>(serviceAddress, config))
     , address_(serviceAddress)
     , namespace_(serviceNamespace)
 {

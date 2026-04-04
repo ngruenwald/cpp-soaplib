@@ -9,8 +9,9 @@ namespace calc {
 using namespace ::soaplib;
 
 Calculator::Calculator(
-    const std::string& serviceAddress)
-    : soaplib::SoapService(serviceAddress, "")
+    const std::string& serviceAddress,
+    const soaplib::HttpConfig& config)
+    : soaplib::SoapService(serviceAddress, "", config)
 {
 SetSoapVersion(soaplib::SoapVersion::Soap11);    RegisterUnderstoodHeader("Action", "http://www.w3.org/2005/08/addressing");
     RegisterUnderstoodHeader("To", "http://www.w3.org/2005/08/addressing");

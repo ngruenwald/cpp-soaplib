@@ -2,10 +2,39 @@
 
 #include <memory>
 #include <string>
+#include <map>
 
 #include <soaplib/SoapTransport.hpp>
 
 namespace soaplib {
+
+/// Configuration for HTTP transport
+struct HttpConfig {
+    int connectionTimeout = 5;
+    int readTimeout = 5;
+    int writeTimeout = 5;
+    
+    bool compress = true;
+    bool decompress = true;
+    bool keepAlive = true;
+    bool followRedirects = true;
+
+    struct SslConfig {
+        bool verifyServerCertificate = true;
+        std::string caCertPath;
+        std::string clientCertPath;
+        std::string clientKeyPath;
+    } ssl;
+
+    struct ProxyConfig {
+        std::string host;
+        int port = 0;
+        std::string username;
+        std::string password;
+    } proxy;
+    
+    std::map<std::string, std::string> customHeaders;
+};
 
 /// HTTP implementation of the SOAP transport.
 class HttpSoapTransport : public SoapTransport
@@ -13,10 +42,10 @@ class HttpSoapTransport : public SoapTransport
 public:
     /// Initializes an HttpSoapTransport instance.
     /// @param[in] serviceAddress URL of the SOAP service
-    /// @param[in] timeoutSeconds Request timeout in seconds
+    /// @param[in] config HTTP configuration
     HttpSoapTransport(
         const std::string& serviceAddress,
-        int timeoutSeconds = 5);
+        const HttpConfig& config = HttpConfig());
 
     /// Destructs the instance.
     ~HttpSoapTransport() override;
@@ -47,7 +76,7 @@ private:
     std::string host_;
     int port_;
     std::string path_;
-    int timeout_;   // seconds
+    HttpConfig config_;
     bool logging_ = false;
 };
 

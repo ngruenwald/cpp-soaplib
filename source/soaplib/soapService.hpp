@@ -6,6 +6,7 @@
 #include <soaplib/xml/xml.hpp>
 #include <soaplib/SoapBase.hpp>
 #include <soaplib/SoapTransport.hpp>
+#include <soaplib/HttpSoapTransport.hpp>
 
 namespace soaplib {
 
@@ -23,9 +24,11 @@ public:
     /// Creates a SoapService instance with default HTTP transport.
     /// @param[in] serviceAddress URL of the SOAP service
     /// @param[in] serviceNamespace XML namespace
+    /// @param[in] config Optional HTTP configuration
     SoapService(
         const std::string& serviceAddress,
-        const std::string& serviceNamespace);
+        const std::string& serviceNamespace,
+        const HttpConfig& config = HttpConfig());
 
     /// Destructs the instance.
     virtual ~SoapService();
@@ -34,17 +37,21 @@ public:
     /// @param[in] enable If true, logging will be enabled.
     void EnableLogging(
         bool enable);
-/// Sets the HTTP request timeout.
-/// @param[in] timeoutSeconds The request timeout in seconds.
-void SetRequestTimeout(
-    int timeoutSeconds);
 
-/// Callback for unsolicited responses (MEP).
-virtual void OnResponse(
-    std::unique_ptr<xml::Document> response);
+    /// Sets the HTTP request timeout.
+    /// @param[in] timeoutSeconds The request timeout in seconds.
+    void SetRequestTimeout(
+        int timeoutSeconds);
+
+    /// Callback for unsolicited responses (MEP).
+    virtual void OnResponse(
+        std::unique_ptr<xml::Document> response);
 
 protected:
-...
+    xml::Node CreateEnvelope(
+        xml::Document& doc,
+        const std::string& soapAction);
+
     // Redundant namespace helpers (TODO: check if generated code uses these)
     std::string SoapNS() const { return "s"; }  ///< Default SOAP namespace prefix
     std::string TempNS() const { return "t"; }  ///< Default TempUri namespace prefix

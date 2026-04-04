@@ -32,6 +32,7 @@ public:
     }
     void SetReadTimeout(int /*timeoutSeconds*/) override {}
     void EnableLogging(bool /*enable*/) override {}
+    void SetResponseHandler(ResponseHandler /*handler*/) override {}
 };
 
 class TestSoapService : public SoapService {

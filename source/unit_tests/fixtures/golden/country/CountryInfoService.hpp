@@ -55,9 +55,11 @@ class CountryInfoService
 {
 public:
     /// Constructs a new instance of the "CountryInfoService" service.
-    /// @param[in]  serviceAddress  URL of the SOAP service.
+    /// @param[in] serviceAddress URL of the SOAP service
+    /// @param[in] config Optional HTTP configuration
     CountryInfoService(
-        const std::string& serviceAddress);
+        const std::string& serviceAddress,
+        const soaplib::HttpConfig& config = soaplib::HttpConfig());
 
     /// Destructs the service instance.
     ~CountryInfoService();

@@ -2,6 +2,10 @@
 
 #include <memory>
 #include <string>
+#include <condition_variable>
+#include <mutex>
+#include <thread>
+#include <atomic>
 #include <httplib.h>
 #include <soaplib/SoapTransport.hpp>
 
@@ -45,11 +49,6 @@ public:
 private:
     bool connect();
 
-#include <condition_variable>
-#include <mutex>
-#include <thread>
-#include <atomic>
-...
 private:
     std::string address_;
     int timeout_;

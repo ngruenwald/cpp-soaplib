@@ -21,9 +21,11 @@ class Calculator
 {
 public:
     /// Constructs a new instance of the "Calculator" service.
-    /// @param[in]  serviceAddress  URL of the SOAP service.
+    /// @param[in] serviceAddress URL of the SOAP service
+    /// @param[in] config Optional HTTP configuration
     Calculator(
-        const std::string& serviceAddress);
+        const std::string& serviceAddress,
+        const soaplib::HttpConfig& config = soaplib::HttpConfig());
 
     /// Destructs the service instance.
     ~Calculator();

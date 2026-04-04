@@ -12,8 +12,9 @@ namespace {{ ns }} {
 using namespace ::soaplib;
 
 {{ service.name }}::{{ service.name }}(
-    const std::string& serviceAddress)
-    : soaplib::SoapService(serviceAddress, "")
+    const std::string& serviceAddress,
+    const soaplib::HttpConfig& config)
+    : soaplib::SoapService(serviceAddress, "", config)
 {
     {% if service.version == "1.1" %}SetSoapVersion(soaplib::SoapVersion::Soap11);{% endif %}
     RegisterUnderstoodHeader("Action", "http://www.w3.org/2005/08/addressing");
