@@ -45,7 +45,7 @@ public:
     /// @param[in] config HTTP configuration
     HttpSoapTransport(
         const std::string& serviceAddress,
-        const HttpConfig& config = HttpConfig());
+        HttpConfig config = HttpConfig());
 
     /// Destructs the instance.
     ~HttpSoapTransport() override;

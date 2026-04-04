@@ -8,8 +8,7 @@
 
 #include <soaplib/xml/node.hpp>
 
-namespace soaplib {
-namespace xml {
+namespace soaplib::xml {
 
 /// XML document
 class Document
@@ -101,5 +100,4 @@ private:
     xmlXPathContextPtr xpathContext_{nullptr};
 };
 
-} // namespace xml
-} // namespace soaplib
+} // namespace soaplib::xml

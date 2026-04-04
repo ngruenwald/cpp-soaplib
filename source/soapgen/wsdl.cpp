@@ -922,7 +922,7 @@ void RedundancyCheck(
         if (typeHistory.size() > 1)
         {
             std::cout << "* " << type->name.name << '\n';
-            for (const auto name : typeHistory)
+            for (const auto& name : typeHistory)
             {
                 std::cout << "  - " << name.name << '\n';
             }

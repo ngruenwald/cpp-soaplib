@@ -8,8 +8,7 @@
 #define XML_MANDATORY(__X__) __X__
 #define XML_OPTIONAL(__X__) try { __X__; } catch (soaplib::xml::Exception&) { }
 
-namespace soaplib {
-namespace xml {
+namespace soaplib::xml {
 
 /// Sets the logger callback
 /// @param[in] logHandler The log handler function
@@ -28,5 +27,4 @@ void Init(
 /// Cleans up the allocated memory
 void Cleanup();
 
-} // namespace xml
-} // namespace soaplib
+} // namespace soaplib::xml

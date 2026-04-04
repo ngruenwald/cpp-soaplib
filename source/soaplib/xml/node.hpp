@@ -5,8 +5,7 @@
 
 #include <libxml/tree.h>
 
-namespace soaplib {
-namespace xml {
+namespace soaplib::xml {
 
 class Document;
 
@@ -127,5 +126,4 @@ private:
 
 typedef std::vector<Node> NodeList; ///< List of XML nodes
 
-} // namespace xml
-} // namespace soaplib
+} // namespace soaplib::xml

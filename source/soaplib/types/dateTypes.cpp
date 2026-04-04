@@ -340,6 +340,7 @@ void from_string(const std::string& s, soaplib::Duration& du)
     while (end < s.length())
     {
         for (end = beg; end < s.length() && std::isdigit(s[end]); ++end);
+        if (end >= s.length()) break;
         auto val = beg != end ? std::stoi(s.substr(beg, end - beg)) : 0;
 
         switch (s[end])

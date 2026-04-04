@@ -7,7 +7,7 @@
 #include <soaplib/xml/xml.hpp>
 
 
-std::string loadFile(const std::string path)
+std::string loadFile(const std::string& path)
 {
     auto ifs = std::ifstream{path.c_str(), std::ios::binary | std::ios::ate};
     REQUIRE(ifs.is_open());

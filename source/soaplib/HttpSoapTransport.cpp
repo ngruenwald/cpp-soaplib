@@ -8,15 +8,13 @@ namespace soaplib {
 
 HttpSoapTransport::HttpSoapTransport(
     const std::string& serviceAddress,
-    const HttpConfig& config)
-    : config_(config)
+    HttpConfig config)
+    : config_(std::move(config))
 {
     extractAddressParts(serviceAddress);
 }
 
-HttpSoapTransport::~HttpSoapTransport()
-{
-}
+HttpSoapTransport::~HttpSoapTransport() = default;
 
 void HttpSoapTransport::EnableLogging(
     bool enable)
@@ -116,13 +114,13 @@ std::unique_ptr<xml::Document> HttpSoapTransport::Send(
         const std::string content = request.Serialize("UTF-8", prettyXml);
         if (logging_)
         {
-            std::cout << "POST " << path_ << "\n" << content << std::endl << std::flush;
+            std::cout << "POST " << path_ << "\n" << content << "\n" << std::flush;
         }
         response = cli->Post(path_.c_str(), headers, content, contentType.c_str());
     } else {
         if (logging_)
         {
-            std::cout << "GET " << path_ << std::endl << std::flush;
+            std::cout << "GET " << path_ << "\n" << std::flush;
         }
         response = cli->Get(path_.c_str(), headers);
     }
@@ -134,7 +132,7 @@ std::unique_ptr<xml::Document> HttpSoapTransport::Send(
 
     if (logging_ && method == HttpMethod::Post)
     {
-        std::cout << response->body << std::endl << std::flush;
+        std::cout << response->body << "\n" << std::flush;
     }
 
     if (response->body.empty()) {
@@ -188,8 +186,8 @@ void HttpSoapTransport::extractAddressParts(
         idxHost = 0;
     }
 
-    auto idxPort = serviceAddress.find(":", idxHost);
-    auto idxPath = serviceAddress.find("/", idxHost);
+    auto idxPort = serviceAddress.find(':', idxHost);
+    auto idxPath = serviceAddress.find('/', idxHost);
 
     if (idxPort != std::string::npos && (idxPath == std::string::npos || idxPort < idxPath))
     {

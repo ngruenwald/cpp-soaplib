@@ -32,7 +32,7 @@ struct TSimpleType
 {
     typedef T ValueType;    ///< The type of the contained value
 
-    T Value;                ///< The contained value
+    T Value{};              ///< The contained value
 
     /// Default constructor
     TSimpleType() = default;
@@ -168,15 +168,7 @@ struct String
         Value = value;
     }
 
-    /// Assigns a value
-    /// @param[in] value The value
-    /// @returns Reference to the object
-    String& operator=(
-        const std::string& value)
-    {
-        Value = value;
-        return *this;
-    }
+    using TSimpleType<std::string>::operator=;
 
     /// Assigns a value
     /// @param[in] value The value
@@ -232,15 +224,7 @@ struct HexBinary
         Value = value;
     }
 
-    /// Assigns a value
-    /// @param[in] value The value
-    /// @returns Reference to the object
-    HexBinary& operator=(
-        const std::string& value)
-    {
-        Value = value;
-        return *this;
-    }
+    using TSimpleType<std::string>::operator=;
 
     /// Assigns a value
     /// @param[in] value The value
