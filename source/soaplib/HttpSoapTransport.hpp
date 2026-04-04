@@ -73,6 +73,7 @@ private:
         const std::string& serviceAddress);
 
 private:
+    std::string scheme_;
     std::string host_;
     int port_;
     std::string path_;

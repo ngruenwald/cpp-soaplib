@@ -11,16 +11,29 @@
 
 namespace soaplib {
 
+/// Configuration for WebSocket transport
+struct WsConfig {
+    int connectionTimeout = 5;
+    int readTimeout = 5;
+    
+    struct SslConfig {
+        bool verifyServerCertificate = true;
+        std::string caCertPath;
+    } ssl;
+
+    std::map<std::string, std::string> customHeaders;
+};
+
 /// WebSocket implementation of the SOAP transport.
 class WebSocketSoapTransport : public SoapTransport
 {
 public:
     /// Initializes a WebSocketSoapTransport instance.
     /// @param[in] wsAddress URL of the SOAP service (ws:// or wss://)
-    /// @param[in] timeoutSeconds Request timeout in seconds
+    /// @param[in] config WebSocket configuration
     WebSocketSoapTransport(
         const std::string& wsAddress,
-        int timeoutSeconds = 5);
+        const WsConfig& config = WsConfig());
 
     /// Destructs the instance.
     ~WebSocketSoapTransport() override;
@@ -51,7 +64,7 @@ private:
 
 private:
     std::string address_;
-    int timeout_;
+    WsConfig config_;
     bool logging_ = false;
     std::unique_ptr<httplib::ws::WebSocketClient> ws_client_;
 

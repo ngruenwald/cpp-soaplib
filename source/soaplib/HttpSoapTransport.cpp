@@ -60,22 +60,42 @@ std::unique_ptr<xml::Document> HttpSoapTransport::Send(
         }
     }
 
-    httplib::Client cli(host_.c_str(), port_);
+    std::string url = scheme_ + "://" + host_;
+    if ((scheme_ == "http" && port_ != 80) || (scheme_ == "https" && port_ != 443)) {
+        url += ":" + std::to_string(port_);
+    }
+    
+    std::unique_ptr<httplib::Client> cli;
+    if (scheme_ == "https" && !config_.ssl.clientCertPath.empty() && !config_.ssl.clientKeyPath.empty()) {
+        cli = std::make_unique<httplib::Client>(url, config_.ssl.clientCertPath, config_.ssl.clientKeyPath);
+    } else {
+        cli = std::make_unique<httplib::Client>(url);
+    }
     
     // Apply config
-    cli.set_connection_timeout(config_.connectionTimeout, 0);
-    cli.set_read_timeout(timeoutSeconds > 0 ? timeoutSeconds : config_.readTimeout, 0);
-    cli.set_write_timeout(config_.writeTimeout, 0);
+    cli->set_connection_timeout(config_.connectionTimeout, 0);
+    cli->set_read_timeout(timeoutSeconds > 0 ? timeoutSeconds : config_.readTimeout, 0);
+    cli->set_write_timeout(config_.writeTimeout, 0);
     
-    cli.set_compress(config_.compress);
-    cli.set_decompress(config_.decompress);
-    cli.set_keep_alive(config_.keepAlive);
-    cli.set_follow_location(config_.followRedirects);
+    cli->set_compress(config_.compress);
+    cli->set_decompress(config_.decompress);
+    cli->set_keep_alive(config_.keepAlive);
+    cli->set_follow_location(config_.followRedirects);
+
+#ifdef CPPHTTPLIB_SSL_ENABLED
+    // SSL Config
+    if (scheme_ == "https") {
+        cli->enable_server_certificate_verification(config_.ssl.verifyServerCertificate);
+        if (!config_.ssl.caCertPath.empty()) {
+            cli->set_ca_cert_path(config_.ssl.caCertPath.c_str());
+        }
+    }
+#endif
 
     if (!config_.proxy.host.empty()) {
-        cli.set_proxy(config_.proxy.host.c_str(), config_.proxy.port);
+        cli->set_proxy(config_.proxy.host.c_str(), config_.proxy.port);
         if (!config_.proxy.username.empty()) {
-            cli.set_proxy_basic_auth(config_.proxy.username.c_str(), config_.proxy.password.c_str());
+            cli->set_proxy_basic_auth(config_.proxy.username.c_str(), config_.proxy.password.c_str());
         }
     }
 
@@ -98,13 +118,13 @@ std::unique_ptr<xml::Document> HttpSoapTransport::Send(
         {
             std::cout << "POST " << path_ << "\n" << content << std::endl << std::flush;
         }
-        response = cli.Post(path_.c_str(), headers, content, contentType.c_str());
+        response = cli->Post(path_.c_str(), headers, content, contentType.c_str());
     } else {
         if (logging_)
         {
             std::cout << "GET " << path_ << std::endl << std::flush;
         }
-        response = cli.Get(path_.c_str(), headers);
+        response = cli->Get(path_.c_str(), headers);
     }
 
     if (!response)
@@ -160,7 +180,13 @@ void HttpSoapTransport::extractAddressParts(
     const std::string& serviceAddress)
 {
     auto idxHost = serviceAddress.find("://");
-    idxHost = idxHost == std::string::npos ? 0 : idxHost + 3;
+    if (idxHost != std::string::npos) {
+        scheme_ = serviceAddress.substr(0, idxHost);
+        idxHost += 3;
+    } else {
+        scheme_ = "http";
+        idxHost = 0;
+    }
 
     auto idxPort = serviceAddress.find(":", idxHost);
     auto idxPath = serviceAddress.find("/", idxHost);
@@ -175,7 +201,7 @@ void HttpSoapTransport::extractAddressParts(
     else
     {
         host_ = serviceAddress.substr(idxHost, idxPath == std::string::npos ? std::string::npos : idxPath - idxHost);
-        port_ = 80;
+        port_ = (scheme_ == "https") ? 443 : 80;
     }
 
     if (idxPath != std::string::npos) {

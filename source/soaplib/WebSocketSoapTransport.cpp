@@ -7,9 +7,9 @@ namespace soaplib {
 
 WebSocketSoapTransport::WebSocketSoapTransport(
     const std::string& wsAddress,
-    int timeoutSeconds)
+    const WsConfig& config)
     : address_(wsAddress)
-    , timeout_(timeoutSeconds)
+    , config_(config)
 {
 }
 
@@ -25,7 +25,7 @@ void WebSocketSoapTransport::EnableLogging(bool enable)
 
 void WebSocketSoapTransport::SetReadTimeout(int timeoutSeconds)
 {
-    timeout_ = timeoutSeconds;
+    config_.readTimeout = timeoutSeconds;
 }
 
 void WebSocketSoapTransport::SetResponseHandler(ResponseHandler handler)
@@ -42,9 +42,25 @@ bool WebSocketSoapTransport::connect()
     running_ = false;
     if (readThread_.joinable()) readThread_.join();
 
-    ws_client_ = std::make_unique<httplib::ws::WebSocketClient>(address_);
-    ws_client_->set_read_timeout(timeout_, 0);
+    httplib::Headers headers;
+    for (const auto& h : config_.customHeaders) {
+        headers.emplace(h.first, h.second);
+    }
+
+    ws_client_ = std::make_unique<httplib::ws::WebSocketClient>(address_, headers);
+    ws_client_->set_connection_timeout(config_.connectionTimeout, 0);
+    ws_client_->set_read_timeout(config_.readTimeout, 0);
     
+#ifdef CPPHTTPLIB_SSL_ENABLED
+    // SSL Config
+    if (address_.find("wss://") == 0) {
+        ws_client_->enable_server_certificate_verification(config_.ssl.verifyServerCertificate);
+        if (!config_.ssl.caCertPath.empty()) {
+            ws_client_->set_ca_cert_path(config_.ssl.caCertPath.c_str());
+        }
+    }
+#endif
+
     if (!ws_client_->connect()) {
         ws_client_.reset();
         return false;
@@ -107,7 +123,8 @@ std::unique_ptr<xml::Document> WebSocketSoapTransport::Send(
     }
 
     std::unique_lock<std::mutex> lock(mtx_);
-    if (cv_.wait_for(lock, std::chrono::seconds(timeoutSeconds), [this]{ return (bool)currentResponse_ || !running_; })) {
+    int waitTimeout = timeoutSeconds > 0 ? timeoutSeconds : config_.readTimeout;
+    if (cv_.wait_for(lock, std::chrono::seconds(waitTimeout), [this]{ return (bool)currentResponse_ || !running_; })) {
         if (!currentResponse_) throw SoapException("WebSocket connection closed while waiting for response");
         return std::move(currentResponse_);
     }
