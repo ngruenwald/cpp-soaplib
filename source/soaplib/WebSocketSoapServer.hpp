@@ -8,6 +8,19 @@ namespace soaplib {
 
 class SoapServer;
 
+/// Configuration for WebSocket server
+struct WsServerConfig {
+    size_t threadCount = 8;
+    int keepAliveTimeoutSeconds = 5;
+    int readTimeoutSeconds = 5;
+    int writeTimeoutSeconds = 5;
+
+    struct SslConfig {
+        std::string certPath;
+        std::string keyPath;
+    } ssl;
+};
+
 /// A ready-to-use WebSocket server for SOAP services.
 class WebSocketSoapServer
 {
@@ -15,9 +28,11 @@ public:
     /// Initializes the WebSocket SOAP server.
     /// @param[in] service The SOAP server implementation
     /// @param[in] path The URL path for the WebSocket service
+    /// @param[in] config Optional server configuration
     WebSocketSoapServer(
         SoapServer& service,
-        const std::string& path = "/");
+        const std::string& path = "/",
+        const WsServerConfig& config = WsServerConfig());
 
     /// Destructs the instance.
     ~WebSocketSoapServer();
@@ -38,7 +53,8 @@ public:
 private:
     SoapServer& service_;
     std::string path_;
-    httplib::Server svr_;
+    WsServerConfig config_;
+    std::unique_ptr<httplib::Server> svr_;
 };
 
 } // namespace soaplib

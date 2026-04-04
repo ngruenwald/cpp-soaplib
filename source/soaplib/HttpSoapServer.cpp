@@ -7,10 +7,29 @@ namespace soaplib {
 
 HttpSoapServer::HttpSoapServer(
     SoapServer& service,
-    const std::string& path)
+    const std::string& path,
+    const HttpServerConfig& config)
     : service_(service)
     , path_(path)
+    , config_(config)
 {
+#ifdef CPPHTTPLIB_SSL_ENABLED
+    if (!config_.ssl.certPath.empty() && !config_.ssl.keyPath.empty()) {
+        svr_ = std::make_unique<httplib::SSLServer>(config_.ssl.certPath.c_str(), config_.ssl.keyPath.c_str());
+    } else {
+        svr_ = std::make_unique<httplib::Server>();
+    }
+#else
+    svr_ = std::make_unique<httplib::Server>();
+#endif
+
+    // Apply config
+    svr_->new_task_queue = [this] { return new httplib::ThreadPool(config_.threadCount); };
+    svr_->set_payload_max_length(config_.payloadMaxLength);
+    svr_->set_keep_alive_timeout(config_.keepAliveTimeoutSeconds);
+    svr_->set_read_timeout(config_.readTimeoutSeconds, 0);
+    svr_->set_write_timeout(config_.writeTimeoutSeconds, 0);
+
     auto handler = [this](const httplib::Request& req, httplib::Response& res) {
         try
         {
@@ -18,8 +37,7 @@ HttpSoapServer::HttpSoapServer(
             if (req.method == "POST") {
                 doc = xml::Document::ParseMemory(req.body.c_str(), req.body.size());
             } else {
-                // For GET, we create an empty document or one based on query params
-                // For now, just an empty one to trigger the dispatcher
+                // For GET, we create an empty document
                 doc = std::make_unique<xml::Document>();
                 doc->CreateRootNode("Envelope").AddChild("Body");
             }
@@ -56,8 +74,8 @@ HttpSoapServer::HttpSoapServer(
         }
     };
 
-    svr_.Post(path_, handler);
-    svr_.Get(path_, handler);
+    svr_->Post(path_, handler);
+    svr_->Get(path_, handler);
 }
 
 HttpSoapServer::~HttpSoapServer()
@@ -69,17 +87,17 @@ void HttpSoapServer::Listen(
     const std::string& host,
     int port)
 {
-    svr_.listen(host.c_str(), port);
+    svr_->listen(host.c_str(), port);
 }
 
 void HttpSoapServer::Stop()
 {
-    svr_.stop();
+    if (svr_) svr_->stop();
 }
 
 bool HttpSoapServer::IsRunning() const
 {
-    return svr_.is_running();
+    return svr_ && svr_->is_running();
 }
 
 } // namespace soaplib
