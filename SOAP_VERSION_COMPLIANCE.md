@@ -34,8 +34,8 @@ Support both versions by making the core library version-agnostic and allowing t
 
 ### Priority 5: Advanced Features
 - [x] Hierarchical Subcodes (SOAP 1.2).
-- [ ] Response-Only MEP.
-- [ ] Section 5 Encoding support.
+- [x] Response-Only MEP.
+- [ ] Section 5 Encoding support (Not Planned - focus on Document/Literal).
 
 ---
 *Updated on 2026-03-30*
