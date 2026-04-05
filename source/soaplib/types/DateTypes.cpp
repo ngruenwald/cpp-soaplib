@@ -1,11 +1,11 @@
-#include "dateTypes.hpp"
+#include "DateTypes.hpp"
 
 #include <iomanip>
 #include <sstream>
 #include <vector>
 
-#include "xml/xml.hpp"
-#include "parseHelper.hpp"
+#include "xml/Xml.hpp"
+#include "ParseHelper.hpp"
 
 
 static std::vector<std::string> split(
@@ -50,7 +50,7 @@ void soaplib::Date::ToAnyXml(
     soaplib::xml::Document& doc,
     soaplib::xml::Node& anyNode) const
 {
-    setAnyTypeAttribute(doc, anyNode, "date", "http://www.w3.org/2001/XMLSchema", "zrk");
+    SetAnyTypeAttribute(doc, anyNode, "date", "http://www.w3.org/2001/XMLSchema", "zrk");
     DateToXml(anyNode, *this);
 }
 
@@ -58,7 +58,7 @@ void soaplib::Time::ToAnyXml(
     soaplib::xml::Document& doc,
     soaplib::xml::Node& anyNode) const
 {
-    setAnyTypeAttribute(doc, anyNode, "time", "http://www.w3.org/2001/XMLSchema", "zrk");
+    SetAnyTypeAttribute(doc, anyNode, "time", "http://www.w3.org/2001/XMLSchema", "zrk");
     TimeToXml(anyNode, *this);
 }
 
@@ -66,7 +66,7 @@ void soaplib::DateTime::ToAnyXml(
     soaplib::xml::Document& doc,
     soaplib::xml::Node& anyNode) const
 {
-    setAnyTypeAttribute(doc, anyNode, "dateTime", "http://www.w3.org/2001/XMLSchema", "zrk");
+    SetAnyTypeAttribute(doc, anyNode, "dateTime", "http://www.w3.org/2001/XMLSchema", "zrk");
     DateTimeToXml(anyNode, *this);
 }
 
@@ -74,32 +74,32 @@ void soaplib::Duration::ToAnyXml(
     soaplib::xml::Document& doc,
     soaplib::xml::Node& anyNode) const
 {
-    setAnyTypeAttribute(doc, anyNode, "duration", "http://schemas.microsoft.com/2003/10/Serialization/", "zrs");
+    SetAnyTypeAttribute(doc, anyNode, "duration", "http://schemas.microsoft.com/2003/10/Serialization/", "zrs");
     DurationToXml(anyNode, *this);
 }
 
 void soaplib::GYear::ToAnyXml(soaplib::xml::Document& doc, soaplib::xml::Node& anyNode) const {
-    setAnyTypeAttribute(doc, anyNode, "gYear", "http://www.w3.org/2001/XMLSchema", "zrk");
+    SetAnyTypeAttribute(doc, anyNode, "gYear", "http://www.w3.org/2001/XMLSchema", "zrk");
     GYearToXml(anyNode, *this);
 }
 
 void soaplib::GYearMonth::ToAnyXml(soaplib::xml::Document& doc, soaplib::xml::Node& anyNode) const {
-    setAnyTypeAttribute(doc, anyNode, "gYearMonth", "http://www.w3.org/2001/XMLSchema", "zrk");
+    SetAnyTypeAttribute(doc, anyNode, "gYearMonth", "http://www.w3.org/2001/XMLSchema", "zrk");
     GYearMonthToXml(anyNode, *this);
 }
 
 void soaplib::GMonth::ToAnyXml(soaplib::xml::Document& doc, soaplib::xml::Node& anyNode) const {
-    setAnyTypeAttribute(doc, anyNode, "gMonth", "http://www.w3.org/2001/XMLSchema", "zrk");
+    SetAnyTypeAttribute(doc, anyNode, "gMonth", "http://www.w3.org/2001/XMLSchema", "zrk");
     GMonthToXml(anyNode, *this);
 }
 
 void soaplib::GMonthDay::ToAnyXml(soaplib::xml::Document& doc, soaplib::xml::Node& anyNode) const {
-    setAnyTypeAttribute(doc, anyNode, "gMonthDay", "http://www.w3.org/2001/XMLSchema", "zrk");
+    SetAnyTypeAttribute(doc, anyNode, "gMonthDay", "http://www.w3.org/2001/XMLSchema", "zrk");
     GMonthDayToXml(anyNode, *this);
 }
 
 void soaplib::GDay::ToAnyXml(soaplib::xml::Document& doc, soaplib::xml::Node& anyNode) const {
-    setAnyTypeAttribute(doc, anyNode, "gDay", "http://www.w3.org/2001/XMLSchema", "zrk");
+    SetAnyTypeAttribute(doc, anyNode, "gDay", "http://www.w3.org/2001/XMLSchema", "zrk");
     GDayToXml(anyNode, *this);
 }
 

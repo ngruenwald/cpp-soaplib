@@ -1,6 +1,6 @@
 #include <soaplib/WebSocketSoapTransport.hpp>
-#include <soaplib/soapException.hpp>
-#include <soaplib/xml/xml.hpp>
+#include <soaplib/SoapException.hpp>
+#include <soaplib/xml/Xml.hpp>
 #include <iostream>
 
 namespace soaplib {
@@ -33,7 +33,7 @@ void WebSocketSoapTransport::SetResponseHandler(ResponseHandler handler)
     responseHandler_ = handler;
 }
 
-bool WebSocketSoapTransport::connect()
+bool WebSocketSoapTransport::Connect()
 {
     if (ws_client_ && ws_client_->is_valid() && ws_client_->is_open()) {
         return true;
@@ -103,7 +103,7 @@ std::unique_ptr<xml::Document> WebSocketSoapTransport::Send(
     const std::string& /*soapAction*/,
     HttpMethod /*method*/)
 {
-    if (!connect()) {
+    if (!Connect()) {
         throw SoapException("WebSocket connection failed to " + address_);
     }
 

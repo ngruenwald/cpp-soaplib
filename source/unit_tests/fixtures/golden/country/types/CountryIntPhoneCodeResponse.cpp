@@ -2,7 +2,7 @@
 
 #include "CountryIntPhoneCodeResponse.hpp"
 
-#include <soaplib/parseHelper.hpp>
+#include <soaplib/ParseHelper.hpp>
 
 
 namespace country {
@@ -11,7 +11,7 @@ void CountryIntPhoneCodeResponseFromXml(
     const soaplib::xml::Node& objNode,
     CountryIntPhoneCodeResponse& obj)
 {
-    obj.CountryIntPhoneCodeResult = soaplib::getMandatory<soaplib::String>(objNode, "CountryIntPhoneCodeResult", StringFromXml);
+    obj.CountryIntPhoneCodeResult = soaplib::GetMandatory<soaplib::String>(objNode, "CountryIntPhoneCodeResult", StringFromXml);
 }
 
 CountryIntPhoneCodeResponse CountryIntPhoneCodeResponseFromXml(
@@ -36,7 +36,7 @@ static void _CountryIntPhoneCodeResponseToXml(
     soaplib::xml::Node& objNode)
 {
     {
-        auto pn = soaplib::addChild(doc, objNode, "CountryIntPhoneCodeResult", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto pn = soaplib::AddChild(doc, objNode, "CountryIntPhoneCodeResult", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         StringToXml(pn, obj.CountryIntPhoneCodeResult);
     }
 }
@@ -49,7 +49,7 @@ void CountryIntPhoneCodeResponseToXml(
 {
     if (createNode)
     {
-        auto objNode = soaplib::addChild(doc, parentNode, "CountryIntPhoneCodeResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto objNode = soaplib::AddChild(doc, parentNode, "CountryIntPhoneCodeResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         _CountryIntPhoneCodeResponseToXml(obj, doc, objNode);
     }
     else
@@ -62,7 +62,7 @@ void CountryIntPhoneCodeResponse::ToAnyXml(
     soaplib::xml::Document& doc,
     soaplib::xml::Node& node) const
 {
-    soaplib::setAnyTypeAttribute(doc, node, "CountryIntPhoneCodeResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+    soaplib::SetAnyTypeAttribute(doc, node, "CountryIntPhoneCodeResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
     _CountryIntPhoneCodeResponseToXml(*this, doc, node);
 }
 

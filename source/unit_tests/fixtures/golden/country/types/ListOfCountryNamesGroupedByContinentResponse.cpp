@@ -2,7 +2,7 @@
 
 #include "ListOfCountryNamesGroupedByContinentResponse.hpp"
 
-#include <soaplib/parseHelper.hpp>
+#include <soaplib/ParseHelper.hpp>
 
 #include "ArrayOftCountryCodeAndNameGroupedByContinent.hpp"
 
@@ -12,7 +12,7 @@ void ListOfCountryNamesGroupedByContinentResponseFromXml(
     const soaplib::xml::Node& objNode,
     ListOfCountryNamesGroupedByContinentResponse& obj)
 {
-    obj.ListOfCountryNamesGroupedByContinentResult = soaplib::getMandatory<ArrayOftCountryCodeAndNameGroupedByContinent>(objNode, "ListOfCountryNamesGroupedByContinentResult", ArrayOftCountryCodeAndNameGroupedByContinentFromXml);
+    obj.ListOfCountryNamesGroupedByContinentResult = soaplib::GetMandatory<ArrayOftCountryCodeAndNameGroupedByContinent>(objNode, "ListOfCountryNamesGroupedByContinentResult", ArrayOftCountryCodeAndNameGroupedByContinentFromXml);
 }
 
 ListOfCountryNamesGroupedByContinentResponse ListOfCountryNamesGroupedByContinentResponseFromXml(
@@ -37,7 +37,7 @@ static void _ListOfCountryNamesGroupedByContinentResponseToXml(
     soaplib::xml::Node& objNode)
 {
     {
-        auto pn = soaplib::addChild(doc, objNode, "ListOfCountryNamesGroupedByContinentResult", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto pn = soaplib::AddChild(doc, objNode, "ListOfCountryNamesGroupedByContinentResult", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         ArrayOftCountryCodeAndNameGroupedByContinentToXml(obj.ListOfCountryNamesGroupedByContinentResult, doc, pn, false);
     }
 }
@@ -50,7 +50,7 @@ void ListOfCountryNamesGroupedByContinentResponseToXml(
 {
     if (createNode)
     {
-        auto objNode = soaplib::addChild(doc, parentNode, "ListOfCountryNamesGroupedByContinentResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto objNode = soaplib::AddChild(doc, parentNode, "ListOfCountryNamesGroupedByContinentResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         _ListOfCountryNamesGroupedByContinentResponseToXml(obj, doc, objNode);
     }
     else
@@ -63,7 +63,7 @@ void ListOfCountryNamesGroupedByContinentResponse::ToAnyXml(
     soaplib::xml::Document& doc,
     soaplib::xml::Node& node) const
 {
-    soaplib::setAnyTypeAttribute(doc, node, "ListOfCountryNamesGroupedByContinentResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+    soaplib::SetAnyTypeAttribute(doc, node, "ListOfCountryNamesGroupedByContinentResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
     _ListOfCountryNamesGroupedByContinentResponseToXml(*this, doc, node);
 }
 

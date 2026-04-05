@@ -2,7 +2,7 @@
 
 #include "CurrencyName.hpp"
 
-#include <soaplib/parseHelper.hpp>
+#include <soaplib/ParseHelper.hpp>
 
 
 namespace country {
@@ -11,7 +11,7 @@ void CurrencyNameFromXml(
     const soaplib::xml::Node& objNode,
     CurrencyName& obj)
 {
-    obj.SCurrencyISOCode = soaplib::getMandatory<soaplib::String>(objNode, "sCurrencyISOCode", StringFromXml);
+    obj.SCurrencyISOCode = soaplib::GetMandatory<soaplib::String>(objNode, "sCurrencyISOCode", StringFromXml);
 }
 
 CurrencyName CurrencyNameFromXml(
@@ -36,7 +36,7 @@ static void _CurrencyNameToXml(
     soaplib::xml::Node& objNode)
 {
     {
-        auto pn = soaplib::addChild(doc, objNode, "sCurrencyISOCode", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto pn = soaplib::AddChild(doc, objNode, "sCurrencyISOCode", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         StringToXml(pn, obj.SCurrencyISOCode);
     }
 }
@@ -49,7 +49,7 @@ void CurrencyNameToXml(
 {
     if (createNode)
     {
-        auto objNode = soaplib::addChild(doc, parentNode, "CurrencyName", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto objNode = soaplib::AddChild(doc, parentNode, "CurrencyName", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         _CurrencyNameToXml(obj, doc, objNode);
     }
     else
@@ -62,7 +62,7 @@ void CurrencyName::ToAnyXml(
     soaplib::xml::Document& doc,
     soaplib::xml::Node& node) const
 {
-    soaplib::setAnyTypeAttribute(doc, node, "CurrencyName", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+    soaplib::SetAnyTypeAttribute(doc, node, "CurrencyName", "http://www.oorsprong.org/websamples.countryinfo", "tns");
     _CurrencyNameToXml(*this, doc, node);
 }
 

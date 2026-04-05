@@ -2,7 +2,7 @@
 
 #include "ArrayOftCountryInfo.hpp"
 
-#include <soaplib/parseHelper.hpp>
+#include <soaplib/ParseHelper.hpp>
 
 #include "tCountryInfo.hpp"
 
@@ -12,7 +12,7 @@ void ArrayOftCountryInfoFromXml(
     const soaplib::xml::Node& objNode,
     ArrayOftCountryInfo& obj)
 {
-    obj.TCountryInfo = soaplib::getMultiple<tCountryInfo>(objNode, "tCountryInfo", tCountryInfoFromXml);
+    obj.TCountryInfo = soaplib::GetMultiple<tCountryInfo>(objNode, "tCountryInfo", tCountryInfoFromXml);
 }
 
 ArrayOftCountryInfo ArrayOftCountryInfoFromXml(
@@ -38,7 +38,7 @@ static void _ArrayOftCountryInfoToXml(
 {
     for (const auto& entry : obj.TCountryInfo)
     {
-        auto pn = soaplib::addChild(doc, objNode, "tCountryInfo", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto pn = soaplib::AddChild(doc, objNode, "tCountryInfo", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         tCountryInfoToXml(entry, doc, pn, false);
     }
 }
@@ -51,7 +51,7 @@ void ArrayOftCountryInfoToXml(
 {
     if (createNode)
     {
-        auto objNode = soaplib::addChild(doc, parentNode, "ArrayOftCountryInfo", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto objNode = soaplib::AddChild(doc, parentNode, "ArrayOftCountryInfo", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         _ArrayOftCountryInfoToXml(obj, doc, objNode);
     }
     else
@@ -64,7 +64,7 @@ void ArrayOftCountryInfo::ToAnyXml(
     soaplib::xml::Document& doc,
     soaplib::xml::Node& node) const
 {
-    soaplib::setAnyTypeAttribute(doc, node, "ArrayOftCountryInfo", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+    soaplib::SetAnyTypeAttribute(doc, node, "ArrayOftCountryInfo", "http://www.oorsprong.org/websamples.countryinfo", "tns");
     _ArrayOftCountryInfoToXml(*this, doc, node);
 }
 

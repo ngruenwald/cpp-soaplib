@@ -2,7 +2,7 @@
 
 #include <memory>
 #include <functional>
-#include <soaplib/xml/xml.hpp>
+#include <soaplib/xml/Xml.hpp>
 
 namespace soaplib {
 

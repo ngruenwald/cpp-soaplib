@@ -1,7 +1,7 @@
 #include "SoapBase.hpp"
-#include "parseHelper.hpp"
-#include "soapException.hpp"
-#include "types/uuid.hpp"
+#include "ParseHelper.hpp"
+#include "SoapException.hpp"
+#include "types/Uuid.hpp"
 
 #include <libxml/tree.h>
 
@@ -101,7 +101,7 @@ xml::Node SoapBase::CreateEnvelope(
     const std::string& soapAction,
     const std::string& serviceAddress)
 {
-    resetPrefix();
+    ResetPrefix();
 
     auto envelope = doc.CreateRootNode("Envelope");
 
@@ -127,7 +127,7 @@ xml::Node SoapBase::CreateEnvelope(
             headerAction.SetVal(soapAction);
         }
 
-        auto urn = "urn:uuid:" + uuid::generate_string();
+        auto urn = "urn:uuid:" + Uuid::GenerateString();
         auto messageID = AddChild(doc, header, "MessageID", "a");
         messageID.SetVal(urn);
 
@@ -184,7 +184,7 @@ xml::Node SoapBase::AddChild(
     return node;
 }
 
-std::string SoapBase::ns(
+std::string SoapBase::Ns(
     const std::string& ns,
     const std::string& name)
 {

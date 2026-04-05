@@ -2,7 +2,7 @@
 
 #include "ArrayOftLanguage.hpp"
 
-#include <soaplib/parseHelper.hpp>
+#include <soaplib/ParseHelper.hpp>
 
 #include "tLanguage.hpp"
 
@@ -12,7 +12,7 @@ void ArrayOftLanguageFromXml(
     const soaplib::xml::Node& objNode,
     ArrayOftLanguage& obj)
 {
-    obj.TLanguage = soaplib::getMultiple<tLanguage>(objNode, "tLanguage", tLanguageFromXml);
+    obj.TLanguage = soaplib::GetMultiple<tLanguage>(objNode, "tLanguage", tLanguageFromXml);
 }
 
 ArrayOftLanguage ArrayOftLanguageFromXml(
@@ -38,7 +38,7 @@ static void _ArrayOftLanguageToXml(
 {
     for (const auto& entry : obj.TLanguage)
     {
-        auto pn = soaplib::addChild(doc, objNode, "tLanguage", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto pn = soaplib::AddChild(doc, objNode, "tLanguage", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         tLanguageToXml(entry, doc, pn, false);
     }
 }
@@ -51,7 +51,7 @@ void ArrayOftLanguageToXml(
 {
     if (createNode)
     {
-        auto objNode = soaplib::addChild(doc, parentNode, "ArrayOftLanguage", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto objNode = soaplib::AddChild(doc, parentNode, "ArrayOftLanguage", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         _ArrayOftLanguageToXml(obj, doc, objNode);
     }
     else
@@ -64,7 +64,7 @@ void ArrayOftLanguage::ToAnyXml(
     soaplib::xml::Document& doc,
     soaplib::xml::Node& node) const
 {
-    soaplib::setAnyTypeAttribute(doc, node, "ArrayOftLanguage", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+    soaplib::SetAnyTypeAttribute(doc, node, "ArrayOftLanguage", "http://www.oorsprong.org/websamples.countryinfo", "tns");
     _ArrayOftLanguageToXml(*this, doc, node);
 }
 

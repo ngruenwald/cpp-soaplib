@@ -2,7 +2,7 @@
 
 #include "FullCountryInfoResponse.hpp"
 
-#include <soaplib/parseHelper.hpp>
+#include <soaplib/ParseHelper.hpp>
 
 #include "tCountryInfo.hpp"
 
@@ -12,7 +12,7 @@ void FullCountryInfoResponseFromXml(
     const soaplib::xml::Node& objNode,
     FullCountryInfoResponse& obj)
 {
-    obj.FullCountryInfoResult = soaplib::getMandatory<tCountryInfo>(objNode, "FullCountryInfoResult", tCountryInfoFromXml);
+    obj.FullCountryInfoResult = soaplib::GetMandatory<tCountryInfo>(objNode, "FullCountryInfoResult", tCountryInfoFromXml);
 }
 
 FullCountryInfoResponse FullCountryInfoResponseFromXml(
@@ -37,7 +37,7 @@ static void _FullCountryInfoResponseToXml(
     soaplib::xml::Node& objNode)
 {
     {
-        auto pn = soaplib::addChild(doc, objNode, "FullCountryInfoResult", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto pn = soaplib::AddChild(doc, objNode, "FullCountryInfoResult", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         tCountryInfoToXml(obj.FullCountryInfoResult, doc, pn, false);
     }
 }
@@ -50,7 +50,7 @@ void FullCountryInfoResponseToXml(
 {
     if (createNode)
     {
-        auto objNode = soaplib::addChild(doc, parentNode, "FullCountryInfoResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto objNode = soaplib::AddChild(doc, parentNode, "FullCountryInfoResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         _FullCountryInfoResponseToXml(obj, doc, objNode);
     }
     else
@@ -63,7 +63,7 @@ void FullCountryInfoResponse::ToAnyXml(
     soaplib::xml::Document& doc,
     soaplib::xml::Node& node) const
 {
-    soaplib::setAnyTypeAttribute(doc, node, "FullCountryInfoResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+    soaplib::SetAnyTypeAttribute(doc, node, "FullCountryInfoResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
     _FullCountryInfoResponseToXml(*this, doc, node);
 }
 

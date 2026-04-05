@@ -2,7 +2,7 @@
 
 #include "FullCountryInfo.hpp"
 
-#include <soaplib/parseHelper.hpp>
+#include <soaplib/ParseHelper.hpp>
 
 
 namespace country {
@@ -11,7 +11,7 @@ void FullCountryInfoFromXml(
     const soaplib::xml::Node& objNode,
     FullCountryInfo& obj)
 {
-    obj.SCountryISOCode = soaplib::getMandatory<soaplib::String>(objNode, "sCountryISOCode", StringFromXml);
+    obj.SCountryISOCode = soaplib::GetMandatory<soaplib::String>(objNode, "sCountryISOCode", StringFromXml);
 }
 
 FullCountryInfo FullCountryInfoFromXml(
@@ -36,7 +36,7 @@ static void _FullCountryInfoToXml(
     soaplib::xml::Node& objNode)
 {
     {
-        auto pn = soaplib::addChild(doc, objNode, "sCountryISOCode", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto pn = soaplib::AddChild(doc, objNode, "sCountryISOCode", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         StringToXml(pn, obj.SCountryISOCode);
     }
 }
@@ -49,7 +49,7 @@ void FullCountryInfoToXml(
 {
     if (createNode)
     {
-        auto objNode = soaplib::addChild(doc, parentNode, "FullCountryInfo", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto objNode = soaplib::AddChild(doc, parentNode, "FullCountryInfo", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         _FullCountryInfoToXml(obj, doc, objNode);
     }
     else
@@ -62,7 +62,7 @@ void FullCountryInfo::ToAnyXml(
     soaplib::xml::Document& doc,
     soaplib::xml::Node& node) const
 {
-    soaplib::setAnyTypeAttribute(doc, node, "FullCountryInfo", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+    soaplib::SetAnyTypeAttribute(doc, node, "FullCountryInfo", "http://www.oorsprong.org/websamples.countryinfo", "tns");
     _FullCountryInfoToXml(*this, doc, node);
 }
 

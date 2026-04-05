@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include <soaplib/soapService.hpp>
+#include <soaplib/SoapService.hpp>
 
 #include "types/ListOfContinentsByName.hpp"
 #include "types/ListOfContinentsByNameResponse.hpp"

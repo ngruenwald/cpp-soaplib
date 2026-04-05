@@ -2,7 +2,7 @@
 
 #include "CountryISOCodeResponse.hpp"
 
-#include <soaplib/parseHelper.hpp>
+#include <soaplib/ParseHelper.hpp>
 
 
 namespace country {
@@ -11,7 +11,7 @@ void CountryISOCodeResponseFromXml(
     const soaplib::xml::Node& objNode,
     CountryISOCodeResponse& obj)
 {
-    obj.CountryISOCodeResult = soaplib::getMandatory<soaplib::String>(objNode, "CountryISOCodeResult", StringFromXml);
+    obj.CountryISOCodeResult = soaplib::GetMandatory<soaplib::String>(objNode, "CountryISOCodeResult", StringFromXml);
 }
 
 CountryISOCodeResponse CountryISOCodeResponseFromXml(
@@ -36,7 +36,7 @@ static void _CountryISOCodeResponseToXml(
     soaplib::xml::Node& objNode)
 {
     {
-        auto pn = soaplib::addChild(doc, objNode, "CountryISOCodeResult", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto pn = soaplib::AddChild(doc, objNode, "CountryISOCodeResult", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         StringToXml(pn, obj.CountryISOCodeResult);
     }
 }
@@ -49,7 +49,7 @@ void CountryISOCodeResponseToXml(
 {
     if (createNode)
     {
-        auto objNode = soaplib::addChild(doc, parentNode, "CountryISOCodeResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto objNode = soaplib::AddChild(doc, parentNode, "CountryISOCodeResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         _CountryISOCodeResponseToXml(obj, doc, objNode);
     }
     else
@@ -62,7 +62,7 @@ void CountryISOCodeResponse::ToAnyXml(
     soaplib::xml::Document& doc,
     soaplib::xml::Node& node) const
 {
-    soaplib::setAnyTypeAttribute(doc, node, "CountryISOCodeResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+    soaplib::SetAnyTypeAttribute(doc, node, "CountryISOCodeResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
     _CountryISOCodeResponseToXml(*this, doc, node);
 }
 

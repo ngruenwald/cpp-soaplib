@@ -1,8 +1,8 @@
 #include "unit_tests.hpp"
 
-#include <soaplib/types/dateTypes.hpp>
-#include <soaplib/types/simpleTypes.hpp>
-#include <soaplib/xml/xml.hpp>
+#include <soaplib/types/DateTypes.hpp>
+#include <soaplib/types/SimpleTypes.hpp>
+#include <soaplib/xml/Xml.hpp>
 
 
 TEST_CASE("SimpleType operators", "[all][types]")

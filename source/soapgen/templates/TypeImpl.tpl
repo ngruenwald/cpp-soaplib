@@ -6,7 +6,7 @@
 
 #include "{{ type.name }}.hpp"
 
-#include <soaplib/parseHelper.hpp>
+#include <soaplib/ParseHelper.hpp>
 
 {{ fmacro("TypeImpl_Includes.tpl", type) }}
 {% for namespace in type.namespaces -%}

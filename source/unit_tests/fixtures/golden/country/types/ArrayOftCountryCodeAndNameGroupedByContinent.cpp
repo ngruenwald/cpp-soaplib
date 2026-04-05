@@ -2,7 +2,7 @@
 
 #include "ArrayOftCountryCodeAndNameGroupedByContinent.hpp"
 
-#include <soaplib/parseHelper.hpp>
+#include <soaplib/ParseHelper.hpp>
 
 #include "tCountryCodeAndNameGroupedByContinent.hpp"
 
@@ -12,7 +12,7 @@ void ArrayOftCountryCodeAndNameGroupedByContinentFromXml(
     const soaplib::xml::Node& objNode,
     ArrayOftCountryCodeAndNameGroupedByContinent& obj)
 {
-    obj.TCountryCodeAndNameGroupedByContinent = soaplib::getMultiple<tCountryCodeAndNameGroupedByContinent>(objNode, "tCountryCodeAndNameGroupedByContinent", tCountryCodeAndNameGroupedByContinentFromXml);
+    obj.TCountryCodeAndNameGroupedByContinent = soaplib::GetMultiple<tCountryCodeAndNameGroupedByContinent>(objNode, "tCountryCodeAndNameGroupedByContinent", tCountryCodeAndNameGroupedByContinentFromXml);
 }
 
 ArrayOftCountryCodeAndNameGroupedByContinent ArrayOftCountryCodeAndNameGroupedByContinentFromXml(
@@ -38,7 +38,7 @@ static void _ArrayOftCountryCodeAndNameGroupedByContinentToXml(
 {
     for (const auto& entry : obj.TCountryCodeAndNameGroupedByContinent)
     {
-        auto pn = soaplib::addChild(doc, objNode, "tCountryCodeAndNameGroupedByContinent", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto pn = soaplib::AddChild(doc, objNode, "tCountryCodeAndNameGroupedByContinent", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         tCountryCodeAndNameGroupedByContinentToXml(entry, doc, pn, false);
     }
 }
@@ -51,7 +51,7 @@ void ArrayOftCountryCodeAndNameGroupedByContinentToXml(
 {
     if (createNode)
     {
-        auto objNode = soaplib::addChild(doc, parentNode, "ArrayOftCountryCodeAndNameGroupedByContinent", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto objNode = soaplib::AddChild(doc, parentNode, "ArrayOftCountryCodeAndNameGroupedByContinent", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         _ArrayOftCountryCodeAndNameGroupedByContinentToXml(obj, doc, objNode);
     }
     else
@@ -64,7 +64,7 @@ void ArrayOftCountryCodeAndNameGroupedByContinent::ToAnyXml(
     soaplib::xml::Document& doc,
     soaplib::xml::Node& node) const
 {
-    soaplib::setAnyTypeAttribute(doc, node, "ArrayOftCountryCodeAndNameGroupedByContinent", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+    soaplib::SetAnyTypeAttribute(doc, node, "ArrayOftCountryCodeAndNameGroupedByContinent", "http://www.oorsprong.org/websamples.countryinfo", "tns");
     _ArrayOftCountryCodeAndNameGroupedByContinentToXml(*this, doc, node);
 }
 

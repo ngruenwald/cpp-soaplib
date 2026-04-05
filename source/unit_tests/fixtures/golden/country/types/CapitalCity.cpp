@@ -2,7 +2,7 @@
 
 #include "CapitalCity.hpp"
 
-#include <soaplib/parseHelper.hpp>
+#include <soaplib/ParseHelper.hpp>
 
 
 namespace country {
@@ -11,7 +11,7 @@ void CapitalCityFromXml(
     const soaplib::xml::Node& objNode,
     CapitalCity& obj)
 {
-    obj.SCountryISOCode = soaplib::getMandatory<soaplib::String>(objNode, "sCountryISOCode", StringFromXml);
+    obj.SCountryISOCode = soaplib::GetMandatory<soaplib::String>(objNode, "sCountryISOCode", StringFromXml);
 }
 
 CapitalCity CapitalCityFromXml(
@@ -36,7 +36,7 @@ static void _CapitalCityToXml(
     soaplib::xml::Node& objNode)
 {
     {
-        auto pn = soaplib::addChild(doc, objNode, "sCountryISOCode", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto pn = soaplib::AddChild(doc, objNode, "sCountryISOCode", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         StringToXml(pn, obj.SCountryISOCode);
     }
 }
@@ -49,7 +49,7 @@ void CapitalCityToXml(
 {
     if (createNode)
     {
-        auto objNode = soaplib::addChild(doc, parentNode, "CapitalCity", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto objNode = soaplib::AddChild(doc, parentNode, "CapitalCity", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         _CapitalCityToXml(obj, doc, objNode);
     }
     else
@@ -62,7 +62,7 @@ void CapitalCity::ToAnyXml(
     soaplib::xml::Document& doc,
     soaplib::xml::Node& node) const
 {
-    soaplib::setAnyTypeAttribute(doc, node, "CapitalCity", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+    soaplib::SetAnyTypeAttribute(doc, node, "CapitalCity", "http://www.oorsprong.org/websamples.countryinfo", "tns");
     _CapitalCityToXml(*this, doc, node);
 }
 

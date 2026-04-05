@@ -2,7 +2,7 @@
 
 #include "ListOfLanguagesByCodeResponse.hpp"
 
-#include <soaplib/parseHelper.hpp>
+#include <soaplib/ParseHelper.hpp>
 
 #include "ArrayOftLanguage.hpp"
 
@@ -12,7 +12,7 @@ void ListOfLanguagesByCodeResponseFromXml(
     const soaplib::xml::Node& objNode,
     ListOfLanguagesByCodeResponse& obj)
 {
-    obj.ListOfLanguagesByCodeResult = soaplib::getMandatory<ArrayOftLanguage>(objNode, "ListOfLanguagesByCodeResult", ArrayOftLanguageFromXml);
+    obj.ListOfLanguagesByCodeResult = soaplib::GetMandatory<ArrayOftLanguage>(objNode, "ListOfLanguagesByCodeResult", ArrayOftLanguageFromXml);
 }
 
 ListOfLanguagesByCodeResponse ListOfLanguagesByCodeResponseFromXml(
@@ -37,7 +37,7 @@ static void _ListOfLanguagesByCodeResponseToXml(
     soaplib::xml::Node& objNode)
 {
     {
-        auto pn = soaplib::addChild(doc, objNode, "ListOfLanguagesByCodeResult", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto pn = soaplib::AddChild(doc, objNode, "ListOfLanguagesByCodeResult", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         ArrayOftLanguageToXml(obj.ListOfLanguagesByCodeResult, doc, pn, false);
     }
 }
@@ -50,7 +50,7 @@ void ListOfLanguagesByCodeResponseToXml(
 {
     if (createNode)
     {
-        auto objNode = soaplib::addChild(doc, parentNode, "ListOfLanguagesByCodeResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto objNode = soaplib::AddChild(doc, parentNode, "ListOfLanguagesByCodeResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         _ListOfLanguagesByCodeResponseToXml(obj, doc, objNode);
     }
     else
@@ -63,7 +63,7 @@ void ListOfLanguagesByCodeResponse::ToAnyXml(
     soaplib::xml::Document& doc,
     soaplib::xml::Node& node) const
 {
-    soaplib::setAnyTypeAttribute(doc, node, "ListOfLanguagesByCodeResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+    soaplib::SetAnyTypeAttribute(doc, node, "ListOfLanguagesByCodeResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
     _ListOfLanguagesByCodeResponseToXml(*this, doc, node);
 }
 

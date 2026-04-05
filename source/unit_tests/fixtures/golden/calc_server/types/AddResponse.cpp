@@ -2,7 +2,7 @@
 
 #include "AddResponse.hpp"
 
-#include <soaplib/parseHelper.hpp>
+#include <soaplib/ParseHelper.hpp>
 
 
 namespace calc {
@@ -11,7 +11,7 @@ void AddResponseFromXml(
     const soaplib::xml::Node& objNode,
     AddResponse& obj)
 {
-    obj.AddResult = soaplib::getMandatory<soaplib::Int32>(objNode, "AddResult", Int32FromXml);
+    obj.AddResult = soaplib::GetMandatory<soaplib::Int32>(objNode, "AddResult", Int32FromXml);
 }
 
 AddResponse AddResponseFromXml(
@@ -36,7 +36,7 @@ static void _AddResponseToXml(
     soaplib::xml::Node& objNode)
 {
     {
-        auto pn = soaplib::addChild(doc, objNode, "AddResult", "http://tempuri.org/", "");
+        auto pn = soaplib::AddChild(doc, objNode, "AddResult", "http://tempuri.org/", "");
         Int32ToXml(pn, obj.AddResult);
     }
 }
@@ -49,7 +49,7 @@ void AddResponseToXml(
 {
     if (createNode)
     {
-        auto objNode = soaplib::addChild(doc, parentNode, "AddResponse", "http://tempuri.org/", "");
+        auto objNode = soaplib::AddChild(doc, parentNode, "AddResponse", "http://tempuri.org/", "");
         _AddResponseToXml(obj, doc, objNode);
     }
     else
@@ -62,7 +62,7 @@ void AddResponse::ToAnyXml(
     soaplib::xml::Document& doc,
     soaplib::xml::Node& node) const
 {
-    soaplib::setAnyTypeAttribute(doc, node, "AddResponse", "http://tempuri.org/", "");
+    soaplib::SetAnyTypeAttribute(doc, node, "AddResponse", "http://tempuri.org/", "");
     _AddResponseToXml(*this, doc, node);
 }
 

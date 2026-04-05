@@ -1,5 +1,5 @@
-#include "soapClient.hpp"
-#include "soapException.hpp"
+#include "SoapClient.hpp"
+#include "SoapException.hpp"
 
 #include <condition_variable>
 #include <iostream>
@@ -15,7 +15,7 @@ SoapClient::SoapClient(
     int timeoutSeconds)
     : timeout_(timeoutSeconds)
 {
-    extractAddressParts(serviceAddress);
+    ExtractAddressParts(serviceAddress);
 }
 
 SoapClient::~SoapClient()
@@ -83,7 +83,7 @@ std::unique_ptr<xml::Document> SoapClient::Send(
     );
 }
 
-void SoapClient::extractAddressParts(
+void SoapClient::ExtractAddressParts(
     const std::string& serviceAddress)
 {
     auto idxHost = serviceAddress.find("://");

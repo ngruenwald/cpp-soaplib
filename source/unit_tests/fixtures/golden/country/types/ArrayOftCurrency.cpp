@@ -2,7 +2,7 @@
 
 #include "ArrayOftCurrency.hpp"
 
-#include <soaplib/parseHelper.hpp>
+#include <soaplib/ParseHelper.hpp>
 
 #include "tCurrency.hpp"
 
@@ -12,7 +12,7 @@ void ArrayOftCurrencyFromXml(
     const soaplib::xml::Node& objNode,
     ArrayOftCurrency& obj)
 {
-    obj.TCurrency = soaplib::getMultiple<tCurrency>(objNode, "tCurrency", tCurrencyFromXml);
+    obj.TCurrency = soaplib::GetMultiple<tCurrency>(objNode, "tCurrency", tCurrencyFromXml);
 }
 
 ArrayOftCurrency ArrayOftCurrencyFromXml(
@@ -38,7 +38,7 @@ static void _ArrayOftCurrencyToXml(
 {
     for (const auto& entry : obj.TCurrency)
     {
-        auto pn = soaplib::addChild(doc, objNode, "tCurrency", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto pn = soaplib::AddChild(doc, objNode, "tCurrency", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         tCurrencyToXml(entry, doc, pn, false);
     }
 }
@@ -51,7 +51,7 @@ void ArrayOftCurrencyToXml(
 {
     if (createNode)
     {
-        auto objNode = soaplib::addChild(doc, parentNode, "ArrayOftCurrency", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto objNode = soaplib::AddChild(doc, parentNode, "ArrayOftCurrency", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         _ArrayOftCurrencyToXml(obj, doc, objNode);
     }
     else
@@ -64,7 +64,7 @@ void ArrayOftCurrency::ToAnyXml(
     soaplib::xml::Document& doc,
     soaplib::xml::Node& node) const
 {
-    soaplib::setAnyTypeAttribute(doc, node, "ArrayOftCurrency", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+    soaplib::SetAnyTypeAttribute(doc, node, "ArrayOftCurrency", "http://www.oorsprong.org/websamples.countryinfo", "tns");
     _ArrayOftCurrencyToXml(*this, doc, node);
 }
 

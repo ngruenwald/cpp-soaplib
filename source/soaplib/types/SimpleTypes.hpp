@@ -5,7 +5,7 @@
 #include <memory>
 #include <string>
 
-#include <soaplib/types/soapBaseType.hpp>
+#include <soaplib/types/SoapBaseType.hpp>
 
 namespace soaplib {
 
@@ -34,7 +34,6 @@ struct TSimpleType
 
     T Value{};              ///< The contained value
 
-    /// Default constructor
     TSimpleType() = default;
 
     /// Constructs the object with the given value
@@ -149,7 +148,6 @@ typedef TSimpleType<std::uint64_t> UInt64;  ///< 64 bit unsigned integer type
 struct String
     : TSimpleType<std::string>
 {
-    /// Default constructor
     String() = default;
 
     /// Constructs a string object with the given string
@@ -205,7 +203,6 @@ typedef TSimpleType<double> Double;     ///< Double value
 struct HexBinary
     : TSimpleType<std::string>
 {
-    /// Default constructor
     HexBinary() = default;
 
     /// Constructs a hexBinary object with the given string

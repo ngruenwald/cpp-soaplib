@@ -2,7 +2,7 @@
 
 #include "Calculator.hpp"
 
-#include <soaplib/parseHelper.hpp>
+#include <soaplib/ParseHelper.hpp>
 
 namespace calc {
 

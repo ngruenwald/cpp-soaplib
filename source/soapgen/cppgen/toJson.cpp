@@ -371,7 +371,6 @@ void to_json(nlohmann::json& j, const Options& o)
 // but we prefer JsonMapper.
 void to_json(nlohmann::json& j, const Name& n) { j = JsonMapper(Options()).ToJson(n); }
 void to_json(nlohmann::json& j, const Type& t) { j = JsonMapper(Options()).ToJson(t); }
-//void to_json(nlohmann::json& j, const Parameter& p) { j = JsonMapper(Options()).ToJson(p); }
 void to_json(nlohmann::json& j, const Message& m) { j = JsonMapper(Options()).ToJson(m); }
 void to_json(nlohmann::json& j, const Port& p) { j = JsonMapper(Options()).ToJson(p); }
 void to_json(nlohmann::json& j, const Service& s) { j = JsonMapper(Options()).ToJson(s, Definition()); }

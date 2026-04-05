@@ -2,7 +2,7 @@
 
 #include "ListOfLanguagesByName.hpp"
 
-#include <soaplib/parseHelper.hpp>
+#include <soaplib/ParseHelper.hpp>
 
 
 namespace country {
@@ -44,7 +44,7 @@ void ListOfLanguagesByNameToXml(
 {
     if (createNode)
     {
-        auto objNode = soaplib::addChild(doc, parentNode, "ListOfLanguagesByName", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto objNode = soaplib::AddChild(doc, parentNode, "ListOfLanguagesByName", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         _ListOfLanguagesByNameToXml(obj, doc, objNode);
     }
     else
@@ -57,7 +57,7 @@ void ListOfLanguagesByName::ToAnyXml(
     soaplib::xml::Document& doc,
     soaplib::xml::Node& node) const
 {
-    soaplib::setAnyTypeAttribute(doc, node, "ListOfLanguagesByName", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+    soaplib::SetAnyTypeAttribute(doc, node, "ListOfLanguagesByName", "http://www.oorsprong.org/websamples.countryinfo", "tns");
     _ListOfLanguagesByNameToXml(*this, doc, node);
 }
 

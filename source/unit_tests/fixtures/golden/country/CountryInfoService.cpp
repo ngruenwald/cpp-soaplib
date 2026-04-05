@@ -2,7 +2,7 @@
 
 #include "CountryInfoService.hpp"
 
-#include <soaplib/parseHelper.hpp>
+#include <soaplib/ParseHelper.hpp>
 
 namespace country {
 

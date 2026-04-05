@@ -2,8 +2,8 @@
 
 #include "CalculatorServer.hpp"
 
-#include <soaplib/soapException.hpp>
-#include <soaplib/parseHelper.hpp>
+#include <soaplib/SoapException.hpp>
+#include <soaplib/ParseHelper.hpp>
 
 namespace calc {
 

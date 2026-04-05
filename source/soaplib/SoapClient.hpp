@@ -3,7 +3,7 @@
 #include <memory>
 #include <string>
 
-#include <soaplib/xml/document.hpp>
+#include <soaplib/xml/Document.hpp>
 
 namespace soaplib {
 
@@ -18,7 +18,6 @@ public:
         const std::string& serviceAddress,
         int timeoutSeconds = 5);
 
-    /// Destructs the instance.
     ~SoapClient();
 
     /// Enables logging of HTTP requests and responses.
@@ -48,7 +47,7 @@ public:
         int timeoutSeconds);
 
 private:
-    void extractAddressParts(
+    void ExtractAddressParts(
         const std::string& serviceAddress);
 
 private:

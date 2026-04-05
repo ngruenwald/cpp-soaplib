@@ -1,11 +1,11 @@
-#include <soaplib/soapService.hpp>
+#include <soaplib/SoapService.hpp>
 #include <soaplib/HttpSoapTransport.hpp>
-#include <soaplib/soapException.hpp>
+#include <soaplib/SoapException.hpp>
 
 #include <sstream>
 #include <utility>
 
-#include <soaplib/xml/xml.hpp>
+#include <soaplib/xml/Xml.hpp>
 
 namespace soaplib {
 

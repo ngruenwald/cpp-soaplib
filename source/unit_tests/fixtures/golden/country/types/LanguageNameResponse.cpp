@@ -2,7 +2,7 @@
 
 #include "LanguageNameResponse.hpp"
 
-#include <soaplib/parseHelper.hpp>
+#include <soaplib/ParseHelper.hpp>
 
 
 namespace country {
@@ -11,7 +11,7 @@ void LanguageNameResponseFromXml(
     const soaplib::xml::Node& objNode,
     LanguageNameResponse& obj)
 {
-    obj.LanguageNameResult = soaplib::getMandatory<soaplib::String>(objNode, "LanguageNameResult", StringFromXml);
+    obj.LanguageNameResult = soaplib::GetMandatory<soaplib::String>(objNode, "LanguageNameResult", StringFromXml);
 }
 
 LanguageNameResponse LanguageNameResponseFromXml(
@@ -36,7 +36,7 @@ static void _LanguageNameResponseToXml(
     soaplib::xml::Node& objNode)
 {
     {
-        auto pn = soaplib::addChild(doc, objNode, "LanguageNameResult", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto pn = soaplib::AddChild(doc, objNode, "LanguageNameResult", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         StringToXml(pn, obj.LanguageNameResult);
     }
 }
@@ -49,7 +49,7 @@ void LanguageNameResponseToXml(
 {
     if (createNode)
     {
-        auto objNode = soaplib::addChild(doc, parentNode, "LanguageNameResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto objNode = soaplib::AddChild(doc, parentNode, "LanguageNameResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         _LanguageNameResponseToXml(obj, doc, objNode);
     }
     else
@@ -62,7 +62,7 @@ void LanguageNameResponse::ToAnyXml(
     soaplib::xml::Document& doc,
     soaplib::xml::Node& node) const
 {
-    soaplib::setAnyTypeAttribute(doc, node, "LanguageNameResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+    soaplib::SetAnyTypeAttribute(doc, node, "LanguageNameResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
     _LanguageNameResponseToXml(*this, doc, node);
 }
 

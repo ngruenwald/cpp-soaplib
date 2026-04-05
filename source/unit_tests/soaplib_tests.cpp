@@ -7,9 +7,9 @@
 #include <soaplib/WebSocketSoapTransport.hpp>
 #include <soaplib/WebSocketSoapServer.hpp>
 #include <soaplib/SoapFault.hpp>
-#include <soaplib/soapException.hpp>
-#include <soaplib/soapService.hpp>
-#include <soaplib/xml/xml.hpp>
+#include <soaplib/SoapException.hpp>
+#include <soaplib/SoapService.hpp>
+#include <soaplib/xml/Xml.hpp>
 #include <httplib.h>
 #include <future>
 #include <thread>
@@ -50,7 +50,7 @@ public:
     using SoapBase::CreateEnvelope;
     using SoapBase::AddNamespace;
     using SoapBase::AddChild;
-    using SoapBase::ns;
+    using SoapBase::Ns;
     using SoapBase::ValidateHeaders;
     using SoapBase::SetHeaderAttribute;
 };

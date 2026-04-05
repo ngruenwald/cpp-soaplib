@@ -1,5 +1,5 @@
 #include <soaplib/HttpSoapTransport.hpp>
-#include <soaplib/soapException.hpp>
+#include <soaplib/SoapException.hpp>
 
 #include <iostream>
 #include <httplib.h>
@@ -11,7 +11,7 @@ HttpSoapTransport::HttpSoapTransport(
     HttpConfig config)
     : config_(std::move(config))
 {
-    extractAddressParts(serviceAddress);
+    ExtractAddressParts(serviceAddress);
 }
 
 HttpSoapTransport::~HttpSoapTransport() = default;
@@ -174,7 +174,7 @@ std::unique_ptr<xml::Document> HttpSoapTransport::Send(
     return doc;
 }
 
-void HttpSoapTransport::extractAddressParts(
+void HttpSoapTransport::ExtractAddressParts(
     const std::string& serviceAddress)
 {
     auto idxHost = serviceAddress.find("://");

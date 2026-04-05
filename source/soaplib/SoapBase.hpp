@@ -3,7 +3,7 @@
 #include <string>
 #include <memory>
 #include <set>
-#include <soaplib/xml/xml.hpp>
+#include <soaplib/xml/Xml.hpp>
 
 namespace soaplib {
 
@@ -74,7 +74,7 @@ protected:
         const std::string& value);
 
     /// Formats a XML namespace.
-    static std::string ns(
+    static std::string Ns(
         const std::string& ns,
         const std::string& name);
 

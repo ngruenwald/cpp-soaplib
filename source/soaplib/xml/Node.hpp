@@ -15,7 +15,6 @@ class Node
     friend class Document;
 
 public:
-    /// Default constructor
     Node();
 
     /// Constructs node object from libxml2 node pointer

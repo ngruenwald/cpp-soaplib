@@ -3,8 +3,8 @@
 
 #include "{{ service.name }}Server.hpp"
 
-#include <soaplib/soapException.hpp>
-#include <soaplib/parseHelper.hpp>
+#include <soaplib/SoapException.hpp>
+#include <soaplib/ParseHelper.hpp>
 
 {% for ns in options.namespaces %}
 namespace {{ ns }} {

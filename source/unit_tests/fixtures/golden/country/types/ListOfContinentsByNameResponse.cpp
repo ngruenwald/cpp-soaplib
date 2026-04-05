@@ -2,7 +2,7 @@
 
 #include "ListOfContinentsByNameResponse.hpp"
 
-#include <soaplib/parseHelper.hpp>
+#include <soaplib/ParseHelper.hpp>
 
 #include "ArrayOftContinent.hpp"
 
@@ -12,7 +12,7 @@ void ListOfContinentsByNameResponseFromXml(
     const soaplib::xml::Node& objNode,
     ListOfContinentsByNameResponse& obj)
 {
-    obj.ListOfContinentsByNameResult = soaplib::getMandatory<ArrayOftContinent>(objNode, "ListOfContinentsByNameResult", ArrayOftContinentFromXml);
+    obj.ListOfContinentsByNameResult = soaplib::GetMandatory<ArrayOftContinent>(objNode, "ListOfContinentsByNameResult", ArrayOftContinentFromXml);
 }
 
 ListOfContinentsByNameResponse ListOfContinentsByNameResponseFromXml(
@@ -37,7 +37,7 @@ static void _ListOfContinentsByNameResponseToXml(
     soaplib::xml::Node& objNode)
 {
     {
-        auto pn = soaplib::addChild(doc, objNode, "ListOfContinentsByNameResult", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto pn = soaplib::AddChild(doc, objNode, "ListOfContinentsByNameResult", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         ArrayOftContinentToXml(obj.ListOfContinentsByNameResult, doc, pn, false);
     }
 }
@@ -50,7 +50,7 @@ void ListOfContinentsByNameResponseToXml(
 {
     if (createNode)
     {
-        auto objNode = soaplib::addChild(doc, parentNode, "ListOfContinentsByNameResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto objNode = soaplib::AddChild(doc, parentNode, "ListOfContinentsByNameResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         _ListOfContinentsByNameResponseToXml(obj, doc, objNode);
     }
     else
@@ -63,7 +63,7 @@ void ListOfContinentsByNameResponse::ToAnyXml(
     soaplib::xml::Document& doc,
     soaplib::xml::Node& node) const
 {
-    soaplib::setAnyTypeAttribute(doc, node, "ListOfContinentsByNameResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+    soaplib::SetAnyTypeAttribute(doc, node, "ListOfContinentsByNameResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
     _ListOfContinentsByNameResponseToXml(*this, doc, node);
 }
 

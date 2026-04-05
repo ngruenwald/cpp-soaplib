@@ -5,24 +5,24 @@
 #include <string>
 #include <vector>
 
-#include <soaplib/xml/xml.hpp>
+#include <soaplib/xml/Xml.hpp>
 
 namespace soaplib {
 
 /// Tests if the given XML node is valid.
 /// @param[in] node The XML node to test
 /// @returns True if valid, otherwise false
-bool isValidNode(
+bool IsValidNode(
     const xml::Node& node);
 
 /// Tests if the given node has a "nil" attribute set.
 /// @param[in] node The XML node to test
 /// @returns True if the "nil" attribute is present, otherwise false
-bool isNil(
+bool IsNil(
     const xml::Node& node);
 
 /// Reset global prefix
-void resetPrefix();
+void ResetPrefix();
 
 /// Retrieves the date of a child element, or throws if not possible.
 /// @tparam T The type of the element data.
@@ -33,7 +33,7 @@ void resetPrefix();
 /// @throws xml::Exception
 /// @throws std::runtime_error, std::invalid_argument, std::out_of_range, ...
 template<typename T>
-T getMandatory(
+T GetMandatory(
     const xml::Node& parentNode,
     const std::string& childName,
     T (*fromXml)(const xml::Node&))
@@ -48,7 +48,7 @@ T getMandatory(
 /// @param[in] fromXml The XML parser used to decode the element data
 /// @returns An unique pointer containing the data, if available.
 template<typename T>
-std::unique_ptr<T> getPointer(
+std::unique_ptr<T> GetPointer(
     const xml::Node& parentNode,
     const std::string& childName,
     T (*fromXml)(const xml::Node&))
@@ -57,12 +57,12 @@ std::unique_ptr<T> getPointer(
     {
         auto node = parentNode.GetChild(childName.c_str());
 
-        if (!isValidNode(node))
+        if (!IsValidNode(node))
         {
             return {};
         }
 
-        if (isNil(node))
+        if (IsNil(node))
         {
             return {};
         }
@@ -82,7 +82,7 @@ std::unique_ptr<T> getPointer(
 /// @param[in] fromXml The XML parser used to decode the element data
 /// @returns An optional containing the data, if available.
 template<typename T>
-std::optional<T> getOptional(
+std::optional<T> GetOptional(
     const xml::Node& parentNode,
     const std::string& childName,
     T (*fromXml)(const xml::Node&))
@@ -91,12 +91,12 @@ std::optional<T> getOptional(
     {
         auto node = parentNode.GetChild(childName.c_str());
 
-        if (!isValidNode(node))
+        if (!IsValidNode(node))
         {
             return {};
         }
 
-        if (isNil(node))
+        if (IsNil(node))
         {
             return {};
         }
@@ -118,7 +118,7 @@ std::optional<T> getOptional(
 /// @returns A vector containing the data of the child elements.
 /// @throws std::runtime_error, std::invalid_argument, std::out_of_range, ...
 template<typename T>
-std::vector<T> getMultiple(
+std::vector<T> GetMultiple(
     const xml::Node& parentNode,
     const std::string& childName,
     T (*fromXml)(const xml::Node&))
@@ -143,7 +143,7 @@ std::vector<T> getMultiple(
 /// @returns A vector containing the data of the child elements.
 /// @throws std::runtime_error, std::invalid_argument, std::out_of_range, ...
 template<typename T>
-std::vector<std::unique_ptr<T>> getMultiplePtrs(
+std::vector<std::unique_ptr<T>> GetMultiplePtrs(
     const xml::Node& parentNode,
     const std::string& childName,
     T (*fromXml)(const xml::Node&))
@@ -166,7 +166,7 @@ std::vector<std::unique_ptr<T>> getMultiplePtrs(
 /// @returns A pointer holding the value.
 /// @throws std::bad_alloc, ...
 template<typename T>
-std::unique_ptr<T> set(
+std::unique_ptr<T> Set(
     const T& value)
 {
     return std::make_unique<T>(value);
@@ -177,7 +177,7 @@ std::unique_ptr<T> set(
 /// @param[in] node The XML node
 /// @param[in] href Namespace URL
 /// @param[in] prefix Namespace prefix
-void addNamespace(
+void AddNamespace(
     xml::Document& doc,
     xml::Node& node,
     const std::string& href,
@@ -191,7 +191,7 @@ void addNamespace(
 /// @param[in] prefix Namespace prefix
 /// @returns The newly created child element
 /// @throws xml::Exception (?)
-xml::Node addChild(
+xml::Node AddChild(
     xml::Document& doc,
     xml::Node& parentNode,
     const std::string& name,
@@ -204,7 +204,7 @@ xml::Node addChild(
 /// @param[in] type The type name
 /// @param[in] href Namespace URL of the type
 /// @param[in] prefix Namespace prefix
-void setAnyTypeAttribute(
+void SetAnyTypeAttribute(
     xml::Document& doc,
     xml::Node& anyNode,
     const std::string& type,

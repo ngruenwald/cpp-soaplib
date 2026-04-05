@@ -2,7 +2,7 @@
 
 #include "Add.hpp"
 
-#include <soaplib/parseHelper.hpp>
+#include <soaplib/ParseHelper.hpp>
 
 
 namespace calc {
@@ -11,8 +11,8 @@ void AddFromXml(
     const soaplib::xml::Node& objNode,
     Add& obj)
 {
-    obj.IntA = soaplib::getMandatory<soaplib::Int32>(objNode, "intA", Int32FromXml);
-    obj.IntB = soaplib::getMandatory<soaplib::Int32>(objNode, "intB", Int32FromXml);
+    obj.IntA = soaplib::GetMandatory<soaplib::Int32>(objNode, "intA", Int32FromXml);
+    obj.IntB = soaplib::GetMandatory<soaplib::Int32>(objNode, "intB", Int32FromXml);
 }
 
 Add AddFromXml(
@@ -37,11 +37,11 @@ static void _AddToXml(
     soaplib::xml::Node& objNode)
 {
     {
-        auto pn = soaplib::addChild(doc, objNode, "intA", "http://tempuri.org/", "");
+        auto pn = soaplib::AddChild(doc, objNode, "intA", "http://tempuri.org/", "");
         Int32ToXml(pn, obj.IntA);
     }
     {
-        auto pn = soaplib::addChild(doc, objNode, "intB", "http://tempuri.org/", "");
+        auto pn = soaplib::AddChild(doc, objNode, "intB", "http://tempuri.org/", "");
         Int32ToXml(pn, obj.IntB);
     }
 }
@@ -54,7 +54,7 @@ void AddToXml(
 {
     if (createNode)
     {
-        auto objNode = soaplib::addChild(doc, parentNode, "Add", "http://tempuri.org/", "");
+        auto objNode = soaplib::AddChild(doc, parentNode, "Add", "http://tempuri.org/", "");
         _AddToXml(obj, doc, objNode);
     }
     else
@@ -67,7 +67,7 @@ void Add::ToAnyXml(
     soaplib::xml::Document& doc,
     soaplib::xml::Node& node) const
 {
-    soaplib::setAnyTypeAttribute(doc, node, "Add", "http://tempuri.org/", "");
+    soaplib::SetAnyTypeAttribute(doc, node, "Add", "http://tempuri.org/", "");
     _AddToXml(*this, doc, node);
 }
 

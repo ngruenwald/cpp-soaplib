@@ -2,7 +2,7 @@
 
 #include "CountriesUsingCurrencyResponse.hpp"
 
-#include <soaplib/parseHelper.hpp>
+#include <soaplib/ParseHelper.hpp>
 
 #include "ArrayOftCountryCodeAndName.hpp"
 
@@ -12,7 +12,7 @@ void CountriesUsingCurrencyResponseFromXml(
     const soaplib::xml::Node& objNode,
     CountriesUsingCurrencyResponse& obj)
 {
-    obj.CountriesUsingCurrencyResult = soaplib::getMandatory<ArrayOftCountryCodeAndName>(objNode, "CountriesUsingCurrencyResult", ArrayOftCountryCodeAndNameFromXml);
+    obj.CountriesUsingCurrencyResult = soaplib::GetMandatory<ArrayOftCountryCodeAndName>(objNode, "CountriesUsingCurrencyResult", ArrayOftCountryCodeAndNameFromXml);
 }
 
 CountriesUsingCurrencyResponse CountriesUsingCurrencyResponseFromXml(
@@ -37,7 +37,7 @@ static void _CountriesUsingCurrencyResponseToXml(
     soaplib::xml::Node& objNode)
 {
     {
-        auto pn = soaplib::addChild(doc, objNode, "CountriesUsingCurrencyResult", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto pn = soaplib::AddChild(doc, objNode, "CountriesUsingCurrencyResult", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         ArrayOftCountryCodeAndNameToXml(obj.CountriesUsingCurrencyResult, doc, pn, false);
     }
 }
@@ -50,7 +50,7 @@ void CountriesUsingCurrencyResponseToXml(
 {
     if (createNode)
     {
-        auto objNode = soaplib::addChild(doc, parentNode, "CountriesUsingCurrencyResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto objNode = soaplib::AddChild(doc, parentNode, "CountriesUsingCurrencyResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         _CountriesUsingCurrencyResponseToXml(obj, doc, objNode);
     }
     else
@@ -63,7 +63,7 @@ void CountriesUsingCurrencyResponse::ToAnyXml(
     soaplib::xml::Document& doc,
     soaplib::xml::Node& node) const
 {
-    soaplib::setAnyTypeAttribute(doc, node, "CountriesUsingCurrencyResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+    soaplib::SetAnyTypeAttribute(doc, node, "CountriesUsingCurrencyResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
     _CountriesUsingCurrencyResponseToXml(*this, doc, node);
 }
 

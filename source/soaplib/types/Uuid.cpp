@@ -1,11 +1,11 @@
-#include "uuid.hpp"
+#include "Uuid.hpp"
 
-#include "xml/xml.hpp"
-#include "parseHelper.hpp"
+#include <soaplib/xml/Xml.hpp>
+#include <soaplib/ParseHelper.hpp>
 
 namespace soaplib {
 
-uuid::uuid()
+Uuid::Uuid()
 {
 #ifdef WIN32
     UuidCreate(&uuid_);
@@ -14,8 +14,8 @@ uuid::uuid()
 #endif
 }
 
-uuid::uuid(
-    const uuid& src)
+Uuid::Uuid(
+    const Uuid& src)
 {
 #ifdef WIN32
     memcpy(&uuid_, &src.uuid_, sizeof(uuid_));
@@ -24,7 +24,7 @@ uuid::uuid(
 #endif
 }
 
-std::string uuid::to_string() const
+std::string Uuid::ToString() const
 {
     std::string str;
 
@@ -42,8 +42,8 @@ std::string uuid::to_string() const
     return str;
 }
 
-uuid& uuid::operator=(
-    const uuid& src)
+Uuid& Uuid::operator=(
+    const Uuid& src)
 {
 #ifdef WIN32
     memcpy(&uuid_, &src.uuid_, sizeof(uuid_));
@@ -53,8 +53,8 @@ uuid& uuid::operator=(
     return *this;
 }
 
-int uuid::compare(
-    const uuid& other) const
+int Uuid::Compare(
+    const Uuid& other) const
 {
 #ifdef WIN32
     RPC_STATUS status;
@@ -64,23 +64,23 @@ int uuid::compare(
 #endif
 }
 
-void uuid::ToAnyXml(
+void Uuid::ToAnyXml(
     soaplib::xml::Document& doc,
     soaplib::xml::Node& anyNode) const
 {
-    setAnyTypeAttribute(doc, anyNode, "guid", "http://schemas.microsoft.com/2003/10/Serialization/", "zer");
-    uuidToXml(anyNode, *this);
+    SetAnyTypeAttribute(doc, anyNode, "guid", "http://schemas.microsoft.com/2003/10/Serialization/", "zer");
+    UuidToXml(anyNode, *this);
 }
 
-std::string uuid::generate_string()
+std::string Uuid::GenerateString()
 {
-    return uuid().to_string();
+    return Uuid().ToString();
 }
 
-uuid uuid::from_string(
+Uuid Uuid::FromString(
     const std::string& str)
 {
-    uuid uuid;
+    Uuid uuid;
 
 #ifdef WIN32
     UuidFromStringA((RPC_CSTR)str.c_str(), &uuid.uuid_);
@@ -91,12 +91,9 @@ uuid uuid::from_string(
     return uuid;
 }
 
-bool uuid::validate_uuid_str(
+bool Uuid::ValidateUuidStr(
     const std::string& uuid)
 {
-    // UUID FMT: 8-4-4-4-12
-
-    // URI must have 36 characters
     if (uuid.length() != 36)
     {
         return false;
@@ -106,7 +103,6 @@ bool uuid::validate_uuid_str(
     {
         if (idx == 8 || idx == 13 || idx == 18 || idx == 23)
         {
-            // these positions must contain a dash
             if (uuid[idx] != '-')
             {
                 return false;
@@ -114,7 +110,6 @@ bool uuid::validate_uuid_str(
         }
         else
         {
-            // these positions must contain a hexadezimal character
             if (!isxdigit(uuid[idx]))
             {
                 return false;
@@ -128,33 +123,33 @@ bool uuid::validate_uuid_str(
 } // namespace soaplib
 
 
-void uuidFromXml(
+void UuidFromXml(
     const soaplib::xml::Node& node,
-    soaplib::uuid& obj)
+    soaplib::Uuid& obj)
 {
     auto s = node.GetStringVal();
-    obj = soaplib::uuid::from_string(s);
+    obj = soaplib::Uuid::FromString(s);
 }
 
-soaplib::uuid uuidFromXml(
+soaplib::Uuid UuidFromXml(
     const soaplib::xml::Node& node)
 {
-    auto obj = soaplib::uuid{};
-    uuidFromXml(node, obj);
+    auto obj = soaplib::Uuid{};
+    UuidFromXml(node, obj);
     return obj;
 }
 
-std::unique_ptr<soaplib::SoapBaseType> uuidPtrFromXml(
+std::unique_ptr<soaplib::SoapBaseType> UuidPtrFromXml(
     const soaplib::xml::Node& node)
 {
-    auto obj = std::make_unique<soaplib::uuid>();
-    uuidFromXml(node, *obj.get());
+    auto obj = std::make_unique<soaplib::Uuid>();
+    UuidFromXml(node, *obj.get());
     return obj;
 }
 
-void uuidToXml(
+void UuidToXml(
     soaplib::xml::Node& node,
-    const soaplib::uuid& value)
+    const soaplib::Uuid& value)
 {
-    node.SetVal(value.to_string());
+    node.SetVal(value.ToString());
 }

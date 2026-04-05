@@ -35,7 +35,6 @@ public:
         const std::string& wsAddress,
         const WsConfig& config = WsConfig());
 
-    /// Destructs the instance.
     ~WebSocketSoapTransport() override;
 
     /// Sets a handler for unsolicited responses.
@@ -60,7 +59,7 @@ public:
     void Close();
 
 private:
-    bool connect();
+    bool Connect();
 
 private:
     std::string address_;

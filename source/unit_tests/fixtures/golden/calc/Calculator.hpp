@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include <soaplib/soapService.hpp>
+#include <soaplib/SoapService.hpp>
 
 #include "types/Add.hpp"
 #include "types/AddResponse.hpp"

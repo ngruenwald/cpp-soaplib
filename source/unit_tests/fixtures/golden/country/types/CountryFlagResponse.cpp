@@ -2,7 +2,7 @@
 
 #include "CountryFlagResponse.hpp"
 
-#include <soaplib/parseHelper.hpp>
+#include <soaplib/ParseHelper.hpp>
 
 
 namespace country {
@@ -11,7 +11,7 @@ void CountryFlagResponseFromXml(
     const soaplib::xml::Node& objNode,
     CountryFlagResponse& obj)
 {
-    obj.CountryFlagResult = soaplib::getMandatory<soaplib::String>(objNode, "CountryFlagResult", StringFromXml);
+    obj.CountryFlagResult = soaplib::GetMandatory<soaplib::String>(objNode, "CountryFlagResult", StringFromXml);
 }
 
 CountryFlagResponse CountryFlagResponseFromXml(
@@ -36,7 +36,7 @@ static void _CountryFlagResponseToXml(
     soaplib::xml::Node& objNode)
 {
     {
-        auto pn = soaplib::addChild(doc, objNode, "CountryFlagResult", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto pn = soaplib::AddChild(doc, objNode, "CountryFlagResult", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         StringToXml(pn, obj.CountryFlagResult);
     }
 }
@@ -49,7 +49,7 @@ void CountryFlagResponseToXml(
 {
     if (createNode)
     {
-        auto objNode = soaplib::addChild(doc, parentNode, "CountryFlagResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto objNode = soaplib::AddChild(doc, parentNode, "CountryFlagResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         _CountryFlagResponseToXml(obj, doc, objNode);
     }
     else
@@ -62,7 +62,7 @@ void CountryFlagResponse::ToAnyXml(
     soaplib::xml::Document& doc,
     soaplib::xml::Node& node) const
 {
-    soaplib::setAnyTypeAttribute(doc, node, "CountryFlagResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+    soaplib::SetAnyTypeAttribute(doc, node, "CountryFlagResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
     _CountryFlagResponseToXml(*this, doc, node);
 }
 

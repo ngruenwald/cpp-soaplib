@@ -1,5 +1,5 @@
-#include "document.hpp"
-#include "exception.hpp"
+#include "Document.hpp"
+#include "Exception.hpp"
 
 #include <libxml/tree.h>
 #include <libxml/xpath.h>
@@ -7,8 +7,7 @@
 #include <sstream>
 #include <utility>
 
-namespace soaplib {
-namespace xml {
+namespace soaplib::xml {
 
 inline const char* ascii_cast(
     const xmlChar* pxc)
@@ -19,20 +18,12 @@ inline const char* ascii_cast(
 
 inline const char* get_content(_xmlBuffer* buffer)
 {
-#if 0
-    return ascii_cast(buffer->content);
-#else
     return ascii_cast(xmlBufferContent(buffer));
-#endif
 }
 
 inline size_t get_content_length(_xmlBuffer* buffer)
 {
-#if 0
-    return buffer->use;
-#else
     return xmlBufferLength(buffer);
-#endif
 }
 
 auto evaluateXPath(
@@ -197,5 +188,4 @@ std::unique_ptr<Document> Document::ParseMemory(
     return std::unique_ptr<Document>(new Document(buffer, length));
 }
 
-} // namespace xml
-} // namespace soaplib
+} // namespace soaplib::xml

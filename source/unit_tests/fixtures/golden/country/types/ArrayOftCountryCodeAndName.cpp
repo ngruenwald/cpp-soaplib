@@ -2,7 +2,7 @@
 
 #include "ArrayOftCountryCodeAndName.hpp"
 
-#include <soaplib/parseHelper.hpp>
+#include <soaplib/ParseHelper.hpp>
 
 #include "tCountryCodeAndName.hpp"
 
@@ -12,7 +12,7 @@ void ArrayOftCountryCodeAndNameFromXml(
     const soaplib::xml::Node& objNode,
     ArrayOftCountryCodeAndName& obj)
 {
-    obj.TCountryCodeAndName = soaplib::getMultiple<tCountryCodeAndName>(objNode, "tCountryCodeAndName", tCountryCodeAndNameFromXml);
+    obj.TCountryCodeAndName = soaplib::GetMultiple<tCountryCodeAndName>(objNode, "tCountryCodeAndName", tCountryCodeAndNameFromXml);
 }
 
 ArrayOftCountryCodeAndName ArrayOftCountryCodeAndNameFromXml(
@@ -38,7 +38,7 @@ static void _ArrayOftCountryCodeAndNameToXml(
 {
     for (const auto& entry : obj.TCountryCodeAndName)
     {
-        auto pn = soaplib::addChild(doc, objNode, "tCountryCodeAndName", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto pn = soaplib::AddChild(doc, objNode, "tCountryCodeAndName", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         tCountryCodeAndNameToXml(entry, doc, pn, false);
     }
 }
@@ -51,7 +51,7 @@ void ArrayOftCountryCodeAndNameToXml(
 {
     if (createNode)
     {
-        auto objNode = soaplib::addChild(doc, parentNode, "ArrayOftCountryCodeAndName", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto objNode = soaplib::AddChild(doc, parentNode, "ArrayOftCountryCodeAndName", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         _ArrayOftCountryCodeAndNameToXml(obj, doc, objNode);
     }
     else
@@ -64,7 +64,7 @@ void ArrayOftCountryCodeAndName::ToAnyXml(
     soaplib::xml::Document& doc,
     soaplib::xml::Node& node) const
 {
-    soaplib::setAnyTypeAttribute(doc, node, "ArrayOftCountryCodeAndName", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+    soaplib::SetAnyTypeAttribute(doc, node, "ArrayOftCountryCodeAndName", "http://www.oorsprong.org/websamples.countryinfo", "tns");
     _ArrayOftCountryCodeAndNameToXml(*this, doc, node);
 }
 

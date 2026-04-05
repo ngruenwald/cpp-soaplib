@@ -2,7 +2,7 @@
 
 #include "MultiplyResponse.hpp"
 
-#include <soaplib/parseHelper.hpp>
+#include <soaplib/ParseHelper.hpp>
 
 
 namespace calc {
@@ -11,7 +11,7 @@ void MultiplyResponseFromXml(
     const soaplib::xml::Node& objNode,
     MultiplyResponse& obj)
 {
-    obj.MultiplyResult = soaplib::getMandatory<soaplib::Int32>(objNode, "MultiplyResult", Int32FromXml);
+    obj.MultiplyResult = soaplib::GetMandatory<soaplib::Int32>(objNode, "MultiplyResult", Int32FromXml);
 }
 
 MultiplyResponse MultiplyResponseFromXml(
@@ -36,7 +36,7 @@ static void _MultiplyResponseToXml(
     soaplib::xml::Node& objNode)
 {
     {
-        auto pn = soaplib::addChild(doc, objNode, "MultiplyResult", "http://tempuri.org/", "");
+        auto pn = soaplib::AddChild(doc, objNode, "MultiplyResult", "http://tempuri.org/", "");
         Int32ToXml(pn, obj.MultiplyResult);
     }
 }
@@ -49,7 +49,7 @@ void MultiplyResponseToXml(
 {
     if (createNode)
     {
-        auto objNode = soaplib::addChild(doc, parentNode, "MultiplyResponse", "http://tempuri.org/", "");
+        auto objNode = soaplib::AddChild(doc, parentNode, "MultiplyResponse", "http://tempuri.org/", "");
         _MultiplyResponseToXml(obj, doc, objNode);
     }
     else
@@ -62,7 +62,7 @@ void MultiplyResponse::ToAnyXml(
     soaplib::xml::Document& doc,
     soaplib::xml::Node& node) const
 {
-    soaplib::setAnyTypeAttribute(doc, node, "MultiplyResponse", "http://tempuri.org/", "");
+    soaplib::SetAnyTypeAttribute(doc, node, "MultiplyResponse", "http://tempuri.org/", "");
     _MultiplyResponseToXml(*this, doc, node);
 }
 

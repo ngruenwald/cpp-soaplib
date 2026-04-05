@@ -1,14 +1,14 @@
-#include "parseHelper.hpp"
+#include "ParseHelper.hpp"
 
 namespace soaplib {
 
-bool isValidNode(
+bool IsValidNode(
     const xml::Node& node)
 {
     return node.GetXmlNode() != nullptr;
 }
 
-bool isNil(
+bool IsNil(
     const xml::Node& node)
 {
     try
@@ -23,14 +23,14 @@ bool isNil(
 
 static char prefix[] = { 'a', 'a', 'a', '\0' };
 
-void resetPrefix()
+void ResetPrefix()
 {
     prefix[0] = 'a';
     prefix[1] = 'a';
     prefix[2] = 'a';
 }
 
-std::string generatePrefix()
+std::string GeneratePrefix()
 {
     std::string cur{prefix};
 
@@ -49,7 +49,7 @@ std::string generatePrefix()
             if (prefix[0] > 'z')
             {
                 // oh, oh!
-                resetPrefix();
+                ResetPrefix();
             }
         }
     }
@@ -57,7 +57,7 @@ std::string generatePrefix()
     return cur;
 }
 
-void addNamespace(
+void AddNamespace(
     xml::Document& doc,
     xml::Node& node,
     const std::string& href,
@@ -103,7 +103,7 @@ void addNamespace(
 
     while (prefixExists)
     {
-        pre = generatePrefix();
+        pre = GeneratePrefix();
         auto ns = xmlSearchNs(doc.GetXmlDoc(), np, BAD_CAST pre.c_str());
         if (ns)
         {
@@ -123,7 +123,7 @@ void addNamespace(
     xmlSetNs(np, xmlNewNs(np, BAD_CAST href.c_str(), BAD_CAST pre.c_str()));
 }
 
-xml::Node addChild(
+xml::Node AddChild(
     xml::Document& doc,
     xml::Node& parentNode,
     const std::string& name,
@@ -133,12 +133,12 @@ xml::Node addChild(
     auto node = parentNode.AddChild(name.c_str());
     if (!href.empty() || !prefix.empty())
     {
-        addNamespace(doc, node, href, prefix);
+        AddNamespace(doc, node, href, prefix);
     }
     return node;
 }
 
-void setAnyTypeAttribute(
+void SetAnyTypeAttribute(
     xml::Document& doc,
     xml::Node& anyNode,
     const std::string& type,
@@ -148,7 +148,7 @@ void setAnyTypeAttribute(
 
     const auto xmlnsName = std::string{"xmlns:"} + prefix;
     const auto fullType = prefix + ":" + type;
-    //addNamespace(doc, anyNode, href, prefix);
+    //AddNamespace(doc, anyNode, href, prefix);
     anyNode.SetProp("i:type", fullType.c_str());
     anyNode.SetProp(xmlnsName.c_str(), href.c_str());
 }

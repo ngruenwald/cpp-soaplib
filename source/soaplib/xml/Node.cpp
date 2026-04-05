@@ -1,11 +1,10 @@
-#include "node.hpp"
-#include "exception.hpp"
+#include "Node.hpp"
+#include "Exception.hpp"
 
 #include <string.h>
 #include <sstream>
 
-namespace soaplib {
-namespace xml {
+namespace soaplib::xml {
 
 Node::Node()
 {
@@ -17,10 +16,7 @@ Node::Node(
 {
 }
 
-Node::~Node()
-{
-    /*xmlFreeNode(node_);*/
-}
+Node::~Node() = default;
 
 bool Node::IsValid() const
 {
@@ -141,7 +137,7 @@ std::string Node::GetStringVal() const
 
     if (content == nullptr)
     {
-        return {};  // TODO: throw?
+        return {};
     }
 
     auto result = std::string{reinterpret_cast<const char*>(content)};
@@ -201,5 +197,4 @@ xmlNodePtr Node::GetXmlNode() const
     return node_;
 }
 
-} // namespace xml
-} // namespace soaplib
+} // namespace soaplib::xml

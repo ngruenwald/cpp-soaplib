@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 #include <memory>
-#include <soaplib/xml/xml.hpp>
+#include <soaplib/xml/Xml.hpp>
 #include <soaplib/SoapBase.hpp>
 
 namespace soaplib {

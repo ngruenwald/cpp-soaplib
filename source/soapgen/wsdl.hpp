@@ -8,8 +8,6 @@
 #include "ResourceResolver.hpp"
 #include <soaplib/SoapBase.hpp>
 
-//#define DEPCHECK
-
 struct Name
 {
     std::string name;
@@ -55,10 +53,6 @@ struct Parameter
     Name name;
     Name type;
     Kind kind;
-
-#ifdef DEPCHECK
-    bool isRedundant = false;
-#endif
 
     Parameter() : kind(Parameter::Kind::Mandatory) {}
 };
@@ -178,9 +172,6 @@ struct Binding
     Name name;
     Name type;
 
-    // policyReference
-    // binding
-
     std::vector<Operation> operations;
 };
 
@@ -188,7 +179,6 @@ struct Definition
 {
     Name name;
     soaplib::SoapVersion version = soaplib::SoapVersion::Soap12;
-    // policies
     std::vector<TypePtr> types;
     std::vector<Message> messages;
     std::vector<PortType> portTypes;
@@ -199,8 +189,3 @@ struct Definition
 std::shared_ptr<Definition> LoadWsdl(
     const std::string& fileName,
     soapgen::ResourceResolver& resolver);
-
-#ifdef DEBCHECK
-void RedundancyCheck(
-    Definition& definition);
-#endif

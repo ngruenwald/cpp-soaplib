@@ -1,4 +1,4 @@
-#include "soapException.hpp"
+#include "SoapException.hpp"
 
 namespace soaplib {
 

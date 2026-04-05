@@ -2,7 +2,7 @@
 #pragma once
 
 #include <memory>
-#include <soaplib/basicTypes.hpp>
+#include <soaplib/BasicTypes.hpp>
 
 namespace soaplib { namespace xml { class Document; } }
 namespace soaplib { namespace xml { class Node; } }

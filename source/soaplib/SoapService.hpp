@@ -3,7 +3,7 @@
 #include <memory>
 #include <string>
 
-#include <soaplib/xml/xml.hpp>
+#include <soaplib/xml/Xml.hpp>
 #include <soaplib/SoapBase.hpp>
 #include <soaplib/SoapTransport.hpp>
 #include <soaplib/HttpSoapTransport.hpp>
@@ -30,7 +30,6 @@ public:
         const std::string& serviceNamespace,
         const HttpConfig& config = HttpConfig());
 
-    /// Destructs the instance.
     virtual ~SoapService();
 
     /// Enables logging of the transmitted HTTP messages.

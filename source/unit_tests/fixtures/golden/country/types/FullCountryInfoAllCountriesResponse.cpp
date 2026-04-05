@@ -2,7 +2,7 @@
 
 #include "FullCountryInfoAllCountriesResponse.hpp"
 
-#include <soaplib/parseHelper.hpp>
+#include <soaplib/ParseHelper.hpp>
 
 #include "ArrayOftCountryInfo.hpp"
 
@@ -12,7 +12,7 @@ void FullCountryInfoAllCountriesResponseFromXml(
     const soaplib::xml::Node& objNode,
     FullCountryInfoAllCountriesResponse& obj)
 {
-    obj.FullCountryInfoAllCountriesResult = soaplib::getMandatory<ArrayOftCountryInfo>(objNode, "FullCountryInfoAllCountriesResult", ArrayOftCountryInfoFromXml);
+    obj.FullCountryInfoAllCountriesResult = soaplib::GetMandatory<ArrayOftCountryInfo>(objNode, "FullCountryInfoAllCountriesResult", ArrayOftCountryInfoFromXml);
 }
 
 FullCountryInfoAllCountriesResponse FullCountryInfoAllCountriesResponseFromXml(
@@ -37,7 +37,7 @@ static void _FullCountryInfoAllCountriesResponseToXml(
     soaplib::xml::Node& objNode)
 {
     {
-        auto pn = soaplib::addChild(doc, objNode, "FullCountryInfoAllCountriesResult", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto pn = soaplib::AddChild(doc, objNode, "FullCountryInfoAllCountriesResult", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         ArrayOftCountryInfoToXml(obj.FullCountryInfoAllCountriesResult, doc, pn, false);
     }
 }
@@ -50,7 +50,7 @@ void FullCountryInfoAllCountriesResponseToXml(
 {
     if (createNode)
     {
-        auto objNode = soaplib::addChild(doc, parentNode, "FullCountryInfoAllCountriesResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto objNode = soaplib::AddChild(doc, parentNode, "FullCountryInfoAllCountriesResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         _FullCountryInfoAllCountriesResponseToXml(obj, doc, objNode);
     }
     else
@@ -63,7 +63,7 @@ void FullCountryInfoAllCountriesResponse::ToAnyXml(
     soaplib::xml::Document& doc,
     soaplib::xml::Node& node) const
 {
-    soaplib::setAnyTypeAttribute(doc, node, "FullCountryInfoAllCountriesResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+    soaplib::SetAnyTypeAttribute(doc, node, "FullCountryInfoAllCountriesResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
     _FullCountryInfoAllCountriesResponseToXml(*this, doc, node);
 }
 

@@ -4,13 +4,13 @@ set(target soaplib-xml)
 add_library(
   ${target}
   OBJECT
-  document.cpp
-  document.hpp
-  exception.hpp
-  node.cpp
-  node.hpp
-  xml.cpp
-  xml.hpp
+  Document.cpp
+  Document.hpp
+  Exception.hpp
+  Node.cpp
+  Node.hpp
+  Xml.cpp
+  Xml.hpp
 )
 
 add_library(
@@ -36,10 +36,10 @@ target_include_directories(
 
 install(
   FILES
-    document.hpp
-    exception.hpp
-    node.hpp
-    xml.hpp
+    Document.hpp
+    Exception.hpp
+    Node.hpp
+    Xml.hpp
   DESTINATION
     ${HEADER_INSTALL_PATH}/xml
 )

@@ -2,9 +2,9 @@
 
 #include <fstream>
 
-#include <soaplib/xml/document.hpp>
-#include <soaplib/xml/node.hpp>
-#include <soaplib/xml/xml.hpp>
+#include <soaplib/xml/Document.hpp>
+#include <soaplib/xml/Node.hpp>
+#include <soaplib/xml/Xml.hpp>
 
 
 std::string loadFile(const std::string& path)
@@ -12,7 +12,7 @@ std::string loadFile(const std::string& path)
     auto ifs = std::ifstream{path.c_str(), std::ios::binary | std::ios::ate};
     REQUIRE(ifs.is_open());
     auto size = ifs.tellg();
-    std::string buffer;//{static_cast<std::size_t>(size), '\0'};
+    std::string buffer;
     buffer.resize(static_cast<std::size_t>(size));
     ifs.seekg(0);
     ifs.read(&buffer[0], size);
@@ -64,27 +64,3 @@ TEST_CASE("xml nodes", "[all][xml]")
         REQUIRE(name == "entry");
     }
 }
-
-/*
-struct Single
-{
-    bool Valid = false;
-};
-
-void from_xml(soaplib::xml::Node& n, Single& v)
-{
-    v.Valid = true;
-}
-
-TEST_CASE("xml utils", "[all][xml")
-{
-    const std::string fixture{FIXTURES_PATH "/simple.xml"};
-    auto buffer = loadFile(fixture);
-    REQUIRE(!buffer.empty());
-    auto doc = soaplib::xml::Document::ParseMemory(buffer.c_str(), buffer.length());
-
-    auto root = doc->GetRootNode();
-
-    auto single = soaplib::xml::from_xml<Single>(root, "single");
-}
-*/

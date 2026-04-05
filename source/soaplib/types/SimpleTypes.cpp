@@ -1,7 +1,7 @@
-#include "simpleTypes.hpp"
+#include "SimpleTypes.hpp"
 
-#include "xml/xml.hpp"
-#include "parseHelper.hpp"
+#include "xml/Xml.hpp"
+#include "ParseHelper.hpp"
 
 
 #define XS_HREF "http://www.w3.org/2001/XMLSchema"
@@ -88,7 +88,7 @@ void _valueToXml(
         soaplib::xml::Node& node,                                              \
         const soaplib::TYPE& value)                                            \
     {                                                                          \
-        soaplib::setAnyTypeAttribute(doc, node, TYPE_NAM, TYPE_HRF, TYPE_PFX); \
+        soaplib::SetAnyTypeAttribute(doc, node, TYPE_NAM, TYPE_HRF, TYPE_PFX); \
         TYPE ## ToXml(node, value);                                            \
     }
 
@@ -166,7 +166,7 @@ void StringToAnyXml(
     soaplib::xml::Node& anyNode,
     const soaplib::String& value)
 {
-    soaplib::setAnyTypeAttribute(doc, anyNode, "string", XS_HREF, XS_PREFIX);
+    soaplib::SetAnyTypeAttribute(doc, anyNode, "string", XS_HREF, XS_PREFIX);
     StringToXml(anyNode, value);
 }
 
@@ -196,7 +196,7 @@ void HexBinaryToAnyXml(
     soaplib::xml::Node& anyNode,
     const soaplib::HexBinary& value)
 {
-    soaplib::setAnyTypeAttribute(doc, anyNode, "hexBinary", XS_HREF, XS_PREFIX);
+    soaplib::SetAnyTypeAttribute(doc, anyNode, "hexBinary", XS_HREF, XS_PREFIX);
     HexBinaryToXml(anyNode, value);
 }
 
@@ -232,7 +232,7 @@ void BoolToAnyXml(
     soaplib::xml::Node& anyNode,
     const soaplib::Bool& value)
 {
-    soaplib::setAnyTypeAttribute(doc, anyNode, "boolean", XS_HREF, XS_PREFIX);
+    soaplib::SetAnyTypeAttribute(doc, anyNode, "boolean", XS_HREF, XS_PREFIX);
     BoolToXml(anyNode, value);
 }
 
@@ -262,7 +262,7 @@ void FloatToAnyXml(
     soaplib::xml::Node& anyNode,
     const soaplib::Float& value)
 {
-    soaplib::setAnyTypeAttribute(doc, anyNode, "float", XS_HREF, XS_PREFIX);
+    soaplib::SetAnyTypeAttribute(doc, anyNode, "float", XS_HREF, XS_PREFIX);
     FloatToXml(anyNode, value);
 }
 
@@ -288,6 +288,6 @@ void DoubleToAnyXml(
     soaplib::xml::Node& anyNode,
     const soaplib::Double& value)
 {
-    soaplib::setAnyTypeAttribute(doc, anyNode, "double", XS_HREF, XS_PREFIX);
+    soaplib::SetAnyTypeAttribute(doc, anyNode, "double", XS_HREF, XS_PREFIX);
     DoubleToXml(anyNode, value);
 }

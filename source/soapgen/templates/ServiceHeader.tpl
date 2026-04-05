@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <soaplib/soapService.hpp>
+#include <soaplib/SoapService.hpp>
 
 {% for op in service.operations %}
 #include "types/{{ op.input_resolved_type }}.hpp"

@@ -36,7 +36,6 @@ public:
         const std::string& path = "/",
         const HttpServerConfig& config = HttpServerConfig());
 
-    /// Destructs the instance.
     ~HttpSoapServer();
 
     /// Starts listening for requests.

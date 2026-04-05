@@ -2,7 +2,7 @@
 
 #include "CountryFlag.hpp"
 
-#include <soaplib/parseHelper.hpp>
+#include <soaplib/ParseHelper.hpp>
 
 
 namespace country {
@@ -11,7 +11,7 @@ void CountryFlagFromXml(
     const soaplib::xml::Node& objNode,
     CountryFlag& obj)
 {
-    obj.SCountryISOCode = soaplib::getMandatory<soaplib::String>(objNode, "sCountryISOCode", StringFromXml);
+    obj.SCountryISOCode = soaplib::GetMandatory<soaplib::String>(objNode, "sCountryISOCode", StringFromXml);
 }
 
 CountryFlag CountryFlagFromXml(
@@ -36,7 +36,7 @@ static void _CountryFlagToXml(
     soaplib::xml::Node& objNode)
 {
     {
-        auto pn = soaplib::addChild(doc, objNode, "sCountryISOCode", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto pn = soaplib::AddChild(doc, objNode, "sCountryISOCode", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         StringToXml(pn, obj.SCountryISOCode);
     }
 }
@@ -49,7 +49,7 @@ void CountryFlagToXml(
 {
     if (createNode)
     {
-        auto objNode = soaplib::addChild(doc, parentNode, "CountryFlag", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto objNode = soaplib::AddChild(doc, parentNode, "CountryFlag", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         _CountryFlagToXml(obj, doc, objNode);
     }
     else
@@ -62,7 +62,7 @@ void CountryFlag::ToAnyXml(
     soaplib::xml::Document& doc,
     soaplib::xml::Node& node) const
 {
-    soaplib::setAnyTypeAttribute(doc, node, "CountryFlag", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+    soaplib::SetAnyTypeAttribute(doc, node, "CountryFlag", "http://www.oorsprong.org/websamples.countryinfo", "tns");
     _CountryFlagToXml(*this, doc, node);
 }
 

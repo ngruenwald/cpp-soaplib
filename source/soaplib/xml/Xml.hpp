@@ -1,8 +1,8 @@
 #pragma once
 
-#include <soaplib/xml/document.hpp>
-#include <soaplib/xml/node.hpp>
-#include <soaplib/xml/exception.hpp>
+#include <soaplib/xml/Document.hpp>
+#include <soaplib/xml/Node.hpp>
+#include <soaplib/xml/Exception.hpp>
 
 // some helper macros
 #define XML_MANDATORY(__X__) __X__

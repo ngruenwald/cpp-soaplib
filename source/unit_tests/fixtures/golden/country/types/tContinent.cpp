@@ -2,7 +2,7 @@
 
 #include "tContinent.hpp"
 
-#include <soaplib/parseHelper.hpp>
+#include <soaplib/ParseHelper.hpp>
 
 
 namespace country {
@@ -11,8 +11,8 @@ void tContinentFromXml(
     const soaplib::xml::Node& objNode,
     tContinent& obj)
 {
-    obj.SCode = soaplib::getMandatory<soaplib::String>(objNode, "sCode", StringFromXml);
-    obj.SName = soaplib::getMandatory<soaplib::String>(objNode, "sName", StringFromXml);
+    obj.SCode = soaplib::GetMandatory<soaplib::String>(objNode, "sCode", StringFromXml);
+    obj.SName = soaplib::GetMandatory<soaplib::String>(objNode, "sName", StringFromXml);
 }
 
 tContinent tContinentFromXml(
@@ -37,11 +37,11 @@ static void _tContinentToXml(
     soaplib::xml::Node& objNode)
 {
     {
-        auto pn = soaplib::addChild(doc, objNode, "sCode", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto pn = soaplib::AddChild(doc, objNode, "sCode", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         StringToXml(pn, obj.SCode);
     }
     {
-        auto pn = soaplib::addChild(doc, objNode, "sName", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto pn = soaplib::AddChild(doc, objNode, "sName", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         StringToXml(pn, obj.SName);
     }
 }
@@ -54,7 +54,7 @@ void tContinentToXml(
 {
     if (createNode)
     {
-        auto objNode = soaplib::addChild(doc, parentNode, "tContinent", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto objNode = soaplib::AddChild(doc, parentNode, "tContinent", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         _tContinentToXml(obj, doc, objNode);
     }
     else
@@ -67,7 +67,7 @@ void tContinent::ToAnyXml(
     soaplib::xml::Document& doc,
     soaplib::xml::Node& node) const
 {
-    soaplib::setAnyTypeAttribute(doc, node, "tContinent", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+    soaplib::SetAnyTypeAttribute(doc, node, "tContinent", "http://www.oorsprong.org/websamples.countryinfo", "tns");
     _tContinentToXml(*this, doc, node);
 }
 

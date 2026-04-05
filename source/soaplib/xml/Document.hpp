@@ -6,7 +6,7 @@
 #include <libxml/tree.h>
 #include <libxml/xpath.h>
 
-#include <soaplib/xml/node.hpp>
+#include <soaplib/xml/Node.hpp>
 
 namespace soaplib::xml {
 
@@ -18,7 +18,6 @@ private:
         const char* fileName);
 
 public:
-    /// Default constructor
     Document();
 
     /// Constructs a XML document from the given data

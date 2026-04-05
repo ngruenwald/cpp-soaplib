@@ -2,7 +2,7 @@
 
 #include "SubtractResponse.hpp"
 
-#include <soaplib/parseHelper.hpp>
+#include <soaplib/ParseHelper.hpp>
 
 
 namespace calc {
@@ -11,7 +11,7 @@ void SubtractResponseFromXml(
     const soaplib::xml::Node& objNode,
     SubtractResponse& obj)
 {
-    obj.SubtractResult = soaplib::getMandatory<soaplib::Int32>(objNode, "SubtractResult", Int32FromXml);
+    obj.SubtractResult = soaplib::GetMandatory<soaplib::Int32>(objNode, "SubtractResult", Int32FromXml);
 }
 
 SubtractResponse SubtractResponseFromXml(
@@ -36,7 +36,7 @@ static void _SubtractResponseToXml(
     soaplib::xml::Node& objNode)
 {
     {
-        auto pn = soaplib::addChild(doc, objNode, "SubtractResult", "http://tempuri.org/", "");
+        auto pn = soaplib::AddChild(doc, objNode, "SubtractResult", "http://tempuri.org/", "");
         Int32ToXml(pn, obj.SubtractResult);
     }
 }
@@ -49,7 +49,7 @@ void SubtractResponseToXml(
 {
     if (createNode)
     {
-        auto objNode = soaplib::addChild(doc, parentNode, "SubtractResponse", "http://tempuri.org/", "");
+        auto objNode = soaplib::AddChild(doc, parentNode, "SubtractResponse", "http://tempuri.org/", "");
         _SubtractResponseToXml(obj, doc, objNode);
     }
     else
@@ -62,7 +62,7 @@ void SubtractResponse::ToAnyXml(
     soaplib::xml::Document& doc,
     soaplib::xml::Node& node) const
 {
-    soaplib::setAnyTypeAttribute(doc, node, "SubtractResponse", "http://tempuri.org/", "");
+    soaplib::SetAnyTypeAttribute(doc, node, "SubtractResponse", "http://tempuri.org/", "");
     _SubtractResponseToXml(*this, doc, node);
 }
 

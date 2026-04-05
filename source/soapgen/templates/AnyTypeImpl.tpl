@@ -5,8 +5,8 @@
 #include <map>
 #include "{{ type.name }}.hpp"
 
-#include <soaplib/basicTypes.hpp>
-#include <soaplib/parseHelper.hpp>
+#include <soaplib/BasicTypes.hpp>
+#include <soaplib/ParseHelper.hpp>
 
 {% for t in definition.types %}
 {% if not t.isNativeType %}
@@ -27,7 +27,7 @@ static std::map<std::string, std::unique_ptr<soaplib::SoapBaseType>(*)(const soa
 {% endfor %}
 };
 
-static void addNamespace(
+static void AddNamespace(
     soaplib::xml::Node& node,
     const char* prefix,
     const char* href)
@@ -86,7 +86,7 @@ void {{ type.name }}ToXml(
 {
     if (createNode)
     {
-        auto objNode = soaplib::addChild(doc, parentNode, "{{ type.name }}", "", "");
+        auto objNode = soaplib::AddChild(doc, parentNode, "{{ type.name }}", "", "");
         _{{ type.name }}ToXml(obj, doc, objNode);
     }
     else

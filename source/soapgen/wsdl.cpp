@@ -3,7 +3,7 @@
 #include <iostream>
 #include <limits>
 
-#include "soaplib/xml/xml.hpp"
+#include "soaplib/xml/Xml.hpp"
 
 const xmlChar* bad_cast(const char* s)
 {
@@ -120,9 +120,8 @@ Input LoadInput(
     {
         input.action = getName(inputNode, "Action", {});
     }
-    catch (const std::exception& ex)
+    catch (const std::exception& /*ex*/)
     {
-        // std::cerr << ex.what() << '\n';
     }
 
     input.message = getName(inputNode, "message", {});
@@ -139,9 +138,8 @@ Output LoadOutput(
     {
         output.action = getName(outputNode, "Action", {});
     }
-    catch (const std::exception& ex)
+    catch (const std::exception& /*ex*/)
     {
-        // std::cerr << ex.what() << '\n';
     }
 
     output.message = getName(outputNode, "message", {});
@@ -164,7 +162,7 @@ Operation LoadOperation(
         auto outputNode = operationNode.GetChild("output");
         operation.output = LoadOutput(outputNode);
     }
-    catch (const std::exception& e)
+    catch (const std::exception& /*e*/)
     {
         std::cerr << "operation " << operation.name.name << " has no output" << '\n';
     }
@@ -230,7 +228,6 @@ Binding LoadBinding(
         Operation op;
         op.name = getName(opNode, "name", {});
         
-        // Extract soapAction (works for both 1.1 and 1.2 if we ignore namespace for now)
         try {
             auto soapOp = opNode.GetChild("operation");
             op.input.action.name = soapOp.GetStringProp("soapAction");
@@ -329,7 +326,6 @@ void LoadElement(
     }
     else if (nillable)
     {
-        // parameter.kind = Parameter::Pointer;
         parameter.kind = Parameter::Optional;
     }
     else if (minOccurs == 0 && maxOccurs == 1)
@@ -491,8 +487,6 @@ TypePtr LoadSimpleType(
         name = getName(simpleTypeNode, "name", targetNamespace);
     }
 
-    // optional base type
-
     try
     {
         const auto& restrictionNode = simpleTypeNode.GetChild("restriction");
@@ -501,8 +495,6 @@ TypePtr LoadSimpleType(
     catch (const soaplib::xml::Exception&)
     {
     }
-
-    // try enum first
 
     try
     {
@@ -600,7 +592,6 @@ std::vector<TypePtr> LoadSchemaTypes(
         targetNamespace = schemaNode.GetStringProp("targetNamespace");
     } catch (...) {}
 
-    // Handle xsd:import and xsd:include
     for (const auto& tag : {"import", "include"}) {
         for (const auto& node : schemaNode.GetChildren(tag)) {
             std::string location = node.GetStringProp("schemaLocation");
@@ -648,7 +639,7 @@ std::vector<TypePtr> LoadTypes(
 {
     std::vector<TypePtr> types;
 
-    const auto schemaNodes = typesNode.GetChildren("schema");  // getChildren(typesNode, "schema");
+    const auto schemaNodes = typesNode.GetChildren("schema");
     for (const auto& schemaNode : schemaNodes)
     {
         auto schemaTypes = LoadSchemaTypes(schemaNode, resolver, baseUri);
@@ -678,7 +669,6 @@ std::shared_ptr<Definition> LoadDefinition(
         std::cerr << "LoadDefinition: " << ex.what() << '\n';
     }
 
-    // Handle wsdl:import
     for (const auto& importNode : definitionNode.GetChildren("import")) {
         std::string location = importNode.GetStringProp("location");
         if (!location.empty()) {
@@ -689,7 +679,6 @@ std::shared_ptr<Definition> LoadDefinition(
                     auto root = doc->GetRootNode();
                     auto importedDef = LoadDefinition(root, resolver, resolver.Resolve(location, baseUri));
                     
-                    // Merge imported definition
                     definition->types.insert(definition->types.end(), importedDef->types.begin(), importedDef->types.end());
                     definition->messages.insert(definition->messages.end(), importedDef->messages.begin(), importedDef->messages.end());
                     definition->portTypes.insert(definition->portTypes.end(), importedDef->portTypes.begin(), importedDef->portTypes.end());
@@ -702,22 +691,19 @@ std::shared_ptr<Definition> LoadDefinition(
         }
     }
 
-    const auto serviceNodes = definitionNode.GetChildren("service");  // getChildren(definitionNode, "service");
+    const auto serviceNodes = definitionNode.GetChildren("service");
     for (const auto& serviceNode : serviceNodes)
     {
         definition->services.push_back(LoadService(serviceNode));
     }
 
-    const auto bindingNodes = definitionNode.GetChildren("binding");  // getChildren(definitionNode, "binding");
+    const auto bindingNodes = definitionNode.GetChildren("binding");
     for (const auto& bindingNode : bindingNodes)
     {
         auto binding = LoadBinding(bindingNode);
         
-        // Detect version: if any binding uses SOAP 1.1 namespace
         try {
             auto soapBinding = bindingNode.GetChild("binding");
-            std::string transport = soapBinding.GetStringProp("transport");
-            // Check namespace of the 'binding' child
             std::string ns = (const char*)soapBinding.GetXmlNode()->ns->href;
             if (ns == "http://schemas.xmlsoap.org/wsdl/soap/") {
                 definition->version = soaplib::SoapVersion::Soap11;
@@ -727,7 +713,6 @@ std::shared_ptr<Definition> LoadDefinition(
         definition->bindings.push_back(binding);
     }
 
-    // Merge actions from bindings into portType operations
     for (const auto& binding : definition->bindings) {
         for (auto& pt : definition->portTypes) {
             if (pt.name.name == binding.type.name) {
@@ -742,19 +727,19 @@ std::shared_ptr<Definition> LoadDefinition(
         }
     }
 
-    const auto portTypeNodes = definitionNode.GetChildren("portType");  // getChildren(definitionNode, "portType");
+    const auto portTypeNodes = definitionNode.GetChildren("portType");
     for (const auto& portTypeNode : portTypeNodes)
     {
         definition->portTypes.push_back(LoadPortType(portTypeNode));
     }
 
-    const auto messageNodes = definitionNode.GetChildren("message");  // getChildren(definitionNode, "message");
+    const auto messageNodes = definitionNode.GetChildren("message");
     for (const auto& messageNode : messageNodes)
     {
         definition->messages.push_back(LoadMessage(messageNode));
     }
 
-    const auto typesNodes = definitionNode.GetChildren("types");  // getChildren(definitionNode, "types");
+    const auto typesNodes = definitionNode.GetChildren("types");
     for (const auto& typesNode : typesNodes)
     {
         auto types = LoadTypes(typesNode, resolver, baseUri);
@@ -788,200 +773,3 @@ std::shared_ptr<Definition> LoadWsdl(
 
     return {};
 }
-
-
-#ifdef DEPCHECK
-bool NameCompare(
-    const Name& a,
-    const Name& b,
-    bool checkNamespace)
-{
-    if (a.name != b.name)
-    {
-        return false;
-    }
-
-    if (checkNamespace)
-    {
-        if (a.nsHref != b.nsHref)
-        {
-            return false;
-        }
-        /*
-        if (a.nsPrefix != b.nsPrefix)
-        {
-            return false;
-        }
-        */
-    }
-
-    return true;
-}
-
-TypePtr FindType(
-    const Name& name,
-    const Definition& definition,
-    bool checkNamespace)
-{
-    for (auto& type : definition.types)
-    {
-        if (!type)
-        {
-            continue;
-        }
-
-        if (NameCompare(name, type->name, checkNamespace))
-        {
-            return type;
-        }
-    }
-
-    return {};
-}
-
-TypePtr GetBaseType(
-    TypePtr type,
-    const Definition& definition,
-    bool checkNs)
-{
-    if (!type)
-    {
-        return {};
-    }
-
-    if (type->kind == Type::Basic)
-    {
-        auto btype = reinterpret_cast<BasicType&>(*type);
-        if (btype.base.has_value())
-        {
-            return FindType(btype.base.value(), definition, checkNs);
-        }
-        return {};
-    }
-
-    if (type->kind == Type::Extended)
-    {
-        auto etype = reinterpret_cast<ExtendedType&>(*type);
-        if (etype.base.has_value())
-        {
-            return FindType(etype.base.value(), definition, checkNs);
-        }
-        return {};
-    }
-
-    return {};
-}
-
-void GetTypeHistory(
-    TypePtr type,
-    const Definition& definition,
-    bool checkNamespaces,
-    std::vector<Name>& history)
-{
-    if (!type)
-    {
-        return;
-    }
-
-    history.push_back(type->name);
-
-    GetTypeHistory(
-        GetBaseType(type, definition, checkNamespaces),
-        definition,
-        checkNamespaces,
-        history);
-}
-
-void RedundancyCheck(
-    Definition& definition)
-{
-    const bool checkNamespace = false;
-
-    for (auto& type : definition.types)
-    {
-        if (!type)
-        {
-            continue;
-        }
-
-        if (type->kind != Type::Extended)
-        {
-            continue;
-        }
-
-        auto& extType = reinterpret_cast<ExtendedType&>(*type);
-
-        if (extType.parameters.empty())
-        {
-            continue;
-        }
-
-        std::vector<Name> typeHistory;
-        GetTypeHistory(type, definition, checkNamespace, typeHistory);
-
-        if (typeHistory.size() > 1)
-        {
-            std::cout << "* " << type->name.name << '\n';
-            for (const auto& name : typeHistory)
-            {
-                std::cout << "  - " << name.name << '\n';
-            }
-        }
-
-        //
-        // check if this type's name shows up in the type history of the parameter types
-        //
-
-        for (auto& parameter : extType.parameters)
-        {
-            bool isRedundant = false;
-
-            TypePtr ptype = FindType(parameter.type, definition, checkNamespace);
-
-            std::vector<Name> ptypeHistory;
-            GetTypeHistory(ptype, definition, checkNamespace, ptypeHistory);
-
-            for (const auto& name : typeHistory)
-            {
-                for (const auto& pname : ptypeHistory)
-                {
-                    if (NameCompare(type->name, ptype->name, checkNamespace))
-                    {
-                        std::cout
-                            << "type " << type->name.name
-                            << ": redundancy detected"
-                            << ": parameter " << parameter.name.name
-                            << ": " << name.name
-                            << " - " << ptype->name.name
-                            << '\n';
-
-                        parameter.isRedundant = true;
-                        break;
-                    }
-                }
-            }
-
-
-            /*
-            while (ptype)
-            {
-                if (NameCompare(type->name, ptype->name, checkNamespace))
-                {
-                    std::cout
-                        << "type " << type->name.name
-                        << ": redundancy detected"
-                        << ": parameter " << parameter.name.name
-                        << ": " << ptype->name.name
-                        << '\n';
-
-                    parameter.isRedundant = true;
-                    break;
-                }
-
-                ptype = GetBaseType(ptype, definition, checkNamespace);
-            }
-            */
-        }
-    }
-}
-#endif

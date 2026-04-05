@@ -1,6 +1,6 @@
 #include <soaplib/HttpSoapServer.hpp>
 #include <soaplib/SoapServer.hpp>
-#include <soaplib/xml/xml.hpp>
+#include <soaplib/xml/Xml.hpp>
 #include <iostream>
 
 namespace soaplib {

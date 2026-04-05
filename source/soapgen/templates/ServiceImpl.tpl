@@ -3,7 +3,7 @@
 
 #include "{{ service.name }}.hpp"
 
-#include <soaplib/parseHelper.hpp>
+#include <soaplib/ParseHelper.hpp>
 
 {% for ns in options.namespaces %}
 namespace {{ ns }} {

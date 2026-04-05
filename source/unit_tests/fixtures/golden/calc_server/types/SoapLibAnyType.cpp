@@ -4,8 +4,8 @@
 #include <map>
 #include "SoapLibAnyType.hpp"
 
-#include <soaplib/basicTypes.hpp>
-#include <soaplib/parseHelper.hpp>
+#include <soaplib/BasicTypes.hpp>
+#include <soaplib/ParseHelper.hpp>
 
 #include "Add.hpp"
 #include "AddResponse.hpp"
@@ -32,7 +32,7 @@ static std::map<std::string, std::unique_ptr<soaplib::SoapBaseType>(*)(const soa
     { "DivideResponse", DivideResponsePtrFromXml },
 };
 
-static void addNamespace(
+static void AddNamespace(
     soaplib::xml::Node& node,
     const char* prefix,
     const char* href)
@@ -91,7 +91,7 @@ void SoapLibAnyTypeToXml(
 {
     if (createNode)
     {
-        auto objNode = soaplib::addChild(doc, parentNode, "SoapLibAnyType", "", "");
+        auto objNode = soaplib::AddChild(doc, parentNode, "SoapLibAnyType", "", "");
         _SoapLibAnyTypeToXml(obj, doc, objNode);
     }
     else

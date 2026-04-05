@@ -2,7 +2,7 @@
 
 #include "CountryISOCode.hpp"
 
-#include <soaplib/parseHelper.hpp>
+#include <soaplib/ParseHelper.hpp>
 
 
 namespace country {
@@ -11,7 +11,7 @@ void CountryISOCodeFromXml(
     const soaplib::xml::Node& objNode,
     CountryISOCode& obj)
 {
-    obj.SCountryName = soaplib::getMandatory<soaplib::String>(objNode, "sCountryName", StringFromXml);
+    obj.SCountryName = soaplib::GetMandatory<soaplib::String>(objNode, "sCountryName", StringFromXml);
 }
 
 CountryISOCode CountryISOCodeFromXml(
@@ -36,7 +36,7 @@ static void _CountryISOCodeToXml(
     soaplib::xml::Node& objNode)
 {
     {
-        auto pn = soaplib::addChild(doc, objNode, "sCountryName", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto pn = soaplib::AddChild(doc, objNode, "sCountryName", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         StringToXml(pn, obj.SCountryName);
     }
 }
@@ -49,7 +49,7 @@ void CountryISOCodeToXml(
 {
     if (createNode)
     {
-        auto objNode = soaplib::addChild(doc, parentNode, "CountryISOCode", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto objNode = soaplib::AddChild(doc, parentNode, "CountryISOCode", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         _CountryISOCodeToXml(obj, doc, objNode);
     }
     else
@@ -62,7 +62,7 @@ void CountryISOCode::ToAnyXml(
     soaplib::xml::Document& doc,
     soaplib::xml::Node& node) const
 {
-    soaplib::setAnyTypeAttribute(doc, node, "CountryISOCode", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+    soaplib::SetAnyTypeAttribute(doc, node, "CountryISOCode", "http://www.oorsprong.org/websamples.countryinfo", "tns");
     _CountryISOCodeToXml(*this, doc, node);
 }
 

@@ -22,11 +22,11 @@ void {{ name }}FromXml(
 {% else if kind == "struct" %}
 {% for parameter in struct.parameters %}
     obj.{{ parameter.name }} = {% if false -%}
-    {%- else if parameter.kind == "mandatory" %}soaplib::getMandatory{#- -#}
-    {%- else if parameter.kind == "pointer" %}soaplib::getPointer{#- -#}
-    {%- else if parameter.kind == "optional" %}{% if parameter.isPointerType %}soaplib::getPointer{% else %}soaplib::getOptional{% endif -%}
-    {%- else if parameter.kind == "multiple" %}{% if parameter.isPointerType %}soaplib::getMultiplePtrs{% else %}soaplib::getMultiple{% endif -%}
-    {%- else %}soaplib::getMandatory{#- -#}
+    {%- else if parameter.kind == "mandatory" %}soaplib::GetMandatory{#- -#}
+    {%- else if parameter.kind == "pointer" %}soaplib::GetPointer{#- -#}
+    {%- else if parameter.kind == "optional" %}{% if parameter.isPointerType %}soaplib::GetPointer{% else %}soaplib::GetOptional{% endif -%}
+    {%- else if parameter.kind == "multiple" %}{% if parameter.isPointerType %}soaplib::GetMultiplePtrs{% else %}soaplib::GetMultiple{% endif -%}
+    {%- else %}soaplib::GetMandatory{#- -#}
     {%- endif %}<{{ parameter.prefix}}{% if parameter.isInnerType %}{{ name }}::{% endif %}{{ parameter.full_resolved_type }}{{ parameter.suffix }}>(objNode, "{{ parameter.wsdl_name }}", {{ parameter.type }}FromXml);
 {% endfor %}
 {% endif %}
@@ -74,7 +74,7 @@ static void _{{ name }}ToXml(
 {% for parameter in struct.parameters %}
 {% if parameter.kind == "mandatory" %}
     {
-        auto pn = soaplib::addChild(doc, objNode, "{{ parameter.wsdl_name }}", "{{ parameter.xmlns.href }}", "{{ parameter.xmlns.prefix }}");
+        auto pn = soaplib::AddChild(doc, objNode, "{{ parameter.wsdl_name }}", "{{ parameter.xmlns.href }}", "{{ parameter.xmlns.prefix }}");
 {% if parameter.isNativeType %}
         {{ parameter.type }}ToXml(pn, obj.{{ parameter.name }});
 {% else %}
@@ -85,7 +85,7 @@ static void _{{ name }}ToXml(
 {% if parameter.isPointerType %}
     if (obj.{{ parameter.name }})
     {
-        auto pn = soaplib::addChild(doc, objNode, "{{ parameter.wsdl_name }}", "{{ parameter.xmlns.href }}", "{{ parameter.xmlns.prefix }}");
+        auto pn = soaplib::AddChild(doc, objNode, "{{ parameter.wsdl_name }}", "{{ parameter.xmlns.href }}", "{{ parameter.xmlns.prefix }}");
 {% if parameter.isNativeType %}
         {{ parameter.type }}ToXml(pn, *obj.{{ parameter.name }});
 {% else %}
@@ -95,7 +95,7 @@ static void _{{ name }}ToXml(
 {% else %}
     if (obj.{{ parameter.name }}.has_value())
     {
-        auto pn = soaplib::addChild(doc, objNode, "{{ parameter.wsdl_name }}", "{{ parameter.xmlns.href }}", "{{ parameter.xmlns.prefix }}");
+        auto pn = soaplib::AddChild(doc, objNode, "{{ parameter.wsdl_name }}", "{{ parameter.xmlns.href }}", "{{ parameter.xmlns.prefix }}");
 {% if parameter.isNativeType %}
         {{ parameter.type }}ToXml(pn, obj.{{ parameter.name }}.value());
 {% else %}
@@ -106,7 +106,7 @@ static void _{{ name }}ToXml(
 {% else if parameter.kind == "pointer" %}
     if (obj.{{ parameter.name }})
     {
-        auto pn = soaplib::addChild(doc, objNode, "{{ parameter.wsdl_name }}", "{{ parameter.xmlns.href }}", "{{ parameter.xmlns.prefix }}");
+        auto pn = soaplib::AddChild(doc, objNode, "{{ parameter.wsdl_name }}", "{{ parameter.xmlns.href }}", "{{ parameter.xmlns.prefix }}");
 {% if parameter.isNativeType %}
         {{ parameter.type }}ToXml(pn, *obj.{{ parameter.name }});
 {% else %}
@@ -119,7 +119,7 @@ static void _{{ name }}ToXml(
     {
         if (entry)
         {
-            auto pn = soaplib::addChild(doc, objNode, "{{ parameter.wsdl_name }}", "{{ parameter.xmlns.href }}", "{{ parameter.xmlns.prefix }}");
+            auto pn = soaplib::AddChild(doc, objNode, "{{ parameter.wsdl_name }}", "{{ parameter.xmlns.href }}", "{{ parameter.xmlns.prefix }}");
 {% if parameter.isNativeType %}
             {{ parameter.type }}ToXml(pn, *entry);
 {% else %}
@@ -130,7 +130,7 @@ static void _{{ name }}ToXml(
 {% else %}
     for (const auto& entry : obj.{{ parameter.name }})
     {
-        auto pn = soaplib::addChild(doc, objNode, "{{ parameter.wsdl_name }}", "{{ parameter.xmlns.href }}", "{{ parameter.xmlns.prefix }}");
+        auto pn = soaplib::AddChild(doc, objNode, "{{ parameter.wsdl_name }}", "{{ parameter.xmlns.href }}", "{{ parameter.xmlns.prefix }}");
 {% if parameter.isNativeType %}
         {{ parameter.type }}ToXml(pn, entry);
 {% else %}
@@ -151,7 +151,7 @@ void {{ name }}ToXml(
 {
     if (createNode)
     {
-        auto objNode = soaplib::addChild(doc, parentNode, "{{ wsdl_name }}", "{{ xmlns.href }}", "{{ xmlns.prefix }}");
+        auto objNode = soaplib::AddChild(doc, parentNode, "{{ wsdl_name }}", "{{ xmlns.href }}", "{{ xmlns.prefix }}");
         _{{ name }}ToXml(obj, doc, objNode);
     }
     else
@@ -164,6 +164,6 @@ void {{ name }}::ToAnyXml(
     soaplib::xml::Document& doc,
     soaplib::xml::Node& node) const
 {
-    soaplib::setAnyTypeAttribute(doc, node, "{{ name }}", "{{ xmlns.href }}", "{{ xmlns.prefix }}");
+    soaplib::SetAnyTypeAttribute(doc, node, "{{ name }}", "{{ xmlns.href }}", "{{ xmlns.prefix }}");
     _{{ name }}ToXml(*this, doc, node);
 }

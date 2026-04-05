@@ -2,7 +2,7 @@
 
 #include "ListOfCurrenciesByCode.hpp"
 
-#include <soaplib/parseHelper.hpp>
+#include <soaplib/ParseHelper.hpp>
 
 
 namespace country {
@@ -44,7 +44,7 @@ void ListOfCurrenciesByCodeToXml(
 {
     if (createNode)
     {
-        auto objNode = soaplib::addChild(doc, parentNode, "ListOfCurrenciesByCode", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto objNode = soaplib::AddChild(doc, parentNode, "ListOfCurrenciesByCode", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         _ListOfCurrenciesByCodeToXml(obj, doc, objNode);
     }
     else
@@ -57,7 +57,7 @@ void ListOfCurrenciesByCode::ToAnyXml(
     soaplib::xml::Document& doc,
     soaplib::xml::Node& node) const
 {
-    soaplib::setAnyTypeAttribute(doc, node, "ListOfCurrenciesByCode", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+    soaplib::SetAnyTypeAttribute(doc, node, "ListOfCurrenciesByCode", "http://www.oorsprong.org/websamples.countryinfo", "tns");
     _ListOfCurrenciesByCodeToXml(*this, doc, node);
 }
 

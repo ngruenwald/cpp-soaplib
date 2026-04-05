@@ -2,7 +2,7 @@
 
 #include "tCurrency.hpp"
 
-#include <soaplib/parseHelper.hpp>
+#include <soaplib/ParseHelper.hpp>
 
 
 namespace country {
@@ -11,8 +11,8 @@ void tCurrencyFromXml(
     const soaplib::xml::Node& objNode,
     tCurrency& obj)
 {
-    obj.SISOCode = soaplib::getMandatory<soaplib::String>(objNode, "sISOCode", StringFromXml);
-    obj.SName = soaplib::getMandatory<soaplib::String>(objNode, "sName", StringFromXml);
+    obj.SISOCode = soaplib::GetMandatory<soaplib::String>(objNode, "sISOCode", StringFromXml);
+    obj.SName = soaplib::GetMandatory<soaplib::String>(objNode, "sName", StringFromXml);
 }
 
 tCurrency tCurrencyFromXml(
@@ -37,11 +37,11 @@ static void _tCurrencyToXml(
     soaplib::xml::Node& objNode)
 {
     {
-        auto pn = soaplib::addChild(doc, objNode, "sISOCode", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto pn = soaplib::AddChild(doc, objNode, "sISOCode", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         StringToXml(pn, obj.SISOCode);
     }
     {
-        auto pn = soaplib::addChild(doc, objNode, "sName", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto pn = soaplib::AddChild(doc, objNode, "sName", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         StringToXml(pn, obj.SName);
     }
 }
@@ -54,7 +54,7 @@ void tCurrencyToXml(
 {
     if (createNode)
     {
-        auto objNode = soaplib::addChild(doc, parentNode, "tCurrency", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto objNode = soaplib::AddChild(doc, parentNode, "tCurrency", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         _tCurrencyToXml(obj, doc, objNode);
     }
     else
@@ -67,7 +67,7 @@ void tCurrency::ToAnyXml(
     soaplib::xml::Document& doc,
     soaplib::xml::Node& node) const
 {
-    soaplib::setAnyTypeAttribute(doc, node, "tCurrency", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+    soaplib::SetAnyTypeAttribute(doc, node, "tCurrency", "http://www.oorsprong.org/websamples.countryinfo", "tns");
     _tCurrencyToXml(*this, doc, node);
 }
 

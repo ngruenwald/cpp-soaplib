@@ -28,12 +28,12 @@
     René Nyffenegger rene.nyffenegger@adp-gmbh.ch
 */
 
-#include "base64.h"
+#include "Base64.hpp"
 #include <iostream>
 
-#include "xml/xml.hpp"
+#include <soaplib/xml/Xml.hpp>
 
-#include "parseHelper.hpp"
+#include <soaplib/ParseHelper.hpp>
 
 namespace soaplib {
 
@@ -55,7 +55,7 @@ void Base64::ToAnyXml(
     soaplib::xml::Document& doc,
     soaplib::xml::Node& anyNode) const
 {
-    setAnyTypeAttribute(doc, anyNode, "base64Binary", "http://www.w3.org/2001/XMLSchema", "xs");
+    SetAnyTypeAttribute(doc, anyNode, "base64Binary", "http://www.w3.org/2001/XMLSchema", "xs");
     Base64ToXml(anyNode, *this);
 }
 

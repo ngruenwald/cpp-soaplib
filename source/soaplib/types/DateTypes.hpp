@@ -4,7 +4,7 @@
 #include <optional>
 #include <string>
 
-#include <soaplib/types/soapBaseType.hpp>
+#include <soaplib/types/SoapBaseType.hpp>
 
 namespace soaplib {
 
@@ -21,7 +21,6 @@ struct Timezone
 struct Date
     : soaplib::SoapBaseType
 {
-    /// Default constructor
     Date() = default;
 
     /// Constructs a date object without timezone information
@@ -55,7 +54,6 @@ struct Date
 struct Time
     : soaplib::SoapBaseType
 {
-    /// Default constructor
     Time() = default;
 
     /// Constructs a time object without timezone information
@@ -92,7 +90,6 @@ struct Time
 struct DateTime
     : soaplib::SoapBaseType
 {
-    /// Default constructor
     DateTime() = default;
 
     /// Constructs a date-time object without timezone
@@ -123,7 +120,6 @@ struct DateTime
 struct Duration
     : soaplib::SoapBaseType
 {
-    /// Default constructor
     Duration() = default;
 
     /// Constructs a duration object

@@ -2,7 +2,7 @@
 
 #include "ListOfCurrenciesByCodeResponse.hpp"
 
-#include <soaplib/parseHelper.hpp>
+#include <soaplib/ParseHelper.hpp>
 
 #include "ArrayOftCurrency.hpp"
 
@@ -12,7 +12,7 @@ void ListOfCurrenciesByCodeResponseFromXml(
     const soaplib::xml::Node& objNode,
     ListOfCurrenciesByCodeResponse& obj)
 {
-    obj.ListOfCurrenciesByCodeResult = soaplib::getMandatory<ArrayOftCurrency>(objNode, "ListOfCurrenciesByCodeResult", ArrayOftCurrencyFromXml);
+    obj.ListOfCurrenciesByCodeResult = soaplib::GetMandatory<ArrayOftCurrency>(objNode, "ListOfCurrenciesByCodeResult", ArrayOftCurrencyFromXml);
 }
 
 ListOfCurrenciesByCodeResponse ListOfCurrenciesByCodeResponseFromXml(
@@ -37,7 +37,7 @@ static void _ListOfCurrenciesByCodeResponseToXml(
     soaplib::xml::Node& objNode)
 {
     {
-        auto pn = soaplib::addChild(doc, objNode, "ListOfCurrenciesByCodeResult", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto pn = soaplib::AddChild(doc, objNode, "ListOfCurrenciesByCodeResult", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         ArrayOftCurrencyToXml(obj.ListOfCurrenciesByCodeResult, doc, pn, false);
     }
 }
@@ -50,7 +50,7 @@ void ListOfCurrenciesByCodeResponseToXml(
 {
     if (createNode)
     {
-        auto objNode = soaplib::addChild(doc, parentNode, "ListOfCurrenciesByCodeResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto objNode = soaplib::AddChild(doc, parentNode, "ListOfCurrenciesByCodeResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         _ListOfCurrenciesByCodeResponseToXml(obj, doc, objNode);
     }
     else
@@ -63,7 +63,7 @@ void ListOfCurrenciesByCodeResponse::ToAnyXml(
     soaplib::xml::Document& doc,
     soaplib::xml::Node& node) const
 {
-    soaplib::setAnyTypeAttribute(doc, node, "ListOfCurrenciesByCodeResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+    soaplib::SetAnyTypeAttribute(doc, node, "ListOfCurrenciesByCodeResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
     _ListOfCurrenciesByCodeResponseToXml(*this, doc, node);
 }
 

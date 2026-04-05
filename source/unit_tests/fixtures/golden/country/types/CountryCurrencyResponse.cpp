@@ -2,7 +2,7 @@
 
 #include "CountryCurrencyResponse.hpp"
 
-#include <soaplib/parseHelper.hpp>
+#include <soaplib/ParseHelper.hpp>
 
 #include "tCurrency.hpp"
 
@@ -12,7 +12,7 @@ void CountryCurrencyResponseFromXml(
     const soaplib::xml::Node& objNode,
     CountryCurrencyResponse& obj)
 {
-    obj.CountryCurrencyResult = soaplib::getMandatory<tCurrency>(objNode, "CountryCurrencyResult", tCurrencyFromXml);
+    obj.CountryCurrencyResult = soaplib::GetMandatory<tCurrency>(objNode, "CountryCurrencyResult", tCurrencyFromXml);
 }
 
 CountryCurrencyResponse CountryCurrencyResponseFromXml(
@@ -37,7 +37,7 @@ static void _CountryCurrencyResponseToXml(
     soaplib::xml::Node& objNode)
 {
     {
-        auto pn = soaplib::addChild(doc, objNode, "CountryCurrencyResult", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto pn = soaplib::AddChild(doc, objNode, "CountryCurrencyResult", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         tCurrencyToXml(obj.CountryCurrencyResult, doc, pn, false);
     }
 }
@@ -50,7 +50,7 @@ void CountryCurrencyResponseToXml(
 {
     if (createNode)
     {
-        auto objNode = soaplib::addChild(doc, parentNode, "CountryCurrencyResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto objNode = soaplib::AddChild(doc, parentNode, "CountryCurrencyResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         _CountryCurrencyResponseToXml(obj, doc, objNode);
     }
     else
@@ -63,7 +63,7 @@ void CountryCurrencyResponse::ToAnyXml(
     soaplib::xml::Document& doc,
     soaplib::xml::Node& node) const
 {
-    soaplib::setAnyTypeAttribute(doc, node, "CountryCurrencyResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+    soaplib::SetAnyTypeAttribute(doc, node, "CountryCurrencyResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
     _CountryCurrencyResponseToXml(*this, doc, node);
 }
 

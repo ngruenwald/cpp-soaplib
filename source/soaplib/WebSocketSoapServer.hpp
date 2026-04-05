@@ -34,7 +34,6 @@ public:
         const std::string& path = "/",
         const WsServerConfig& config = WsServerConfig());
 
-    /// Destructs the instance.
     ~WebSocketSoapServer();
 
     /// Starts listening for requests.

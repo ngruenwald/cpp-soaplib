@@ -2,7 +2,7 @@
 
 #include "Subtract.hpp"
 
-#include <soaplib/parseHelper.hpp>
+#include <soaplib/ParseHelper.hpp>
 
 
 namespace calc {
@@ -11,8 +11,8 @@ void SubtractFromXml(
     const soaplib::xml::Node& objNode,
     Subtract& obj)
 {
-    obj.IntA = soaplib::getMandatory<soaplib::Int32>(objNode, "intA", Int32FromXml);
-    obj.IntB = soaplib::getMandatory<soaplib::Int32>(objNode, "intB", Int32FromXml);
+    obj.IntA = soaplib::GetMandatory<soaplib::Int32>(objNode, "intA", Int32FromXml);
+    obj.IntB = soaplib::GetMandatory<soaplib::Int32>(objNode, "intB", Int32FromXml);
 }
 
 Subtract SubtractFromXml(
@@ -37,11 +37,11 @@ static void _SubtractToXml(
     soaplib::xml::Node& objNode)
 {
     {
-        auto pn = soaplib::addChild(doc, objNode, "intA", "http://tempuri.org/", "");
+        auto pn = soaplib::AddChild(doc, objNode, "intA", "http://tempuri.org/", "");
         Int32ToXml(pn, obj.IntA);
     }
     {
-        auto pn = soaplib::addChild(doc, objNode, "intB", "http://tempuri.org/", "");
+        auto pn = soaplib::AddChild(doc, objNode, "intB", "http://tempuri.org/", "");
         Int32ToXml(pn, obj.IntB);
     }
 }
@@ -54,7 +54,7 @@ void SubtractToXml(
 {
     if (createNode)
     {
-        auto objNode = soaplib::addChild(doc, parentNode, "Subtract", "http://tempuri.org/", "");
+        auto objNode = soaplib::AddChild(doc, parentNode, "Subtract", "http://tempuri.org/", "");
         _SubtractToXml(obj, doc, objNode);
     }
     else
@@ -67,7 +67,7 @@ void Subtract::ToAnyXml(
     soaplib::xml::Document& doc,
     soaplib::xml::Node& node) const
 {
-    soaplib::setAnyTypeAttribute(doc, node, "Subtract", "http://tempuri.org/", "");
+    soaplib::SetAnyTypeAttribute(doc, node, "Subtract", "http://tempuri.org/", "");
     _SubtractToXml(*this, doc, node);
 }
 

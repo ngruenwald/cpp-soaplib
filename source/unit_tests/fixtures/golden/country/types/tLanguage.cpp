@@ -2,7 +2,7 @@
 
 #include "tLanguage.hpp"
 
-#include <soaplib/parseHelper.hpp>
+#include <soaplib/ParseHelper.hpp>
 
 
 namespace country {
@@ -11,8 +11,8 @@ void tLanguageFromXml(
     const soaplib::xml::Node& objNode,
     tLanguage& obj)
 {
-    obj.SISOCode = soaplib::getMandatory<soaplib::String>(objNode, "sISOCode", StringFromXml);
-    obj.SName = soaplib::getMandatory<soaplib::String>(objNode, "sName", StringFromXml);
+    obj.SISOCode = soaplib::GetMandatory<soaplib::String>(objNode, "sISOCode", StringFromXml);
+    obj.SName = soaplib::GetMandatory<soaplib::String>(objNode, "sName", StringFromXml);
 }
 
 tLanguage tLanguageFromXml(
@@ -37,11 +37,11 @@ static void _tLanguageToXml(
     soaplib::xml::Node& objNode)
 {
     {
-        auto pn = soaplib::addChild(doc, objNode, "sISOCode", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto pn = soaplib::AddChild(doc, objNode, "sISOCode", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         StringToXml(pn, obj.SISOCode);
     }
     {
-        auto pn = soaplib::addChild(doc, objNode, "sName", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto pn = soaplib::AddChild(doc, objNode, "sName", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         StringToXml(pn, obj.SName);
     }
 }
@@ -54,7 +54,7 @@ void tLanguageToXml(
 {
     if (createNode)
     {
-        auto objNode = soaplib::addChild(doc, parentNode, "tLanguage", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto objNode = soaplib::AddChild(doc, parentNode, "tLanguage", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         _tLanguageToXml(obj, doc, objNode);
     }
     else
@@ -67,7 +67,7 @@ void tLanguage::ToAnyXml(
     soaplib::xml::Document& doc,
     soaplib::xml::Node& node) const
 {
-    soaplib::setAnyTypeAttribute(doc, node, "tLanguage", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+    soaplib::SetAnyTypeAttribute(doc, node, "tLanguage", "http://www.oorsprong.org/websamples.countryinfo", "tns");
     _tLanguageToXml(*this, doc, node);
 }
 

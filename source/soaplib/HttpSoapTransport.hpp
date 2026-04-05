@@ -47,7 +47,6 @@ public:
         const std::string& serviceAddress,
         HttpConfig config = HttpConfig());
 
-    /// Destructs the instance.
     ~HttpSoapTransport() override;
 
     /// Sets a handler for unsolicited responses (no-op for HTTP).
@@ -69,7 +68,7 @@ public:
         HttpMethod method = HttpMethod::Post) override;
 
 private:
-    void extractAddressParts(
+    void ExtractAddressParts(
         const std::string& serviceAddress);
 
 private:

@@ -3,7 +3,7 @@
 #include "cppgen/cppgen.hpp"
 #include "wsdl.hpp"
 
-#include "soaplib/xml/xml.hpp"
+#include "soaplib/xml/Xml.hpp"
 
 struct Config
 {

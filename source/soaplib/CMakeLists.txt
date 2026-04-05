@@ -28,23 +28,25 @@ add_library(
   WebSocketSoapServer.hpp
   SoapFault.cpp
   SoapFault.hpp
-  soapException.cpp
-  soapException.hpp
-  soapService.cpp
-  soapService.hpp
-  types/dateTypes.cpp
-  types/dateTypes.hpp
-  types/uuid.cpp
-  types/uuid.hpp
-  types/base64.cpp
-  types/base64.h
-  types/simpleTypes.cpp
-  types/simpleTypes.hpp
-  types/soapBaseType.hpp
-  basicTypes.cpp
-  basicTypes.hpp
-  parseHelper.cpp
-  parseHelper.hpp
+  SoapException.cpp
+  SoapException.hpp
+  SoapService.cpp
+  SoapService.hpp
+  SoapClient.cpp
+  SoapClient.hpp
+  types/DateTypes.cpp
+  types/DateTypes.hpp
+  types/Uuid.cpp
+  types/Uuid.hpp
+  types/Base64.cpp
+  types/Base64.hpp
+  types/SimpleTypes.cpp
+  types/SimpleTypes.hpp
+  types/SoapBaseType.hpp
+  BasicTypes.cpp
+  BasicTypes.hpp
+  ParseHelper.cpp
+  ParseHelper.hpp
 )
 
 add_library(
@@ -98,8 +100,8 @@ install(
 
 install(
   FILES
-    soapException.hpp
-    soapService.hpp
+    SoapException.hpp
+    SoapService.hpp
     SoapBase.hpp
     SoapServer.hpp
     SoapTransport.hpp
@@ -108,20 +110,21 @@ install(
     WebSocketSoapTransport.hpp
     WebSocketSoapServer.hpp
     SoapFault.hpp
-    basicTypes.hpp
-    parseHelper.hpp
+    BasicTypes.hpp
+    ParseHelper.hpp
+    SoapClient.hpp
+    SoapMessage.hpp
   DESTINATION
     ${HEADER_INSTALL_PATH}
 )
 
 install(
   FILES
-    types/dateTypes.cpp
-    types/dateTypes.hpp
-    types/simpleTypes.hpp
-    types/soapBaseType.hpp
-    types/uuid.hpp
-    types/base64.h
+    types/DateTypes.hpp
+    types/SimpleTypes.hpp
+    types/SoapBaseType.hpp
+    types/Uuid.hpp
+    types/Base64.hpp
   DESTINATION
     ${HEADER_INSTALL_PATH}/types
 )

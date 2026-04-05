@@ -2,7 +2,7 @@
 
 #include "ListOfCountryNamesByCodeResponse.hpp"
 
-#include <soaplib/parseHelper.hpp>
+#include <soaplib/ParseHelper.hpp>
 
 #include "ArrayOftCountryCodeAndName.hpp"
 
@@ -12,7 +12,7 @@ void ListOfCountryNamesByCodeResponseFromXml(
     const soaplib::xml::Node& objNode,
     ListOfCountryNamesByCodeResponse& obj)
 {
-    obj.ListOfCountryNamesByCodeResult = soaplib::getMandatory<ArrayOftCountryCodeAndName>(objNode, "ListOfCountryNamesByCodeResult", ArrayOftCountryCodeAndNameFromXml);
+    obj.ListOfCountryNamesByCodeResult = soaplib::GetMandatory<ArrayOftCountryCodeAndName>(objNode, "ListOfCountryNamesByCodeResult", ArrayOftCountryCodeAndNameFromXml);
 }
 
 ListOfCountryNamesByCodeResponse ListOfCountryNamesByCodeResponseFromXml(
@@ -37,7 +37,7 @@ static void _ListOfCountryNamesByCodeResponseToXml(
     soaplib::xml::Node& objNode)
 {
     {
-        auto pn = soaplib::addChild(doc, objNode, "ListOfCountryNamesByCodeResult", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto pn = soaplib::AddChild(doc, objNode, "ListOfCountryNamesByCodeResult", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         ArrayOftCountryCodeAndNameToXml(obj.ListOfCountryNamesByCodeResult, doc, pn, false);
     }
 }
@@ -50,7 +50,7 @@ void ListOfCountryNamesByCodeResponseToXml(
 {
     if (createNode)
     {
-        auto objNode = soaplib::addChild(doc, parentNode, "ListOfCountryNamesByCodeResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+        auto objNode = soaplib::AddChild(doc, parentNode, "ListOfCountryNamesByCodeResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
         _ListOfCountryNamesByCodeResponseToXml(obj, doc, objNode);
     }
     else
@@ -63,7 +63,7 @@ void ListOfCountryNamesByCodeResponse::ToAnyXml(
     soaplib::xml::Document& doc,
     soaplib::xml::Node& node) const
 {
-    soaplib::setAnyTypeAttribute(doc, node, "ListOfCountryNamesByCodeResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
+    soaplib::SetAnyTypeAttribute(doc, node, "ListOfCountryNamesByCodeResponse", "http://www.oorsprong.org/websamples.countryinfo", "tns");
     _ListOfCountryNamesByCodeResponseToXml(*this, doc, node);
 }
 

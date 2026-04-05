@@ -2,7 +2,7 @@
 
 #include "DivideResponse.hpp"
 
-#include <soaplib/parseHelper.hpp>
+#include <soaplib/ParseHelper.hpp>
 
 
 namespace calc {
@@ -11,7 +11,7 @@ void DivideResponseFromXml(
     const soaplib::xml::Node& objNode,
     DivideResponse& obj)
 {
-    obj.DivideResult = soaplib::getMandatory<soaplib::Int32>(objNode, "DivideResult", Int32FromXml);
+    obj.DivideResult = soaplib::GetMandatory<soaplib::Int32>(objNode, "DivideResult", Int32FromXml);
 }
 
 DivideResponse DivideResponseFromXml(
@@ -36,7 +36,7 @@ static void _DivideResponseToXml(
     soaplib::xml::Node& objNode)
 {
     {
-        auto pn = soaplib::addChild(doc, objNode, "DivideResult", "http://tempuri.org/", "");
+        auto pn = soaplib::AddChild(doc, objNode, "DivideResult", "http://tempuri.org/", "");
         Int32ToXml(pn, obj.DivideResult);
     }
 }
@@ -49,7 +49,7 @@ void DivideResponseToXml(
 {
     if (createNode)
     {
-        auto objNode = soaplib::addChild(doc, parentNode, "DivideResponse", "http://tempuri.org/", "");
+        auto objNode = soaplib::AddChild(doc, parentNode, "DivideResponse", "http://tempuri.org/", "");
         _DivideResponseToXml(obj, doc, objNode);
     }
     else
@@ -62,7 +62,7 @@ void DivideResponse::ToAnyXml(
     soaplib::xml::Document& doc,
     soaplib::xml::Node& node) const
 {
-    soaplib::setAnyTypeAttribute(doc, node, "DivideResponse", "http://tempuri.org/", "");
+    soaplib::SetAnyTypeAttribute(doc, node, "DivideResponse", "http://tempuri.org/", "");
     _DivideResponseToXml(*this, doc, node);
 }
 
