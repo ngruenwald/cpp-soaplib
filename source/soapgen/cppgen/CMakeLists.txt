@@ -39,8 +39,12 @@ set(
   ../ResourceResolver.hpp
 )
 
+include(embedded_resources)
+file(GLOB TEMPLATES "${CMAKE_CURRENT_SOURCE_DIR}/../templates/*.tpl")
+generate_resources(TARGET templates_res RESOURCES ${TEMPLATES})
+
 add_library(${target} STATIC ${SOURCES})
-target_link_libraries(${target} PUBLIC soaplib::xml inja nlohmann_json httplib::httplib)
+target_link_libraries(${target} PUBLIC soaplib::xml inja nlohmann_json httplib::httplib templates_res)
 target_compiler_warnings(${target})
 
 if(WIN32)

@@ -17,6 +17,7 @@ add_library(calc::calculator-service ALIAS calculator-service)
 
 target_link_libraries(calculator-service PUBLIC soaplib::soaplib)
 target_include_directories(calculator-service PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>
   $<INSTALL_INTERFACE:${HEADER_INSTALL_PATH}>
 )

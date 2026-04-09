@@ -494,12 +494,14 @@ void Generate(
         definition.version = soaplib::SoapVersion::Soap12;
     }
 
-    if (options.templatePath.empty())
-    {
-        options.templatePath = "templates";
+    std::string templateBaseDir;
+    if (!options.templatePath.empty()) {
+        auto absPath = std::filesystem::absolute(options.templatePath);
+        templateBaseDir = std::filesystem::is_directory(absPath) ? absPath.string() : absPath.parent_path().string();
     }
 
-    Renderer renderer(options.templatePath, options.outputPath);
+    Renderer renderer(templateBaseDir, options.outputPath);
+
 
     if (options.enableHacks)
     {

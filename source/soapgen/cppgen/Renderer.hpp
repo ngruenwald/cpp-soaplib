@@ -28,8 +28,12 @@ public:
         const std::string& fileName,
         const nlohmann::json& data);
 
+private:
+    std::string GetEmbeddedTemplate(const std::string& fileName) const;
+
 public:
     std::unique_ptr<inja::Environment> env_;
+    std::string templatePath_;
 
 private:
     static Renderer* Instance_;

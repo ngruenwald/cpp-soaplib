@@ -17,6 +17,7 @@ add_library(country::CountryInfoService ALIAS CountryInfoService)
 
 target_link_libraries(CountryInfoService PUBLIC soaplib::soaplib)
 target_include_directories(CountryInfoService PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>
   $<INSTALL_INTERFACE:${HEADER_INSTALL_PATH}>
 )

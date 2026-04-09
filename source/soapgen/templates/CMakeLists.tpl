@@ -19,6 +19,7 @@ add_library({{ options.cmakeNamespace }}::{{ target }} ALIAS {{ target }})
 
 target_link_libraries({{ target }} PUBLIC soaplib::soaplib)
 target_include_directories({{ target }} PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>
   $<INSTALL_INTERFACE:${HEADER_INSTALL_PATH}>
 )

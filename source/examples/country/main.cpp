@@ -3,7 +3,7 @@
 #include <openssl/evp.h>
 #include <openssl/err.h>
 
-#include "country-info/CountryInfoService.hpp"
+#include "CountryInfoService.hpp"
 
 int main(
     int argc,

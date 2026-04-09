@@ -3,7 +3,7 @@
 #include <openssl/evp.h>
 #include <openssl/err.h>
 
-#include "calc/Calculator.hpp"
+#include "Calculator.hpp"
 
 int main(
     int argc,

@@ -29,6 +29,7 @@ std::unique_ptr<Config> LoadConfig(
 
         XML_OPTIONAL(config->cpp.generateClient = doc->GetNode("/config/cpp/client").GetBoolProp("enable"));
         XML_OPTIONAL(config->cpp.generateServer = doc->GetNode("/config/cpp/server").GetBoolProp("enable"));
+        XML_OPTIONAL(config->cpp.templatePath = doc->GetNode("/config/cpp/template-path").GetStringProp("path"));
         XML_OPTIONAL(config->cpp.abortOnUnknownType = doc->GetNode("/config/cpp/abort-on-unknown").GetBoolProp("enable"));
 
         try {
