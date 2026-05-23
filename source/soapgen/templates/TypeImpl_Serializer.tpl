@@ -54,7 +54,11 @@ static void _{{ name }}ToXml(
     soaplib::xml::Node& objNode)
 {
 {% if length(default(base.name, "")) > 0 and base.name != "soaplib::SoapBaseType" %}
-    _{{ base.resolved_name }}ToXml(obj, doc, objNode);
+{% if base.isNativeType %}
+    {{ base.resolved_name }}ToXml(objNode, obj);
+{% else %}
+    {{ base.resolved_name }}ToXml(obj, doc, objNode, false);
+{% endif %}
 {% endif %}
 {% if kind == "enum" %}
     soaplib::String s;

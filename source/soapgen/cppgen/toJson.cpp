@@ -268,10 +268,14 @@ nlohmann::json JsonMapper::ToJson(const Operation& o, const Definition& d)
             j["output_full_resolved_type"] = ResolveType(outputTypes[0], options_, false);
             j["output_is_native"] = IsNativeType(outputTypes[0]);
         } else {
+            j["output_type"] = "";
             j["output_resolved_type"] = "void";
+            j["output_is_native"] = true;
         }
     } else {
+        j["output_type"] = "";
         j["output_resolved_type"] = "void";
+        j["output_is_native"] = true;
     }
 
     return j;

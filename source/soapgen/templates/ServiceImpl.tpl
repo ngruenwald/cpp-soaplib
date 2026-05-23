@@ -36,10 +36,10 @@ using namespace ::soaplib;
     {{ op.input_resolved_type }}ToXml(input, request, body, true);
 
     auto response = Call(request, "{{ op.input.action }}", soaplib::HttpMethod::Post);
+{% if op.output_resolved_type != "void" %}
     auto envelope = response->GetRootNode();
     auto operation = envelope.GetChild("Body").GetChild("{{ op.output_type }}");
 
-{% if op.output_resolved_type != "void" %}
     return {% if not op.output_is_native %}::{{ concat(options.namespaces, "::", true) }}{% endif %}{{ op.output_resolved_type }}FromXml(operation);
 {% endif %}
 }

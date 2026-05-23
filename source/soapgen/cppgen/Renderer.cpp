@@ -85,7 +85,7 @@ Renderer::Renderer(
                 }
             }
 
-            if (sae)
+            if (sae && !parts.empty())
             {
                 oss << separator;
             }

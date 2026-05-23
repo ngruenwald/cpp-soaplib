@@ -8,3 +8,5 @@ endif()
 if(EXAMPLES)
   add_subdirectory(examples)
 endif()
+
+add_subdirectory(../build/test_gen/DR-GW-System.Events test_gen_system_events)
