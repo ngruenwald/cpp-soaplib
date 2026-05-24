@@ -13,7 +13,8 @@ CountryInfoService::CountryInfoService(
     const soaplib::HttpConfig& config)
     : soaplib::SoapService(serviceAddress, "", config)
 {
-SetSoapVersion(soaplib::SoapVersion::Soap11);    RegisterUnderstoodHeader("Action", "http://www.w3.org/2005/08/addressing");
+    SetSoapVersion(soaplib::SoapVersion::Soap11);
+    RegisterUnderstoodHeader("Action", "http://www.w3.org/2005/08/addressing");
     RegisterUnderstoodHeader("To", "http://www.w3.org/2005/08/addressing");
     RegisterUnderstoodHeader("MessageID", "http://www.w3.org/2005/08/addressing");
     RegisterUnderstoodHeader("ReplyTo", "http://www.w3.org/2005/08/addressing");

@@ -14,7 +14,9 @@ using namespace ::soaplib;
 
 {{ service.name }}Server::{{ service.name }}Server()
 {
-    {% if service.version == "1.1" %}SetSoapVersion(soaplib::SoapVersion::Soap11);{% endif %}
+    {% if service.version == "1.1" %}
+    SetSoapVersion(soaplib::SoapVersion::Soap11);
+    {% endif %}
     RegisterUnderstoodHeader("Action", "http://www.w3.org/2005/08/addressing");
     RegisterUnderstoodHeader("To", "http://www.w3.org/2005/08/addressing");
     RegisterUnderstoodHeader("MessageID", "http://www.w3.org/2005/08/addressing");
@@ -28,7 +30,8 @@ using namespace ::soaplib;
 std::unique_ptr<soaplib::xml::Document> {{ service.name }}Server::HandleRequest(
     const soaplib::xml::Document& request)
 {
-    try {
+    try
+    {
         auto envelope = request.GetRootNode();
         
         // Validate headers before dispatching
@@ -39,32 +42,38 @@ std::unique_ptr<soaplib::xml::Document> {{ service.name }}Server::HandleRequest(
         std::string operationName = operationNode.GetName();
 
     {% for op in service.operations %}
-        {% if not loop.is_first %}else {% endif %}if (operationName == "{{ op.input_type }}")
+        {% if loop.is_first %}
+        if (operationName == "{{ op.input_type }}")
+        {% else %}
+        else if (operationName == "{{ op.input_type }}")
+        {% endif %}
         {
             // Parse input
             auto input = ::{{ concat(options.namespaces, "::", true) }}{{ op.input_resolved_type }}FromXml(operationNode);
             
             // Call implementation
-            {% if op.output_resolved_type != "void" -%}
+            {% if op.output_resolved_type != "void" %}
             auto result = {{ op.name }}(input);
-            {%- else -%}
+            {% else %}
             {{ op.name }}(input);
-            {%- endif %}
+            {% endif %}
 
             // Create response
             auto response = std::make_unique<soaplib::xml::Document>();
             auto responseBody = CreateEnvelope(*response, "{{ op.output.action }}");
             
-            {% if op.output_resolved_type != "void" -%}
+            {% if op.output_resolved_type != "void" %}
             {{ op.output_resolved_type }}ToXml(result, *response, responseBody, true);
-            {%- endif %}
+            {% endif %}
             
             return response;
         }
     {% endfor %}
 
         throw soaplib::SoapException("Unknown operation: " + operationName);
-    } catch (const std::exception& e) {
+    }
+    catch (const std::exception& e)
+    {
         auto response = std::make_unique<soaplib::xml::Document>();
         auto body = CreateEnvelope(*response, "");
         auto faultNode = AddChild(*response, body, "Fault", "s");
@@ -75,7 +84,9 @@ std::unique_ptr<soaplib::xml::Document> {{ service.name }}Server::HandleRequest(
         
         soaplib::SoapFaultToXml(*response, faultNode, fault, version_);
         return response;
-    } catch (...) {
+    }
+    catch (...)
+    {
         auto response = std::make_unique<soaplib::xml::Document>();
         auto body = CreateEnvelope(*response, "");
         auto faultNode = AddChild(*response, body, "Fault", "s");

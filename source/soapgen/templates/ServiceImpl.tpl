@@ -16,7 +16,9 @@ using namespace ::soaplib;
     const soaplib::HttpConfig& config)
     : soaplib::SoapService(serviceAddress, "", config)
 {
-    {% if service.version == "1.1" %}SetSoapVersion(soaplib::SoapVersion::Soap11);{% endif %}
+    {% if service.version == "1.1" %}
+    SetSoapVersion(soaplib::SoapVersion::Soap11);
+    {% endif %}
     RegisterUnderstoodHeader("Action", "http://www.w3.org/2005/08/addressing");
     RegisterUnderstoodHeader("To", "http://www.w3.org/2005/08/addressing");
     RegisterUnderstoodHeader("MessageID", "http://www.w3.org/2005/08/addressing");
