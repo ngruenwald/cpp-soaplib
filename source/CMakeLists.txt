@@ -2,6 +2,7 @@ add_subdirectory(soaplib)
 add_subdirectory(soapgen)
 
 if(UNIT_TESTS)
+  enable_testing()
   add_subdirectory(unit_tests)
 endif()
 

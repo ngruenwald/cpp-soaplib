@@ -6,7 +6,7 @@
 
 void {{ name }}FromXml(
     const soaplib::xml::Node& objNode,
-    {{ name }}& obj)
+    {{ default(cpp_qualified_name, name) }}& obj)
 {
 {% if length(default(base.name, "")) > 0 and base.name != "soaplib::SoapBaseType" %}
     {{ base.resolved_name }}FromXml(objNode, obj);
@@ -27,15 +27,15 @@ void {{ name }}FromXml(
     {%- else if parameter.kind == "optional" %}{% if parameter.isPointerType %}soaplib::GetPointer{% else %}soaplib::GetOptional{% endif -%}
     {%- else if parameter.kind == "multiple" %}{% if parameter.isPointerType %}soaplib::GetMultiplePtrs{% else %}soaplib::GetMultiple{% endif -%}
     {%- else %}soaplib::GetMandatory{#- -#}
-    {%- endif %}<{{ parameter.prefix}}{% if parameter.isInnerType %}{{ name }}::{% endif %}{{ parameter.full_resolved_type }}{{ parameter.suffix }}>(objNode, "{{ parameter.wsdl_name }}", {{ parameter.type }}FromXml);
+    {%- endif %}<{% if parameter.isInnerType %}{{ name }}::{% endif %}{{ parameter.full_resolved_type }}>(objNode, "{{ parameter.wsdl_name }}", {{ parameter.type }}FromXml);
 {% endfor %}
 {% endif %}
 }
 
-{{ name }} {{ name }}FromXml(
+{{ default(cpp_qualified_name, name) }} {{ name }}FromXml(
     const soaplib::xml::Node& objNode)
 {
-    {{ name }} obj;
+    {{ default(cpp_qualified_name, name) }} obj;
     {{ name }}FromXml(objNode, obj);
     return obj;
 }
@@ -43,13 +43,13 @@ void {{ name }}FromXml(
 std::unique_ptr<soaplib::SoapBaseType> {{ name }}PtrFromXml(
     const soaplib::xml::Node& objNode)
 {
-    auto obj = std::make_unique<{{ name }}>();
+    auto obj = std::make_unique<{{ default(cpp_qualified_name, name) }}>();
     {{ name }}FromXml(objNode, *obj.get());
     return obj;
 }
 
 static void _{{ name }}ToXml(
-    const {{ name }}& obj,
+    const {{ default(cpp_qualified_name, name) }}& obj,
     soaplib::xml::Document& doc,
     soaplib::xml::Node& objNode)
 {
@@ -148,7 +148,7 @@ static void _{{ name }}ToXml(
 }
 
 void {{ name }}ToXml(
-    const {{ name }}& obj,
+    const {{ default(cpp_qualified_name, name) }}& obj,
     soaplib::xml::Document& doc,
     soaplib::xml::Node& parentNode,
     bool createNode)
@@ -164,7 +164,7 @@ void {{ name }}ToXml(
     }
 }
 
-void {{ name }}::ToAnyXml(
+void {{ default(cpp_qualified_name, name) }}::ToAnyXml(
     soaplib::xml::Document& doc,
     soaplib::xml::Node& node) const
 {

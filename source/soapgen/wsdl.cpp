@@ -594,7 +594,10 @@ std::vector<TypePtr> LoadSchemaTypes(
 
     for (const auto& tag : {"import", "include"}) {
         for (const auto& node : schemaNode.GetChildren(tag)) {
-            std::string location = node.GetStringProp("schemaLocation");
+            std::string location;
+            try {
+                location = node.GetStringProp("schemaLocation");
+            } catch (...) {}
             if (!location.empty()) {
                 try {
                     std::string content = resolver.Load(location, baseUri);

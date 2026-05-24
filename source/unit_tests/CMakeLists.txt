@@ -47,3 +47,17 @@ target_compile_definitions(
 set_target_properties(${target} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 add_test(NAME unit_tests COMMAND ${target})
+
+add_test(
+  NAME authentication_service_codegen_compile
+  COMMAND
+    ${CMAKE_COMMAND}
+    -D "SOAPGEN=$<TARGET_FILE:soapgen>"
+    -D "WSDL=${CMAKE_SOURCE_DIR}/testdata/admin/AuthenticationService.wsdl"
+    -D "GENERATED_DIR=${CMAKE_CURRENT_BINARY_DIR}/authentication-service-codegen"
+    -D "COMPILE_DIR=${CMAKE_CURRENT_BINARY_DIR}/authentication-service-compile"
+    -D "PROJECT_SOURCE_DIR=${CMAKE_SOURCE_DIR}"
+    -D "CMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}"
+    -D "CMAKE_BUILD_TYPE=$<CONFIG>"
+    -P "${CMAKE_CURRENT_SOURCE_DIR}/AuthenticationServiceCompileTest.cmake"
+)

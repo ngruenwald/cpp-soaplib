@@ -9,7 +9,7 @@
 #include <soaplib/ParseHelper.hpp>
 
 {% for t in definition.types %}
-{% if not t.isNativeType %}
+{% if not t.isNativeType and t.resolved_name != type.name %}
 #include "{{ t.resolved_name }}.hpp"
 {% endif %}
 {% endfor %}
@@ -23,7 +23,9 @@ using namespace ::soaplib;
 static std::map<std::string, std::unique_ptr<soaplib::SoapBaseType>(*)(const soaplib::xml::Node&)> typeMap =
 {
 {% for t in definition.types %}
+{% if not t.isNativeType and t.resolved_name != type.name %}
     { "{{ t.resolved_name }}", {{ t.resolved_name }}PtrFromXml },
+{% endif %}
 {% endfor %}
 };
 

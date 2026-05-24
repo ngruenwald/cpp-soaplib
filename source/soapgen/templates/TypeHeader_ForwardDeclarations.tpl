@@ -3,7 +3,7 @@
 {{ fmacro("TypeHeader_ForwardDeclarations.tpl", innerType) }}
 {% endfor %}
 {% for parameter in struct.parameters %}
-{% if not parameter.isNativeType and not parameter.isInnerType and (parameter.isPointerType or parameter.needsForwardDeclaration) %}
+{% if not parameter.isNativeType and not parameter.isInnerType %}
 struct {{ parameter.type }};
 {% endif %}
 {% endfor %}

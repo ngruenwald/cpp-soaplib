@@ -90,7 +90,9 @@ nlohmann::json JsonMapper::ToJson(const Type& t)
             }
             j["struct"]["innerTypes"] = nlohmann::json::array();
             for (const auto& it : et.innerTypes) {
-                j["struct"]["innerTypes"].push_back(ToJson(*it));
+                auto innerJson = ToJson(*it);
+                innerJson["cpp_qualified_name"] = j["name"].get<std::string>() + "::" + innerJson["name"].get<std::string>();
+                j["struct"]["innerTypes"].push_back(innerJson);
             }
             break;
         }
@@ -114,8 +116,11 @@ nlohmann::json JsonMapper::ToJson(const Type& t)
 
 nlohmann::json JsonMapper::ToJson(const Parameter& p, const ExtendedType& et)
 {
+    const bool nameMatchesInnerType = IsInnerType(p.name, et.innerTypes);
+    const auto cppName = FormatParameterName(p.name.name) + (nameMatchesInnerType ? options_.innerTypeSuffix : "");
+
     nlohmann::json j = {
-        {"name", FormatParameterName(p.name.name)},
+        {"name", cppName},
         {"wsdl_name", p.name.name},
         {"xmlns", ToJson(p.name)},
         {"type", ResolveType(p.type, options_, true)},
@@ -125,7 +130,7 @@ nlohmann::json JsonMapper::ToJson(const Parameter& p, const ExtendedType& et)
         {"full_resolved_type", ResolveType(p.type, options_, false)},
         {"isNativeType", IsNativeType(p.type)},
         {"isInnerType", IsInnerType(p.type, et.innerTypes)},
-        {"cpp_name", FormatParameterName(p.name.name)}
+        {"cpp_name", cppName}
     };
 
     switch (p.kind)
@@ -142,7 +147,7 @@ nlohmann::json JsonMapper::ToJson(const Parameter& p, const ExtendedType& et)
     j["isMultipleType"] = (p.kind == Parameter::Multiple);
     j["needsForwardDeclaration"] = options_.cyclicTypes.count(p.type.name) > 0 && !j["isInnerType"].get<bool>();
 
-    if (IsInnerType(p.name, et.innerTypes))
+    if (nameMatchesInnerType)
     {
         j["prefix"] = et.name.name + "::";
         j["suffix"] = options_.innerTypeSuffix;

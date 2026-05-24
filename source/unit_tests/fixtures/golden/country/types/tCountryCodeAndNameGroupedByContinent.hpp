@@ -11,6 +11,8 @@ namespace soaplib { namespace xml { class Document; } }
 namespace soaplib { namespace xml { class Node; } }
 
 namespace country {
+struct tContinent;
+struct ArrayOftCountryCodeAndName;
 
 struct tCountryCodeAndNameGroupedByContinent
     : soaplib::SoapBaseType

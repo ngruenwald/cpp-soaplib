@@ -10,6 +10,7 @@ namespace soaplib { namespace xml { class Document; } }
 namespace soaplib { namespace xml { class Node; } }
 
 namespace country {
+struct tCurrency;
 
 struct ArrayOftCurrency
     : soaplib::SoapBaseType
